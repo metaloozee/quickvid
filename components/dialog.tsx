@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react";
+import React, { useState } from "react";
+
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,20 +11,13 @@ import { useForm } from "react-hook-form";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
 } from "@/components/ui/form";
 
 import {
     AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
-    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
@@ -36,6 +31,7 @@ const formSchema = z.object({
 });
 
 export function Dialog() {
+    const router = useRouter();
     const [error, setError] = useState<null | string>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -51,6 +47,7 @@ export function Dialog() {
         } else {
             setError(null);
             await localStorage.setItem('openai_key', values.openai_key as string);
+            await router.push("/summarize");
         }
     }
 

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Dialog } from "@/components/dialog";
 
-export default function IndexPage() {
+export default function IndexPage() {  
   return (
     <section className="container flex h-screen items-center">
       <div className="flex max-w-[980px] flex-col items-start gap-5">

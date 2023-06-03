@@ -6,7 +6,6 @@ export const siteConfig = {
     "Your AI-Powered Video Summarization Tool",
   links: {
     twitter: "https://twitter.com/metaloozee",
-    github: "https://github.com/shadcn/ui",
-    docs: "https://ui.shadcn.com",
+    github: "https://github.com/metaloozee",
   },
 }
