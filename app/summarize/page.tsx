@@ -22,6 +22,12 @@ const formSchema = z.object({
 });
 
 export default function SummarizePage() {
+  const [preLoading, setPreLoading] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [audioURL, setAudioURL] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,13 +38,52 @@ export default function SummarizePage() {
   const [isKey, setIsKey] = useState<boolean>(false);
 
   useLayoutEffect(() => {
+    setPreLoading(true);
     const key = localStorage.getItem('openai_key');
     if (key) {
+      setPreLoading(false);
       setIsKey(true);
     } else {
+      setPreLoading(false);
       setIsKey(false);
     }
   }, [])
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
+    const youtubeLinkRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/;
+
+    if (values.yt_link.length <= 0 || youtubeLinkRegex.test(values.yt_link) != true) {
+      setLoading(false);
+      setError("Please enter a valid link!");
+    } else {
+      setError(null);
+
+      const response = await fetch(`/api/convert?youtubeLink=${encodeURIComponent(values.yt_link)}`);
+
+      if (response.ok) {
+        const { audioUrl } = await response.json();
+        setAudioURL(audioUrl);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        setError("An error occurred! Please try again later.");
+        console.error(response.statusText);
+      }
+    }
+  }
+
+  if (preLoading) {
+    return (
+      <section className="container flex h-screen items-center">
+        <div className="flex max-w-[980px] flex-col items-start gap-5">
+          <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+            Loading
+          </h1>
+        </div>
+      </section>
+    )
+  }
 
   if (!isKey) {
     return (
@@ -64,7 +109,7 @@ export default function SummarizePage() {
 
         <div className="w-full">
           <Form {...form}>
-            <form onSubmit={() => console.log("form submitted")} className="flex flex-row gap-5">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row gap-5">
               <FormField
                 control={form.control}
                 name="yt_link"
@@ -74,12 +119,17 @@ export default function SummarizePage() {
                   </FormControl>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button disabled={loading} type="submit">Submit</Button>
             </form>
 
-            {/* <p className="mt-3 text-sm text-red-800">{error ?? null}</p> */}
+            <p className="mt-3 text-sm text-red-800">{error ?? null}</p>
+            
+            {audioURL && (
+              <audio controls src={audioURL as string} />
+            )}
           </Form>
         </div>
+
       </div>
     </section>
   )

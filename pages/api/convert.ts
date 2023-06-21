@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const audioPath = await convertVideoToAudio(youtubeLink as string);
-    const publicUrl = audioPath.replace('./tmp', '/tmp');
+    const publicUrl = audioPath.replace('./public/tmp', '/public/tmp');
     res.status(200).json({ audioUrl: publicUrl });
 
     setTimeout(() => {

@@ -6,7 +6,7 @@ import { promisify } from 'util';
 const writeFile = promisify(fs.writeFile);
 const unlink = promisify(fs.unlink);
 
-const TEMP_DIR = './tmp/audio';
+const TEMP_DIR = './public/tmp/audio';
 
 const convertVideoToAudio = async (youtubeLink: string): Promise<string> => {
   const videoInfo = await ytdl.getInfo(youtubeLink);
