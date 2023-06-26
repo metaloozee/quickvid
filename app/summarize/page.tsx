@@ -58,7 +58,6 @@ export default function SummarizePage() {
       setError("Please enter a valid link!");
     } else {
       setError(null);
-
       const response = await fetch(`/api/convert?youtubeLink=${encodeURIComponent(values.yt_link)}`);
 
       if (response.ok) {

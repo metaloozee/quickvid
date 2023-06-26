@@ -2,11 +2,12 @@ import fs from 'fs';
 import ytdl from 'ytdl-core';
 import ffmpeg from 'fluent-ffmpeg';
 import { promisify } from 'util';
+import { supabase } from './supabase';
 
 const writeFile = promisify(fs.writeFile);
 const unlink = promisify(fs.unlink);
 
-const TEMP_DIR = './public/tmp/audio';
+const TEMP_DIR = './tmp/audio';
 
 const convertVideoToAudio = async (youtubeLink: string): Promise<string> => {
   const videoInfo = await ytdl.getInfo(youtubeLink);
@@ -40,6 +41,30 @@ const convertVideoToAudio = async (youtubeLink: string): Promise<string> => {
   });
 };
 
+const uploadAudio = async (youtubeLink: string) => {
+  try {
+    const audioPath = await convertVideoToAudio(youtubeLink as string)
+    const publicURL = audioPath.replace('./public/tmp', '/public/tmp')
+    const data = fs.readFileSync(publicURL);
+    
+    const { data: uploadedFile, error } = await supabase.storage
+      .from('public')
+      .upload(`audios/audio_${Date.now()}.mp3`, data)
+
+    if (error) {
+      throw error;
+    }
+
+    const { data: supabaseFile } = await supabase.storage
+      .from('public')
+      .getPublicUrl(uploadedFile.path)
+
+    return supabaseFile.publicUrl || null;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 const cleanupExpiredFiles = async () => {
   const files = await fs.promises.readdir(TEMP_DIR);
 
@@ -62,4 +87,4 @@ const cleanupExpiredFiles = async () => {
   });
 };
 
-export { convertVideoToAudio, cleanupExpiredFiles };
+export { convertVideoToAudio, cleanupExpiredFiles, uploadAudio };
