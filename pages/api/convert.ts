@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { cleanupExpiredFiles, convertVideoToAudio, uploadAudio } from '@/lib/convert';
-import { supabase } from '@/lib/supabase';
+import { uploadAudio } from '@/lib/convert';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const { youtubeLink } = req.query;
@@ -16,11 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const path = await uploadAudio(youtubeLink as string);
     res.status(200).json({ audioUrl: path })
 
-    setTimeout(() => {
-      cleanupExpiredFiles().catch((error) => {
-        console.error('Error cleaning up expired files:', error);
-      });
-    }, 5000);
   } catch (error) {
     console.error('Error during conversion:', error);
     res.status(500).json({ error: 'An error occurred during conversion' });

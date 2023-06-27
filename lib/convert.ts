@@ -1,90 +1,63 @@
-import fs from 'fs';
-import ytdl from 'ytdl-core';
-import ffmpeg from 'fluent-ffmpeg';
-import { promisify } from 'util';
-import { supabase } from './supabase';
+import ytdl from "ytdl-core"
 
-const writeFile = promisify(fs.writeFile);
-const unlink = promisify(fs.unlink);
-
-const TEMP_DIR = './tmp/audio';
-
-const convertVideoToAudio = async (youtubeLink: string): Promise<string> => {
-  const videoInfo = await ytdl.getInfo(youtubeLink);
-  const format = ytdl.chooseFormat(videoInfo.formats, { quality: 'highestaudio' });
-
-  const video = ytdl(youtubeLink, { format });
-
-  const outputPath = `${TEMP_DIR}/audio_${Date.now()}.mp3`;
-
-  return new Promise((resolve, reject) => {
-    ffmpeg(video)
-      .noVideo()
-      .audioBitrate(128)
-      .save(outputPath)
-      .on('end', async () => {
-        console.log('Conversion complete');
-        resolve(outputPath);
-
-        // try {
-        //   await writeFile(outputPath, ''); // Create an empty file to mark its existence
-        //   resolve(outputPath);
-        // } catch (error) {
-        //   console.error('Error creating empty file:', error);
-        //   reject(error);
-        // }
-      })
-      .on('error', (err) => {
-        console.error('Error during conversion:', err);
-        reject(err);
-      });
-  });
-};
+import { supabase } from "@/lib/supabase"
 
 const uploadAudio = async (youtubeLink: string) => {
   try {
-    const audioPath = await convertVideoToAudio(youtubeLink as string)
-    const publicURL = audioPath.replace('./public/tmp', '/public/tmp')
-    const data = fs.readFileSync(publicURL);
-    
-    const { data: uploadedFile, error } = await supabase.storage
-      .from('public')
-      .upload(`audios/audio_${Date.now()}.mp3`, data)
+    const videoInfo = await ytdl.getInfo(youtubeLink)
+    const format = ytdl.chooseFormat(videoInfo.formats, { filter: "audioonly" })
 
-    if (error) {
-      throw error;
+    if (!format) {
+      console.error("No audio format found for the YouTube video.")
+      return null
     }
 
-    const { data: supabaseFile } = await supabase.storage
-      .from('public')
-      .getPublicUrl(uploadedFile.path)
+    const audioStream = ytdl.downloadFromInfo(videoInfo, { format: format })
+    const audioBuffer = await streamToBuffer(audioStream)
+    const audioFile = Buffer.from(audioBuffer)
 
-    return supabaseFile.publicUrl || null;
+    const { data: uploadedFile, error } = await supabase.storage
+      .from("public")
+      .upload(`audios/audio_${Date.now()}.mp3`, audioFile)
+
+    if (error) {
+      console.error(error)
+      return null
+    }
+
+    if (uploadedFile) {
+      const { data: supabaseFile } = supabase.storage
+        .from("public")
+        .getPublicUrl(uploadedFile.path)
+
+      return supabaseFile.publicUrl
+    } else {
+      console.error('Failed to get audio file key.');
+      return null;
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Error:", error)
+    return null
   }
 }
 
-const cleanupExpiredFiles = async () => {
-  const files = await fs.promises.readdir(TEMP_DIR);
+const streamToBuffer = (stream: any): Promise<Buffer> => {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = []
 
-  const currentTime = Date.now();
-  const expirationTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    stream.on("data", (chunk: Buffer) => {
+      chunks.push(chunk)
+    })
 
-  files.forEach(async (file) => {
-    const filePath = `${TEMP_DIR}/${file}`;
-    const { birthtimeMs } = await fs.promises.stat(filePath);
-    const elapsedTime = currentTime - birthtimeMs;
+    stream.on("end", () => {
+      const buffer = Buffer.concat(chunks)
+      resolve(buffer)
+    })
 
-    if (elapsedTime >= expirationTime) {
-      try {
-        await unlink(filePath);
-        console.log(`Deleted expired file: ${filePath}`);
-      } catch (error) {
-        console.error('Error deleting file:', error);
-      }
-    }
-  });
-};
+    stream.on("error", (error: Error) => {
+      reject(error)
+    })
+  })
+}
 
-export { convertVideoToAudio, cleanupExpiredFiles, uploadAudio };
+export { uploadAudio }
