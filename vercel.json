@@ -1,7 +1,7 @@
 {
     "crons": [
       {
-        "path": "/api/deleteAudioFiles",
+        "path": "/api/cron",
         "schedule": "0 * * * *"
       }
     ]
