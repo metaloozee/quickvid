@@ -18,9 +18,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw error;
         }
 
-        res.status(200).json({ message: "Audio files deleted successfully!"})
+        res.status(200).end("Audio files deleted successfully!")
     } catch (err) {
         console.error(err)
-        res.status(500).json({ error: "An error occurred, please check the console." });
+        res.status(500).end("An error occurred, please check the console.");
     }
 }
