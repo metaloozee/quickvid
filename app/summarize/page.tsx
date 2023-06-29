@@ -23,6 +23,9 @@ export default function SummarizePage() {
   const [error, setError] = useState<string | null>(null)
   const [audioPath, setAudioPath] = useState<string | null>(null)
 
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [transcript, setTranscript] = useState<string | null>(null)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,7 +34,7 @@ export default function SummarizePage() {
   })
 
   const [isKey, setIsKey] = useState<boolean>(false)
-  const [key, setKey] = useState<string | null>(null);
+  const [key, setKey] = useState<string | null>(null)
 
   useLayoutEffect(() => {
     setPreLoading(true)
@@ -77,14 +80,39 @@ export default function SummarizePage() {
   }
 
   const onClear = () => {
-    setLoading(false);
-    setAudioPath(null);
-    setError(null);
-    form.reset();
+    setLoading(false)
+    setAudioPath(null)
+    setError(null)
+    form.reset()
   }
 
-  const onGenerate = () => {
-    setLoading(true)
+  const onGenerate = async () => {
+    setIsGenerating(true)
+
+    try {
+      if (!key || !audioPath) {
+        throw new Error("OpenAI API Key or the Audio Path is missing!")
+      }
+
+      const response = await fetch(
+        `/api/getTranscript?audioPath=${encodeURIComponent(`public/${audioPath}`)}&openAIKey=${encodeURIComponent(key)}`
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        setTranscript(data.response)
+      } else {
+        setError("An error occurred! Please try again later.")
+
+        throw new Error(response.statusText)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsGenerating(false)
+      setAudioPath(null)
+      setLoading(false)
+    }
   }
 
   if (preLoading) {
@@ -167,15 +195,39 @@ export default function SummarizePage() {
                   summary?
                 </span>
                 <div className="mt-3 flex flex-wrap gap-2 md:mt-2 md:gap-5">
-                  <Button onClick={onGenerate} disabled={loading} type="submit">
-                    Generate
-                  </Button>
-                  <Button onClick={onClear} variant="outline" disabled={loading} type="submit">
-                    Nevermind
-                  </Button>
+                  {!isGenerating ? (
+                    <>
+                      <Button
+                        onClick={onGenerate}
+                        disabled={isGenerating}
+                        type="submit"
+                      >
+                        Generate
+                      </Button>
+                      <Button
+                        onClick={onClear}
+                        variant="outline"
+                        disabled={isGenerating}
+                        type="submit"
+                      >
+                        Nevermind
+                      </Button>
+                    </>
+                  ) : (
+                    <Button className="min-w-fit" disabled type="submit">
+                      <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                      Cooking...
+                    </Button>
+                  )}
                 </div>
               </AlertDescription>
             </Alert>
+          )}
+
+          {transcript && (
+            <div>
+              {transcript}
+            </div>
           )}
         </div>
       </div>
