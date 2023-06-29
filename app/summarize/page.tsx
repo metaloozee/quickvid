@@ -21,7 +21,7 @@ export default function SummarizePage() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [audioURL, setAudioURL] = useState<string | null>(null)
+  const [audioPath, setAudioPath] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,8 +65,8 @@ export default function SummarizePage() {
       )
 
       if (response.ok) {
-        const { audioUrl } = await response.json()
-        setAudioURL(audioUrl)
+        const { path } = await response.json()
+        setAudioPath(path.filePath)
         setLoading(false)
       } else {
         setLoading(false)
@@ -78,7 +78,7 @@ export default function SummarizePage() {
 
   const onClear = () => {
     setLoading(false);
-    setAudioURL(null);
+    setAudioPath(null);
     setError(null);
     form.reset();
   }
@@ -157,7 +157,7 @@ export default function SummarizePage() {
             <p className="mt-3 text-sm text-red-800">{error ?? null}</p>
           </Form>
 
-          {audioURL && (
+          {audioPath && (
             <Alert className="mt-10">
               <RocketIcon className="h-4 w-4" />
               <AlertTitle>Heads up!</AlertTitle>
@@ -166,7 +166,7 @@ export default function SummarizePage() {
                   Your audio is generated! Do you want to generate a short
                   summary?
                 </span>
-                <div className="mt-2 space-x-5">
+                <div className="mt-3 flex flex-wrap gap-2 md:mt-2 md:gap-5">
                   <Button onClick={onGenerate} disabled={loading} type="submit">
                     Generate
                   </Button>
