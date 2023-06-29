@@ -30,7 +30,7 @@ const uploadAudio = async (youtubeLink: string) => {
         .from("public")
         .getPublicUrl(uploadedFile.path)
 
-      return supabaseFile.publicUrl
+      return { publicUrl: supabaseFile.publicUrl, filePath: uploadedFile.path }
     } else {
       console.error('Failed to get audio file key.');
       return null;

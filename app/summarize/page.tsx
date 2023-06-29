@@ -31,6 +31,7 @@ export default function SummarizePage() {
   })
 
   const [isKey, setIsKey] = useState<boolean>(false)
+  const [key, setKey] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     setPreLoading(true)
@@ -38,9 +39,11 @@ export default function SummarizePage() {
     if (key) {
       setPreLoading(false)
       setIsKey(true)
+      setKey(key)
     } else {
       setPreLoading(false)
       setIsKey(false)
+      setKey(null)
     }
   }, [])
 
@@ -71,6 +74,17 @@ export default function SummarizePage() {
         console.error(response.statusText)
       }
     }
+  }
+
+  const onClear = () => {
+    setLoading(false);
+    setAudioURL(null);
+    setError(null);
+    form.reset();
+  }
+
+  const onGenerate = () => {
+    setLoading(true)
   }
 
   if (preLoading) {
@@ -143,17 +157,6 @@ export default function SummarizePage() {
             <p className="mt-3 text-sm text-red-800">{error ?? null}</p>
           </Form>
 
-          {/* <div>
-            {audioURL && (
-              <>
-                <h1 className="my-5 text-xl leading-tight tracking-tighter md:text-xl">
-                  The audio is finally generated, 
-                </h1>
-                <audio controls src={audioURL as string} />
-              </>
-            )}
-          </div> */}
-
           {audioURL && (
             <Alert className="mt-10">
               <RocketIcon className="h-4 w-4" />
@@ -164,10 +167,10 @@ export default function SummarizePage() {
                   summary?
                 </span>
                 <div className="mt-2 space-x-5">
-                  <Button disabled={loading} type="submit">
+                  <Button onClick={onGenerate} disabled={loading} type="submit">
                     Generate
                   </Button>
-                  <Button variant="outline" disabled={loading} type="submit">
+                  <Button onClick={onClear} variant="outline" disabled={loading} type="submit">
                     Nevermind
                   </Button>
                 </div>
