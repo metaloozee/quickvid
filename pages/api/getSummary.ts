@@ -7,9 +7,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { transcript, openAIKey } = req.query
+  if (req.method !== "POST") {
+    return res.status(500).json({ error: "Invalid method." })
+  }
 
-  if (!transcript || !openAIKey) {
+  const { transcript } = req.body
+
+  if (!transcript) {
     return res.status(500).json({ error: "Invalid body provided." })
   }
 

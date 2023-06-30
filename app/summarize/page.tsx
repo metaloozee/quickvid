@@ -84,6 +84,8 @@ export default function SummarizePage() {
     setLoading(false)
     setAudioPath(null)
     setError(null)
+    setSummary(null)
+    setTranscript(null)
     form.reset()
   }
 
@@ -106,11 +108,13 @@ export default function SummarizePage() {
         setTranscript(data.response)
 
         if (data) {
-          const summaryRes = await fetch(
-            `/api/getSummary?transcript=${encodeURIComponent(
-              data.response
-            )}&openAIKey=${encodeURIComponent(key)}`
-          )
+          const summaryRes = await fetch(`/api/getSummary`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ transcript: data.response })
+          })
 
           if (summaryRes.ok) {
             const summarizedData = await summaryRes.json()
@@ -171,6 +175,7 @@ export default function SummarizePage() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           Enter YouTube video&apos;s link below!
         </h1>
+        <p className="text-xs text-neutral-500">NOTE: As of now, vidoes in english are only supported!</p>
 
         <div className="w-full">
           <Form {...form}>
@@ -253,8 +258,13 @@ export default function SummarizePage() {
           {summary && (
             <Alert>
               {/* <TextAlignJustifyIcon className="h-4 w-4" /> */}
-              <AlertTitle>Summary:</AlertTitle>
-              <AlertDescription className="mt-2">{summary}</AlertDescription>
+              <AlertTitle className="text-neutral-500">Here is what the youtuber is talking about:</AlertTitle>
+              <AlertDescription className="mt-2">
+                <span className="text-md">{summary}</span>
+                <div className="mt-5 flex flex-wrap gap-2 md:gap-5">
+                  <Button variant="outline" onClick={onClear} type="submit">I want to generate for another video</Button>
+                </div>
+              </AlertDescription>
             </Alert>
           )}
         </div>
