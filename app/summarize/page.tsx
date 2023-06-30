@@ -23,7 +23,6 @@ export default function SummarizePage() {
   const [error, setError] = useState<string | null>(null)
   const [audioPath, setAudioPath] = useState<string | null>(null)
 
-  const [isGenerating, setIsGenerating] = useState(false)
   const [transcript, setTranscript] = useState<string | null>(null)
   const [summary, setSummary] = useState<string | null>(null)
 
@@ -90,7 +89,7 @@ export default function SummarizePage() {
   }
 
   const onGenerate = async () => {
-    setIsGenerating(true)
+    setLoading(true)
 
     try {
       if (!key || !audioPath) {
@@ -132,9 +131,8 @@ export default function SummarizePage() {
     } catch (err) {
       console.error(err)
     } finally {
-      setIsGenerating(false)
-      setAudioPath(null)
       setLoading(false)
+      setAudioPath(null)
     }
   }
 
@@ -219,11 +217,11 @@ export default function SummarizePage() {
                   summary?
                 </span>
                 <div className="mt-3 flex flex-wrap gap-2 md:mt-2 md:gap-5">
-                  {!isGenerating ? (
+                  {!loading ? (
                     <>
                       <Button
                         onClick={onGenerate}
-                        disabled={isGenerating}
+                        disabled={loading}
                         type="submit"
                       >
                         Generate
@@ -231,7 +229,7 @@ export default function SummarizePage() {
                       <Button
                         onClick={onClear}
                         variant="outline"
-                        disabled={isGenerating}
+                        disabled={loading}
                         type="submit"
                       >
                         Nevermind
@@ -240,7 +238,7 @@ export default function SummarizePage() {
                   ) : (
                     <Button className="min-w-fit" disabled type="submit">
                       <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                      Cooking...
+                      Summarizing the long long transcript...
                     </Button>
                   )}
                 </div>
@@ -256,7 +254,7 @@ export default function SummarizePage() {
           )} */}
 
           {summary && (
-            <Alert>
+            <Alert className="mt-10">
               {/* <TextAlignJustifyIcon className="h-4 w-4" /> */}
               <AlertTitle className="text-neutral-500">Here is what the youtuber is talking about:</AlertTitle>
               <AlertDescription className="mt-2">
