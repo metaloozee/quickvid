@@ -3,7 +3,7 @@
 import { useLayoutEffect, useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ReloadIcon, RocketIcon } from "@radix-ui/react-icons"
+import { ReloadIcon, RocketIcon, TextAlignJustifyIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -25,6 +25,7 @@ export default function SummarizePage() {
 
   const [isGenerating, setIsGenerating] = useState(false)
   const [transcript, setTranscript] = useState<string | null>(null)
+  const [summary, setSummary] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -95,12 +96,30 @@ export default function SummarizePage() {
       }
 
       const response = await fetch(
-        `/api/getTranscript?audioPath=${encodeURIComponent(`public/${audioPath}`)}&openAIKey=${encodeURIComponent(key)}`
+        `/api/getTranscript?audioPath=${encodeURIComponent(
+          `public/${audioPath}`
+        )}&openAIKey=${encodeURIComponent(key)}`
       )
 
       if (response.ok) {
         const data = await response.json()
         setTranscript(data.response)
+
+        if (data) {
+          const summaryRes = await fetch(
+            `/api/getSummary?transcript=${encodeURIComponent(
+              data.response
+            )}&openAIKey=${encodeURIComponent(key)}`
+          )
+
+          if (summaryRes.ok) {
+            const summarizedData = await summaryRes.json()
+            setSummary(summarizedData.result.text)
+          } else {
+            setError("An error occurred! Please try again later.")
+            throw new Error(summaryRes.statusText)
+          }
+        }
       } else {
         setError("An error occurred! Please try again later.")
 
@@ -223,11 +242,20 @@ export default function SummarizePage() {
               </AlertDescription>
             </Alert>
           )}
-
+          
+          {/* 
           {transcript && (
             <div>
               {transcript}
             </div>
+          )} */}
+
+          {summary && (
+            <Alert>
+              {/* <TextAlignJustifyIcon className="h-4 w-4" /> */}
+              <AlertTitle>Summary:</AlertTitle>
+              <AlertDescription className="mt-2">{summary}</AlertDescription>
+            </Alert>
           )}
         </div>
       </div>
