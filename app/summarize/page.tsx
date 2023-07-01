@@ -112,7 +112,7 @@ export default function SummarizePage() {
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ transcript: data.response })
+            body: JSON.stringify({ transcript: data.response, openAIKey: key })
           })
 
           if (summaryRes.ok) {

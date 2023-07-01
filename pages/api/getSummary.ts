@@ -11,13 +11,13 @@ export default async function handler(
     return res.status(500).json({ error: "Invalid method." })
   }
 
-  const { transcript } = req.body
+  const { transcript, openAIKey } = req.body
 
-  if (!transcript) {
+  if (!transcript || !openAIKey ) {
     return res.status(500).json({ error: "Invalid body provided." })
   }
 
-  const model = new OpenAI({ temperature: 0 })
+  const model = new OpenAI({ temperature: 0, openAIApiKey: openAIKey })
   const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 })
   const doc = await textSplitter.createDocuments([transcript as string])
   const chain = loadSummarizationChain(model, { type: "map_reduce" })
