@@ -150,7 +150,7 @@ export default function SummarizePage() {
 
   if (!isKey) {
     return (
-      <section className="container flex h-screen items-center">
+      <section className="container mt-40 items-center">
         <div className="flex max-w-[980px] flex-col items-start gap-5">
           <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
             OpenAI API Token Not Found
@@ -245,13 +245,6 @@ export default function SummarizePage() {
               </AlertDescription>
             </Alert>
           )}
-          
-          {/* 
-          {transcript && (
-            <div>
-              {transcript}
-            </div>
-          )} */}
 
           {summary && (
             <Alert className="mt-10">
