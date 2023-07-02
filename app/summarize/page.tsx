@@ -3,7 +3,7 @@
 import { useLayoutEffect, useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ReloadIcon, RocketIcon, TextAlignJustifyIcon } from "@radix-ui/react-icons"
+import { ReloadIcon, RocketIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
