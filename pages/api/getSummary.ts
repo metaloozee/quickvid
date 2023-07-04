@@ -32,6 +32,6 @@ export default async function handler(
         console.error("Error in getSummary.ts: ", err)
         return res
             .status(500)
-            .json({ error: "An error occurred during summar generation" })
+            .json({ error: "An error occurred during summary generation" })
     }
 }

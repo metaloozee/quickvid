@@ -6,7 +6,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { audioPath, openAIKey } = req.query
+    if (req.method !== "POST") {
+        return res.status(500).json({ error: "Invalid method." })
+    }
+
+    const { audioPath, openAIKey } = req.body
 
     if (!openAIKey || !audioPath) {
         return res.status(500).json({ error: "Invalid body provided." })
@@ -25,10 +29,8 @@ export default async function handler(
         }
     } catch (err) {
         console.error("Error in getTranscript.ts:", err)
-        return res
-            .status(500)
-            .json({
-                error: "An error occurred during speech-to-text conversion",
-            })
+        return res.status(500).json({
+            error: "An error occurred during speech-to-text conversion",
+        })
     }
 }

@@ -23,7 +23,6 @@ export default function SummarizePage() {
     const [error, setError] = useState<string | null>(null)
     const [audioPath, setAudioPath] = useState<string | null>(null)
 
-    const [transcript, setTranscript] = useState<string | null>(null)
     const [summary, setSummary] = useState<string | null>(null)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -84,7 +83,6 @@ export default function SummarizePage() {
         setAudioPath(null)
         setError(null)
         setSummary(null)
-        setTranscript(null)
         form.reset()
     }
 
@@ -96,15 +94,19 @@ export default function SummarizePage() {
                 throw new Error("OpenAI API Key or the Audio Path is missing!")
             }
 
-            const response = await fetch(
-                `/api/getTranscript?audioPath=${encodeURIComponent(
-                    `public/${audioPath}`
-                )}&openAIKey=${encodeURIComponent(key)}`
-            )
+            const response = await fetch(`/api/getTranscript?audioPath`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    audioPath: `public/${audioPath}`,
+                    openAIKey: key,
+                }),
+            })
 
             if (response.ok) {
                 const data = await response.json()
-                setTranscript(data.response)
 
                 if (data) {
                     const summaryRes = await fetch(`/api/getSummary`, {
@@ -253,8 +255,7 @@ export default function SummarizePage() {
                                             type="submit"
                                         >
                                             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                                            Summarizing the long long
-                                            transcript...
+                                            Summarizing...
                                         </Button>
                                     )}
                                 </div>
@@ -264,9 +265,8 @@ export default function SummarizePage() {
 
                     {summary && (
                         <Alert className="mt-10">
-                            {/* <TextAlignJustifyIcon className="h-4 w-4" /> */}
                             <AlertTitle className="text-neutral-500">
-                                Here is what the youtuber is talking about:
+                                Here is what the video is about:
                             </AlertTitle>
                             <AlertDescription className="mt-2">
                                 <span className="text-md">{summary}</span>
