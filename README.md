@@ -3,6 +3,11 @@
 Your AI-Powered Video Summarization Tool
 </p>
 
+<div align="center">
+
+![GIF](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/gif.gif)
+
+</div>
 <p align="center">
   <a href="https://twitter.com/metaloozee">
     <img src="https://img.shields.io/twitter/follow/metaloozee?style=flat&label=%40metaloozee&logo=twitter&color=0bf&logoColor=fff" alt="Twitter" />
@@ -29,13 +34,13 @@ With QuickVid, you can save time and get the essence of any YouTube video with o
 
 ## Tech Stack
 
-- [Next.js](https://nextjs.org/) – Framework
-- [Typescript](https://www.typescriptlang.org/) – Language
-- [Whisper](https://openai.com/research/whisper) - Speech-to-Text
-- [LangChain](https://docs.langchain.com/docs/) - AI Summarization Chain
-- [Supabase](https://supabase.com/) – Database & Storage
-- [shadcn/ui](https://ui.shadcn.com/) - UI Component Library
-- [Tailwind](https://tailwindcss.com/) – CSS
+-   [Next.js](https://nextjs.org/) – Framework
+-   [Typescript](https://www.typescriptlang.org/) – Language
+-   [Whisper](https://openai.com/research/whisper) - Speech-to-Text
+-   [LangChain](https://docs.langchain.com/docs/) - AI Summarization Chain
+-   [Supabase](https://supabase.com/) – Database & Storage
+-   [shadcn/ui](https://ui.shadcn.com/) - UI Component Library
+-   [Tailwind](https://tailwindcss.com/) – CSS
 
 ## Implementation
 
@@ -53,12 +58,12 @@ QuickVid is built as a standard Next.js application with the [shadcn/ui template
 
 We love our contributors! Here's how you can contribute:
 
-- [Open an issue](https://github.com/metaloozee/quickvid/issues) if you believe you've encountered a bug.
-- Make a [pull request](https://github.com/metaloozee/quickvid/pulls) to add new features/make quality-of-life improvements/fix bugs.
+-   [Open an issue](https://github.com/metaloozee/quickvid/issues) if you believe you've encountered a bug.
+-   Make a [pull request](https://github.com/metaloozee/quickvid/pulls) to add new features/make quality-of-life improvements/fix bugs.
 
 ## Author
 
-- Ayan ([@metaloozee](https://twitter.com/metaloozee))
+-   Ayan ([@metaloozee](https://twitter.com/metaloozee))
 
 ## License:
 
