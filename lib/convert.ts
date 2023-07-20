@@ -7,6 +7,7 @@ const uploadAudio = async (youtubeLink: string) => {
         const videoInfo = await ytdl.getInfo(youtubeLink)
         const format = ytdl.chooseFormat(videoInfo.formats, {
             filter: "audioonly",
+            quality: "lowest"
         })
 
         if (!format) {
@@ -16,6 +17,12 @@ const uploadAudio = async (youtubeLink: string) => {
 
         const audioStream = ytdl.downloadFromInfo(videoInfo, { format: format })
         const audioBuffer = await streamToBuffer(audioStream)
+        
+        if ((audioBuffer.length / (1024 * 1024)) > 25) {
+            console.error("Audio file is too large.")
+            return null
+        }
+
         const audioFile = Buffer.from(audioBuffer)
 
         const { data: uploadedFile, error } = await supabase.storage

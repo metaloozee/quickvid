@@ -66,13 +66,13 @@ export default function SummarizePage() {
                 `/api/convert?youtubeLink=${encodeURIComponent(values.yt_link)}`
             )
 
-            if (response.ok) {
+            if (response.status === 200) {
                 const { path } = await response.json()
                 setAudioPath(path.filePath)
                 setLoading(false)
             } else {
                 setLoading(false)
-                setError("An error occurred! Please try again later.")
+                setError("An error occurred! Please try again later. Make sure that the audio is not too long!")
                 console.error(response.statusText)
             }
         }

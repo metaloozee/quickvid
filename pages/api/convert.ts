@@ -10,6 +10,10 @@ export default async function handler(
 
     try {
         const path = await uploadAudio(youtubeLink as string)
+        if (path === null) {
+            throw new Error("Failed to upload audio file.")
+        }
+        
         res.status(200).json({ path })
     } catch (error) {
         console.error("Error during conversion:", error)
