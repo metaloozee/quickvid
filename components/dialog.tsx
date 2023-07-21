@@ -99,7 +99,7 @@ export function Dialog() {
                             </Button>
                         </AlertDialogTrigger>
                     </AlertDialogTitle>
-                    <AlertDialogDescription className="space-y-5">
+                    <AlertDialogDescription className="space-y-5 text-left">
                         <p className="mt-3">
                             This is a open-sourced project and to be useful
                             enough we need to use your OpenAI API Key.
