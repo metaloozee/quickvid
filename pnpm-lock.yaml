@@ -81,8 +81,8 @@ dependencies:
     specifier: ^0.2.1
     version: 0.2.1
   ytdl-core:
-    specifier: ^4.11.4
-    version: 4.11.4
+    specifier: ^4.11.5
+    version: 4.11.5
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -4571,8 +4571,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /ytdl-core@4.11.4:
-    resolution: {integrity: sha512-tsVvqt++B5LSTMnCKQb4H/PFBewKj7gGPJ6KIM5gOFGMKNZj4qglGAl4QGFG8cNPP6wY54P80FDID5eN2di0GQ==}
+  /ytdl-core@4.11.5:
+    resolution: {integrity: sha512-27LwsW4n4nyNviRCO1hmr8Wr5J1wLLMawHCQvH8Fk0hiRqrxuIu028WzbJetiYH28K8XDbeinYW4/wcHQD1EXA==}
     engines: {node: '>=12'}
     dependencies:
       m3u8stream: 0.8.6
