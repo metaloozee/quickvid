@@ -19,6 +19,7 @@ Your AI-Powered Video Summarization Tool
 
 <p align="center">
   <a href="#introduction"><strong>Introduction</strong></a> ·
+  <a href="#installation"><strong>Installation</strong></a> ·
   <a href="#tech-stack"><strong>Tech Stack</strong></a> ·
   <a href="#implementation"><strong>Implementation</strong></a> ·
   <a href="#contributing"><strong>Contributing</strong></a> ·
@@ -31,6 +32,54 @@ Your AI-Powered Video Summarization Tool
 QuickVid is an open-sourced video summarization tool built with Whisper, GPT, LangChain & Supabase.
 
 With QuickVid, you can save time and get the essence of any YouTube video with our intelligent summarization.
+
+## Installation
+
+### Local Installation
+
+1. Clone the Repository
+    ```bash
+    git clone https://github.com/metaloozee/quickvid
+    cd quickvid
+    ```
+2. Install Dependencies
+    ```bash
+    [pnpm | npm | yarn] install
+    ```
+3. Set Environment Variables
+    ```plaintext
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
+    replace `your_supabase_url` and `your_supabase_anon_key` with the actual values of your Supabase project.
+4. Run the Application
+    ```bash
+    [pnpm | npm | yarn] run dev
+    ```
+    this will launch the application, and you can access it by visiting `http://localhost:3000` in your web browser.
+
+### Docker Installation
+
+1. Clone the Repository
+    ```bash
+    git clone https://github.com/metaloozee/quickvid
+    cd quickvid
+    ```
+2. Set Environment Variables
+    ```plaintext
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
+    replace `your_supabase_url` and `your_supabase_anon_key` with the actual values of your Supabase project.
+3. Build the Docker Image
+    ```bash
+    docker build -t quickvid .
+    ```
+4. Run the Docker Container
+    ```bash
+    docker run -p 3000:3000 --env-file .env.local quickvid
+    ```
+    this will launch the Next.js application inside the Docker container, and you can access it by visiting http://localhost:3000 in your web browser.
 
 ## Tech Stack
 
@@ -75,21 +124,6 @@ QuickVid is open-sourced under the GNU General Public License Version 3 (GPLv3) 
 
 ![Home Page](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/home.jpeg?t=2023-07-01T14%3A38%3A22.191Z)
 ![Home Page Light](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/home-light.jpeg?t=2023-07-01T14%3A39%3A01.353Z)
-
-#
-
-![Dialog](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/dialog.jpeg)
-![Dialog Light](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/dialog-light.jpeg?t=2023-07-01T14%3A41%3A01.736Z)
-
-#
-
-![Summarize](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/summarize.jpeg?t=2023-07-01T14%3A41%3A37.349Z)
-![Summarize Light](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/summarize-light.jpeg?t=2023-07-01T14%3A41%3A52.123Z)
-
-#
-
-![Convert](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/convert.jpeg)
-![Convert Light](https://ndvuhvexjwncsjdbslpi.supabase.co/storage/v1/object/public/public/screenshots/convert-light.jpeg?t=2023-07-01T14%3A42%3A52.033Z)
 
 #
 

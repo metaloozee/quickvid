@@ -11,7 +11,9 @@
     "preview": "next build && next start",
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
-    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
+    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
+    "docker:build": "docker build -t quickvid .",
+    "docker:run": "docker run -p 3000:3000 --env-file .env.local quickvid"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",
