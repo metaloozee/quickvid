@@ -4,9 +4,9 @@ import { GeistMono } from "geist/font/mono"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+import { Navbar } from "@/components/navbar"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Navbar } from "@/components/navbar"
 
 export const metadata: Metadata = {
     title: {
@@ -38,8 +38,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     defaultTheme="system"
                     enableSystem
                 >
-                        <Navbar />
                     <div className="relative flex min-h-screen flex-col">
+                        <Navbar />
                         <div className="flex-1">{children}</div>
                     </div>
                     {/* <TailwindIndicator /> */}
