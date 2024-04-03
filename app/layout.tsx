@@ -6,6 +6,7 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Navbar } from "@/components/navbar"
 
 export const metadata: Metadata = {
     title: {
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     defaultTheme="system"
                     enableSystem
                 >
+                        <Navbar />
                     <div className="relative flex min-h-screen flex-col">
                         <div className="flex-1">{children}</div>
                     </div>
