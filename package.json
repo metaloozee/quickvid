@@ -14,7 +14,13 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "docker:build": "docker build -t quickvid .",
     "docker:run": "docker run -p 3000:3000 --env-file .env.local quickvid",
-    "supabase:fetch-types": "supabase gen types typescript --project-id \"ndvuhvexjwncsjdbslpi\" --schema public > types/supabase.ts"
+    "supabase:fetch-types": "supabase gen types typescript --project-id \"ndvuhvexjwncsjdbslpi\" --schema public > types/supabase.ts",
+    "prepare": "husky && husky install"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown",
+    "*.{js,css,md}": "prettier --write",
+    "*.js": "eslint --cache --fix"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",
@@ -54,6 +60,9 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-tailwindcss": "^3.12.0",
+    "git-format-staged": "^3.1.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.2",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "tailwindcss": "^3.3.2",
