@@ -1,9 +1,14 @@
 "use client"
 
-import * as React from 'react';
-import Link from 'next/link';
-import { type User } from '@supabase/supabase-js';
-import { UserIcon } from 'lucide-react';
+import * as React from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { type User } from "@supabase/supabase-js"
+import { UserIcon } from "lucide-react"
+
+import useSupabaseClient from "@/lib/supabase/client"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,17 +17,9 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import useSupabaseClient from "@/lib/supabase/client"
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/dropdown-menu"
 
-export const UserAccount = ({
-    user
-}: {
-    user: User | null
-}) => {
+export const UserAccount = ({ user }: { user: User | null }) => {
     const router = useRouter()
     const supabase = useSupabaseClient()
 
@@ -56,7 +53,10 @@ export const UserAccount = ({
                 <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                         <Button variant={"ghost"} asChild>
-                            <Link className="w-full text-center" href={"/settings"}>
+                            <Link
+                                className="w-full text-center"
+                                href={"/settings"}
+                            >
                                 Settings
                             </Link>
                         </Button>
@@ -65,9 +65,9 @@ export const UserAccount = ({
                     <DropdownMenuItem asChild>
                         <Button
                             className="w-full"
-                            onClick={() => {
-                                supabase.auth.signOut()
-                                router.refresh()
+                            onClick={async () => {
+                                await supabase.auth.signOut()
+                                await router.refresh()
                             }}
                         >
                             Log Out

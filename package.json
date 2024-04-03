@@ -10,11 +10,14 @@
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "typecheck": "tsc --noEmit",
+    "stripe:login": "stripe login",
+    "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks",
+    "stripe:fixtures": "stripe fixtures fixtures/stripe-fixtures.json",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "docker:build": "docker build -t quickvid .",
     "docker:run": "docker run -p 3000:3000 --env-file .env.local quickvid",
-    "supabase:fetch-types": "supabase gen types typescript --project-id \"ndvuhvexjwncsjdbslpi\" --schema public > types/supabase.ts",
+    "supabase:fetch-types": "supabase gen types typescript --project-id \"nzgyvjxjamuuuhikvxpl\" --schema public > types/supabase.ts",
     "prepare": "husky && husky install"
   },
   "lint-staged": {
@@ -30,6 +33,7 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
+    "@stripe/stripe-js": "^2.4.0",
     "@supabase/auth-helpers-nextjs": "^0.7.2",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.26.0",
@@ -44,6 +48,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.44.3",
     "sharp": "^0.31.3",
+    "stripe": "^14.16.0",
     "tailwind-merge": "^1.13.0",
     "tailwindcss-animate": "^1.0.5",
     "zod": "^3.21.4"

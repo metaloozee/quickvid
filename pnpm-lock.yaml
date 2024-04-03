@@ -26,6 +26,9 @@ dependencies:
     "@radix-ui/react-slot":
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.2.74)(react@18.2.0)
+    "@stripe/stripe-js":
+        specifier: ^2.4.0
+        version: 2.4.0
     "@supabase/auth-helpers-nextjs":
         specifier: ^0.7.2
         version: 0.7.2(@supabase/supabase-js@2.26.0)
@@ -68,6 +71,9 @@ dependencies:
     sharp:
         specifier: ^0.31.3
         version: 0.31.3
+    stripe:
+        specifier: ^14.16.0
+        version: 14.16.0
     tailwind-merge:
         specifier: ^1.13.0
         version: 1.13.0
@@ -1524,6 +1530,13 @@ packages:
             }
         dev: true
 
+    /@stripe/stripe-js@2.4.0:
+        resolution:
+            {
+                integrity: sha512-WFkQx1mbs2b5+7looI9IV1BLa3bIApuN3ehp9FP58xGg7KL9hCHDECgW3BwO9l9L+xBPVAD7Yjn1EhGe6EDTeA==,
+            }
+        dev: false
+
     /@supabase/auth-helpers-nextjs@0.7.2(@supabase/supabase-js@2.26.0):
         resolution:
             {
@@ -2176,6 +2189,20 @@ packages:
             get-intrinsic: 1.2.1
         dev: true
 
+    /call-bind@1.0.7:
+        resolution:
+            {
+                integrity: sha512-GHTSNSYICQ7scH7sZ+M2rFopRoLh8t2bLSW6BbgrtLsahOIB5iyAVJf9GjWK3cYTDaMj4XdBpM1cA6pIS0Kv2w==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            es-define-property: 1.0.0
+            es-errors: 1.3.0
+            function-bind: 1.1.2
+            get-intrinsic: 1.2.4
+            set-function-length: 1.2.2
+        dev: false
+
     /callsites@3.1.0:
         resolution:
             {
@@ -2584,6 +2611,18 @@ packages:
             }
         dev: true
 
+    /define-data-property@1.1.4:
+        resolution:
+            {
+                integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            es-define-property: 1.0.0
+            es-errors: 1.3.0
+            gopd: 1.0.1
+        dev: false
+
     /define-properties@1.2.0:
         resolution:
             {
@@ -2731,6 +2770,24 @@ packages:
             unbox-primitive: 1.0.2
             which-typed-array: 1.1.9
         dev: true
+
+    /es-define-property@1.0.0:
+        resolution:
+            {
+                integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            get-intrinsic: 1.2.4
+        dev: false
+
+    /es-errors@1.3.0:
+        resolution:
+            {
+                integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==,
+            }
+        engines: { node: ">= 0.4" }
+        dev: false
 
     /es-get-iterator@1.1.3:
         resolution:
@@ -3404,6 +3461,13 @@ packages:
                 integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==,
             }
 
+    /function-bind@1.1.2:
+        resolution:
+            {
+                integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==,
+            }
+        dev: false
+
     /function.prototype.name@1.1.5:
         resolution:
             {
@@ -3460,7 +3524,20 @@ packages:
             has: 1.0.3
             has-proto: 1.0.1
             has-symbols: 1.0.3
-        dev: true
+
+    /get-intrinsic@1.2.4:
+        resolution:
+            {
+                integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            es-errors: 1.3.0
+            function-bind: 1.1.2
+            has-proto: 1.0.1
+            has-symbols: 1.0.3
+            hasown: 2.0.2
+        dev: false
 
     /get-nonce@1.0.1:
         resolution:
@@ -3612,7 +3689,6 @@ packages:
             }
         dependencies:
             get-intrinsic: 1.2.1
-        dev: true
 
     /graceful-fs@4.2.11:
         resolution:
@@ -3659,13 +3735,21 @@ packages:
             get-intrinsic: 1.2.1
         dev: true
 
+    /has-property-descriptors@1.0.2:
+        resolution:
+            {
+                integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==,
+            }
+        dependencies:
+            es-define-property: 1.0.0
+        dev: false
+
     /has-proto@1.0.1:
         resolution:
             {
                 integrity: sha512-7qE+iP+O+bgF9clE5+UoBFzE65mlBiVj3tKCrlNQ0Ogwm0BjpT/gK4SlLYDMybDh5I3TCTKnPPa0oMG7JDYrhg==,
             }
         engines: { node: ">= 0.4" }
-        dev: true
 
     /has-symbols@1.0.3:
         resolution:
@@ -3673,7 +3757,6 @@ packages:
                 integrity: sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==,
             }
         engines: { node: ">= 0.4" }
-        dev: true
 
     /has-tostringtag@1.0.0:
         resolution:
@@ -3693,6 +3776,16 @@ packages:
         engines: { node: ">= 0.4.0" }
         dependencies:
             function-bind: 1.1.1
+
+    /hasown@2.0.2:
+        resolution:
+            {
+                integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            function-bind: 1.1.2
+        dev: false
 
     /human-signals@5.0.0:
         resolution:
@@ -4892,6 +4985,13 @@ packages:
             }
         dev: true
 
+    /object-inspect@1.13.1:
+        resolution:
+            {
+                integrity: sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==,
+            }
+        dev: false
+
     /object-is@1.1.5:
         resolution:
             {
@@ -5347,6 +5447,16 @@ packages:
         engines: { node: ">=6" }
         dev: true
 
+    /qs@6.12.0:
+        resolution:
+            {
+                integrity: sha512-trVZiI6RMOkO476zLGaBIzszOdFPnCCXHPG9kn0yuS1uz6xdVxPfZdB3vUig9pxPFDM9BRAgz/YUIVQ1/vuiUg==,
+            }
+        engines: { node: ">=0.6" }
+        dependencies:
+            side-channel: 1.0.6
+        dev: false
+
     /queue-microtask@1.2.3:
         resolution:
             {
@@ -5667,6 +5777,21 @@ packages:
             }
         dev: false
 
+    /set-function-length@1.2.2:
+        resolution:
+            {
+                integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            define-data-property: 1.1.4
+            es-errors: 1.3.0
+            function-bind: 1.1.2
+            get-intrinsic: 1.2.4
+            gopd: 1.0.1
+            has-property-descriptors: 1.0.2
+        dev: false
+
     /sharp@0.31.3:
         resolution:
             {
@@ -5713,6 +5838,19 @@ packages:
             get-intrinsic: 1.2.1
             object-inspect: 1.12.3
         dev: true
+
+    /side-channel@1.0.6:
+        resolution:
+            {
+                integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==,
+            }
+        engines: { node: ">= 0.4" }
+        dependencies:
+            call-bind: 1.0.7
+            es-errors: 1.3.0
+            get-intrinsic: 1.2.4
+            object-inspect: 1.13.1
+        dev: false
 
     /signal-exit@3.0.7:
         resolution:
@@ -5941,6 +6079,17 @@ packages:
             }
         engines: { node: ">=8" }
         dev: true
+
+    /stripe@14.16.0:
+        resolution:
+            {
+                integrity: sha512-1gOr2LzafWV84cPIO5Md/QPh4XVPLKULVuRpBVOV3Plq3seiHmg/eeOktX+hDl8jpNZuORHYaUJGrNqrABLwdg==,
+            }
+        engines: { node: ">=12.*" }
+        dependencies:
+            "@types/node": 17.0.45
+            qs: 6.12.0
+        dev: false
 
     /styled-jsx@5.1.1(@babel/core@7.22.1)(react@18.2.0):
         resolution:

@@ -1,5 +1,6 @@
-import createSupabaseServerClient from "@/lib/supabase/server"
 import Link from "next/link"
+
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { UserAccount } from "@/components/user-account"
 
 export const Navbar = async () => {
@@ -22,9 +23,7 @@ export const Navbar = async () => {
 
                 <div className="flex flex-1 items-center justify-end">
                     <nav className="flex items-center justify-center gap-5">
-                        <UserAccount
-                            user={user ?? null}
-                        />
+                        <UserAccount user={user ?? null} />
                     </nav>
                 </div>
             </div>

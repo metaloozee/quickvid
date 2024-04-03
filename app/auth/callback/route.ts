@@ -1,19 +1,36 @@
-import { NextResponse } from "next/server";
-import createSupabaseServerClient from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server"
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
+import { getErrorRedirect, getStatusRedirect } from "@/lib/helpers"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 
-  if (code) {
-    const supabase = await createSupabaseServerClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+export async function GET(request: NextRequest) {
+    // The `/auth/callback` route is required for the server-side auth flow implemented
+    // by the `@supabase/ssr` package. It exchanges an auth code for the user's session.
+    const requestUrl = new URL(request.url)
+    const code = requestUrl.searchParams.get("code")
+
+    if (code) {
+        const supabase = await createSupabaseServerClient()
+
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+        if (error) {
+            return NextResponse.redirect(
+                getErrorRedirect(
+                    `${requestUrl.origin}`,
+                    error.name,
+                    "Sorry, we weren't able to log you in. Please try again."
+                )
+            )
+        }
     }
-  }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    // URL to redirect to after sign in process completes
+    return NextResponse.redirect(
+        getStatusRedirect(
+            `${requestUrl.origin}/`,
+            "Success!",
+            "You are now signed in."
+        )
+    )
 }

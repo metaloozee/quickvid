@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { MoveRight } from "lucide-react"
 
-import createSupabaseServerClient from "@/lib/supabase/server"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { LoginBtn } from "@/components/login-btn"
 
 export default async function IndexPage() {
