@@ -12,7 +12,6 @@
     "typecheck": "tsc --noEmit",
     "stripe:login": "stripe login",
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks",
-    "stripe:fixtures": "stripe fixtures fixtures/stripe-fixtures.json",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "docker:build": "docker build -t quickvid .",

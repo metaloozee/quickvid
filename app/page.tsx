@@ -1,7 +1,9 @@
 import Link from "next/link"
-import { MoveRight } from "lucide-react"
+import { ListVideo, MoveRight, NotepadText } from "lucide-react"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { LoginBtn } from "@/components/login-btn"
 
 export default async function IndexPage() {
@@ -9,6 +11,23 @@ export default async function IndexPage() {
     const {
         data: { user },
     } = await supabase.auth.getUser()
+
+    const { data: subscription, error } = await supabase
+        .from("subscription")
+        .select("*, prices(*, products(*))")
+        .in("status", ["trialing", "active"])
+        .maybeSingle()
+    if (error) {
+        console.error(error.message)
+    }
+
+    const { data: products } = await supabase
+        .from("products")
+        .select("*, prices(*)")
+        .eq("active", true)
+        .eq("prices.active", true)
+        .order("metadata->index")
+        .order("unit_amount", { foreignTable: "prices" })
 
     return (
         <section className="container mt-40 flex items-center">
@@ -30,6 +49,30 @@ export default async function IndexPage() {
                         <MoveRight className="ml-2 h-4 w-4 transition-all duration-200 group-hover:ml-4" />
                     </>
                 </LoginBtn>
+
+                {user && (
+                    <div className="flex w-full items-center space-x-2">
+                        <Input
+                            type="email"
+                            className="max-w-lg"
+                            placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                        />
+                        <Button
+                            className="group w-full max-w-fit"
+                            type="submit"
+                        >
+                            Summarize
+                            <ListVideo className="ml-2 h-4 w-4 transition-all duration-200 group-hover:ml-4" />
+                        </Button>
+                    </div>
+                )}
+
+                {/* <h1 className="text-2xl">Buy Credits</h1>
+                <Payment 
+                    user={user}
+                    products={products ?? []}
+                    subscription={subscription}
+                /> */}
 
                 <p className="mt-10 font-mono text-xs text-neutral-500">
                     made with ❤️ by{" "}
