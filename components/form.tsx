@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ListVideo, MoveRight, NotepadText } from "lucide-react"
+import { ListVideo } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 

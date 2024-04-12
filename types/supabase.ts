@@ -190,6 +190,38 @@ export type Database = {
                     }
                 ]
             }
+            summaries: {
+                Row: {
+                    id: string
+                    summary: string
+                    updated_at: string
+                    userid: string
+                    video: string
+                }
+                Insert: {
+                    id?: string
+                    summary: string
+                    updated_at?: string
+                    userid?: string
+                    video: string
+                }
+                Update: {
+                    id?: string
+                    summary?: string
+                    updated_at?: string
+                    userid?: string
+                    video?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "public_summaries_userid_fkey"
+                        columns: ["userid"]
+                        isOneToOne: false
+                        referencedRelation: "users"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
             users: {
                 Row: {
                     avatar_url: string | null

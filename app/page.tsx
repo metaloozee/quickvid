@@ -1,9 +1,7 @@
 import Link from "next/link"
-import { ListVideo, MoveRight, NotepadText } from "lucide-react"
+import { MoveRight } from "lucide-react"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { InitialForm } from "@/components/form"
 import { LoginBtn } from "@/components/login-btn"
 
@@ -35,13 +33,6 @@ export default async function IndexPage() {
                 </LoginBtn>
 
                 {user && <InitialForm userid={user.id} />}
-
-                {/* <h1 className="text-2xl">Buy Credits</h1>
-                <Payment 
-                    user={user}
-                    products={products ?? []}
-                    subscription={subscription}
-                /> */}
 
                 <p className="mt-10 font-mono text-xs text-neutral-500">
                     made with ❤️ by{" "}
