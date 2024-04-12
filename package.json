@@ -50,6 +50,7 @@
     "stripe": "^14.16.0",
     "tailwind-merge": "^1.13.0",
     "tailwindcss-animate": "^1.0.5",
+    "ytdl-core": "^4.11.5",
     "zod": "^3.21.4"
   },
   "devDependencies": {
