@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ListVideo } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -9,6 +10,8 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
+import { handleInitialFormSubmit } from "@/app/actions"
 
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
@@ -16,6 +19,9 @@ export const formSchema = z.object({
 })
 
 export const InitialForm = ({ userid }: { userid: string }) => {
+    const { toast } = useToast()
+    const router = useRouter()
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -27,7 +33,21 @@ export const InitialForm = ({ userid }: { userid: string }) => {
         <Form {...form}>
             <form
                 className="flex w-full items-center space-x-2"
-                onSubmit={form.handleSubmit(() => console.log("hi"))}
+                onSubmit={form.handleSubmit(async (data) => {
+                    await handleInitialFormSubmit(data).then(
+                        (value: string | null) => {
+                            if (value) {
+                                return router.push(`/${value}`)
+                            }
+
+                            return toast({
+                                title: "Uh Oh! An Error Occurred",
+                                description:
+                                    "An unexpected error occurred, kindly contact the administrator or try again later.",
+                            })
+                        }
+                    )
+                })}
             >
                 <FormField
                     control={form.control}

@@ -193,21 +193,21 @@ export type Database = {
             summaries: {
                 Row: {
                     id: string
-                    summary: string
+                    summary: string | null
                     updated_at: string
                     userid: string
                     video: string
                 }
                 Insert: {
                     id?: string
-                    summary: string
+                    summary?: string | null
                     updated_at?: string
                     userid?: string
                     video: string
                 }
                 Update: {
                     id?: string
-                    summary?: string
+                    summary?: string | null
                     updated_at?: string
                     userid?: string
                     video?: string

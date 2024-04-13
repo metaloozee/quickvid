@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/toaster"
 import { Navbar } from "@/components/navbar"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
