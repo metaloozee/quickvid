@@ -1,6 +1,10 @@
 import ytdl from "ytdl-core"
 
-const uploadAudio = async (link: string) => {
+import { createSupabaseServerClient } from "@/lib/supabase/server"
+
+export const uploadAudio = async (link: string) => {
+    const supabase = await createSupabaseServerClient()
+
     try {
         const videoInfo = await ytdl.getInfo(link)
 
@@ -22,7 +26,19 @@ const uploadAudio = async (link: string) => {
         }
 
         const audioFile = Buffer.from(audioBuffer)
-    } catch (err) {}
+
+        const { data: uploadedFile, error } = await supabase.storage
+            .from("audios")
+            .upload(`${videoInfo.videoDetails.videoId}.mp3`, audioFile)
+        if (error) {
+            throw new Error(error.message)
+        }
+
+        return true
+    } catch (err) {
+        console.error(err)
+        return false
+    }
 }
 
 const streamToBuffer = (stream: any): Promise<Buffer> => {

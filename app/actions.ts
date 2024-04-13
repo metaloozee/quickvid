@@ -3,6 +3,8 @@
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
+import { uploadAudio } from "@/lib/core/convert"
+import { speechToText } from "@/lib/core/stt"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { formSchema } from "@/components/form"
 
@@ -58,6 +60,29 @@ export const handleInitialFormSubmit = async (
 
         if (error) {
             throw new Error(error.message)
+        }
+
+        // Upload the audio in a bucket
+        const isAudioUploaded = await uploadAudio(formData.link)
+        if (!isAudioUploaded) {
+            throw new Error("Couldn't upload the Audio into the Bucket.")
+        }
+
+        // Transcribe the uploaded audio
+        const transcript = await speechToText(videoId)
+        if (!transcript) {
+            throw new Error("Couldn't transcribe the Audio.")
+        }
+
+        const { error: updateSummaryError } = await supabase
+            .from("summaries")
+            .update({
+                transcription: transcript,
+            })
+            .eq("video", videoId)
+            .eq("userid", formData.userid)
+        if (updateSummaryError) {
+            throw new Error(updateSummaryError.message)
         }
 
         return data?.video

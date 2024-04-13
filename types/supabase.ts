@@ -194,6 +194,7 @@ export type Database = {
                 Row: {
                     id: string
                     summary: string | null
+                    transcription: string | null
                     updated_at: string
                     userid: string
                     video: string
@@ -201,6 +202,7 @@ export type Database = {
                 Insert: {
                     id?: string
                     summary?: string | null
+                    transcription?: string | null
                     updated_at?: string
                     userid?: string
                     video: string
@@ -208,6 +210,7 @@ export type Database = {
                 Update: {
                     id?: string
                     summary?: string | null
+                    transcription?: string | null
                     updated_at?: string
                     userid?: string
                     video?: string
