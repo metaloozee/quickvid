@@ -19,34 +19,43 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
         .eq("userid", user?.id)
         .single()
 
+    if (!data) {
+        return (
+            <section className="container mt-40 flex items-center">
+                <div className="flex max-w-5xl flex-col items-start gap-5">
+                    <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+                        No Data Found
+                    </h1>
+                </div>
+            </section>
+        )
+    }
+
     const videoInfo = await ytdl.getInfo(data?.video ?? "")
 
     return (
         <section className="container mt-10 grid w-full grid-cols-1 gap-10 md:grid-cols-3">
-            <div className="col-span-2 flex flex-col gap-10">
-                <div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequatur ipsam, alias similique omnis cum unde nam eos,
-                    repellat facilis non nostrum. Ex autem odio dicta corrupti
-                    modi ipsum, hic laborum! Lorem ipsum dolor sit amet,
-                    consectetur adipisicing elit. Tempore neque vitae debitis
-                    nemo voluptatum qui ad fuga sit et, itaque libero? Ex sed
-                    dolorum esse laborum incidunt eveniet id rem? Lorem ipsum
-                    dolor sit amet consectetur adipisicing elit. Repellat quidem
-                    nihil molestias eos sapiente aperiam distinctio earum id est
-                    magni inventore vel doloribus nam enim ut dolor, repellendus
-                    cupiditate tempora. Lorem ipsum dolor sit amet, consectetur
-                    adipisicing elit. Magnam dolore cumque praesentium rem odit
-                    labore aspernatur, dignissimos reprehenderit harum
-                    voluptatibus error est iusto eum minima magni alias earum
-                    culpa qui? Lorem ipsum dolor, sit amet consectetur
-                    adipisicing elit. Eos fugiat nemo tempora vero aliquam
-                    illum! Facere repudiandae obcaecati impedit neque
-                    perspiciatis repellat magnam? Consectetur, minima autem
-                    totam aperiam dolore voluptate.
+            {data.summary ? (
+                <div className="col-span-2 flex flex-col gap-10">
+                    <div></div>
+                    <Button variant={"secondary"}>Regenerate Summary</Button>
                 </div>
-                <Button variant={"secondary"}>Regenerate Summary</Button>
-            </div>
+            ) : (
+                <div className="col-span-2 flex flex-col gap-10">
+                    <div className="gap-2">
+                        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+                            No Summary Found!
+                        </h1>
+                        <p className="text-sm text-muted-foreground">
+                            Seems like I cannot find any pre-generated summary
+                            for your video, kindly click the button below in
+                            order to summarize
+                        </p>
+                    </div>
+                    <Button>Summarize</Button>
+                </div>
+            )}
+
             <div className="flex w-full flex-col gap-10">
                 <div className="flex flex-col items-start gap-5 rounded-xl bg-secondary p-5">
                     <div className="flex w-full flex-col items-center justify-between gap-5 md:flex-row md:items-start">
@@ -80,14 +89,10 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
 
                 <div className="flex w-full flex-col gap-5 rounded-xl border-primary p-5 outline-dashed outline-2 outline-primary">
                     <p className="text-sm">
-                        Our fact checker verifies video content by searching the
-                        internet and comparing information from reliable
-                        sources. It labels videos as accurate, partially
-                        accurate, or inaccurate based on its analysis. Please
-                        note that accuracy depends on available internet
-                        information.
+                        Uncover the public sentiment around the video through
+                        our advanced Sentiment Insights feature.
                     </p>
-                    <Button>Verify Now</Button>
+                    <Button>Analyze</Button>
                 </div>
             </div>
         </section>
