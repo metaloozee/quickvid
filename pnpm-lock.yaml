@@ -11,6 +11,9 @@ dependencies:
     "@radix-ui/react-alert-dialog":
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
+    "@radix-ui/react-aspect-ratio":
+        specifier: ^1.0.3
+        version: 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
     "@radix-ui/react-avatar":
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
@@ -71,6 +74,9 @@ dependencies:
     react-hook-form:
         specifier: ^7.44.3
         version: 7.44.3(react@18.2.0)
+    react-lite-youtube-embed:
+        specifier: ^2.4.0
+        version: 2.4.0(react-dom@18.2.0)(react@18.2.0)
     sharp:
         specifier: ^0.31.3
         version: 0.31.3
@@ -823,6 +829,30 @@ packages:
         resolution:
             {
                 integrity: sha512-wSP+pHsB/jQRaL6voubsQ/ZlrGBHHrOjmBnr19hxYgtS0WvAFwZhK2WP/YY5yF9uKECCEEDGxuLxq1NBK51wFA==,
+            }
+        peerDependencies:
+            "@types/react": "*"
+            "@types/react-dom": "*"
+            react: ^16.8 || ^17.0 || ^18.0
+            react-dom: ^16.8 || ^17.0 || ^18.0
+        peerDependenciesMeta:
+            "@types/react":
+                optional: true
+            "@types/react-dom":
+                optional: true
+        dependencies:
+            "@babel/runtime": 7.22.3
+            "@radix-ui/react-primitive": 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
+            "@types/react": 18.2.74
+            "@types/react-dom": 18.2.4
+            react: 18.2.0
+            react-dom: 18.2.0(react@18.2.0)
+        dev: false
+
+    /@radix-ui/react-aspect-ratio@1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0):
+        resolution:
+            {
+                integrity: sha512-fXR5kbMan9oQqMuacfzlGG/SQMcmMlZ4wrvpckv8SgUulD0MMpspxJrxg/Gp/ISV3JfV1AeSWTYK9GvxA4ySwA==,
             }
         peerDependencies:
             "@types/react": "*"
@@ -5598,6 +5628,19 @@ packages:
                 integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==,
             }
         dev: true
+
+    /react-lite-youtube-embed@2.4.0(react-dom@18.2.0)(react@18.2.0):
+        resolution:
+            {
+                integrity: sha512-Xo6cM1zPlROvvM97JkqQIoXstlQDaC4+DawmM7BB7Hh1cXrkBHEGq1iJlQxBTUWAUklmpcC7ph7qg7CztXtABQ==,
+            }
+        peerDependencies:
+            react: ">=18.2.0"
+            react-dom: ">=18.2.0"
+        dependencies:
+            react: 18.2.0
+            react-dom: 18.2.0(react@18.2.0)
+        dev: false
 
     /react-remove-scroll-bar@2.3.4(@types/react@18.2.74)(react@18.2.0):
         resolution:
