@@ -4,9 +4,8 @@ import { GeistMono } from "geist/font/mono"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import { Toaster } from "@/components/ui/toaster"
+import { AnnouncementBanner } from "@/components/accouncement"
 import { Navbar } from "@/components/navbar"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
@@ -40,6 +39,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     enableSystem
                 >
                     <div className="relative flex min-h-screen flex-col">
+                        <AnnouncementBanner text="Access to QuickVid's closed version requires owner authorization; please reach out for permission." />
                         <Navbar />
                         <div className="flex-1">{children}</div>
                     </div>
