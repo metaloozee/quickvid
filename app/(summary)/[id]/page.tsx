@@ -88,11 +88,15 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                 </div>
 
                 <div className="flex w-full flex-col gap-5 rounded-xl border-primary p-5 outline-dashed outline-2 outline-primary">
-                    <p className="text-sm">
-                        Uncover the public sentiment around the video through
-                        our advanced Sentiment Insights feature.
+                    <p className="text-xs">
+                        Our fact checker verifies video content by searching the
+                        internet and comparing information from reliable
+                        sources. It labels videos as accurate, partially
+                        accurate, or inaccurate based on its analysis. Please
+                        note that accuracy depends on available internet
+                        information.
                     </p>
-                    <Button>Analyze</Button>
+                    <Button>Check for Truth</Button>
                 </div>
             </div>
         </section>
