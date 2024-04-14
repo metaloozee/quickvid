@@ -41,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <div className="relative flex min-h-screen flex-col">
                         <AnnouncementBanner text="Access to QuickVid's closed version requires owner authorization; please reach out for permission." />
                         <Navbar />
-                        <div className="flex-1">{children}</div>
+                        <div className="mb-10 flex-1">{children}</div>
                     </div>
                     {/* <TailwindIndicator /> */}
                 </ThemeProvider>
