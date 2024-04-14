@@ -15,7 +15,7 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
     const { data } = await supabase
         .from("summaries")
         .select("*, users(avatar_url, full_name)")
-        .eq("video", params.id)
+        .eq("videoid", params.id)
         .eq("userid", user?.id)
         .single()
 
@@ -31,13 +31,13 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
         )
     }
 
-    const videoInfo = await ytdl.getInfo(data?.video ?? "")
+    const videoInfo = await ytdl.getInfo(data?.videoid ?? "")
 
     return (
         <section className="container mt-10 grid w-full grid-cols-1 gap-10 md:grid-cols-3">
             {data.summary ? (
                 <div className="col-span-2 flex flex-col gap-10">
-                    <div></div>
+                    <div>{data.summary}</div>
                     <Button variant={"secondary"}>Regenerate Summary</Button>
                 </div>
             ) : (

@@ -4,10 +4,19 @@ settings:
     autoInstallPeers: true
     excludeLinksFromLockfile: false
 
+overrides:
+    "@langchain/core": 0.1.5
+
 dependencies:
     "@hookform/resolvers":
         specifier: ^3.1.0
         version: 3.1.0(react-hook-form@7.44.3)
+    "@langchain/core":
+        specifier: 0.1.5
+        version: 0.1.5
+    "@langchain/openai":
+        specifier: ^0.0.28
+        version: 0.0.28
     "@radix-ui/react-alert-dialog":
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
@@ -687,6 +696,41 @@ packages:
         dependencies:
             "@jridgewell/resolve-uri": 3.1.0
             "@jridgewell/sourcemap-codec": 1.4.14
+
+    /@langchain/core@0.1.5:
+        resolution:
+            {
+                integrity: sha512-5RdZpbadMYXTKdZrWZ6JeYT09BZssprg+komE+FbXxW+kbGE0QJJaj8dnzPNdzVCAhDLQQTOV2CAM+vOLsaxzQ==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            ansi-styles: 5.2.0
+            camelcase: 6.3.0
+            decamelize: 1.2.0
+            js-tiktoken: 1.0.11
+            langsmith: 0.0.70
+            ml-distance: 4.0.1
+            p-queue: 6.6.2
+            p-retry: 4.6.2
+            uuid: 9.0.0
+            zod: 3.22.4
+        dev: false
+
+    /@langchain/openai@0.0.28:
+        resolution:
+            {
+                integrity: sha512-2s1RA3/eAnz4ahdzsMPBna9hfAqpFNlWdHiPxVGZ5yrhXsbLWWoPcF+22LCk9t0HJKtazi2GCIWc0HVXH9Abig==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            "@langchain/core": 0.1.5
+            js-tiktoken: 1.0.11
+            openai: 4.33.1
+            zod: 3.22.4
+            zod-to-json-schema: 3.22.5(zod@3.22.4)
+        transitivePeerDependencies:
+            - encoding
+        dev: false
 
     /@next/env@14.1.4:
         resolution:
@@ -4704,6 +4748,15 @@ packages:
             }
         dev: false
 
+    /js-tiktoken@1.0.11:
+        resolution:
+            {
+                integrity: sha512-PajXFLq2vx7/8jllQZ43vzNpAai/0MOVdJjW/UrNyJorNQRTjHrqdGJG/mjHVy7h9M6dW6CaG43eNLMYFkTh6w==,
+            }
+        dependencies:
+            base64-js: 1.5.1
+        dev: false
+
     /js-tiktoken@1.0.7:
         resolution:
             {
@@ -5000,6 +5053,20 @@ packages:
         resolution:
             {
                 integrity: sha512-CWaTylvR2d17rErPqgLCBiAnY3UJMdV4c27itvL0CB0eurYnZspa75u3Xl4frmbMy0nhN2N94jWCnrAZX4YDjg==,
+            }
+        hasBin: true
+        dependencies:
+            "@types/uuid": 9.0.2
+            commander: 10.0.1
+            p-queue: 6.6.2
+            p-retry: 4.6.2
+            uuid: 9.0.0
+        dev: false
+
+    /langsmith@0.0.70:
+        resolution:
+            {
+                integrity: sha512-QFHrzo/efBowGPCxtObv7G40/OdwqQfGshavMbSJtHBgX+OMqnn4lCMqVeEwTdyue4lEcpwAsGNg5Vty91YIyw==,
             }
         hasBin: true
         dependencies:
@@ -7539,9 +7606,27 @@ packages:
             zod: 3.21.4
         dev: false
 
+    /zod-to-json-schema@3.22.5(zod@3.22.4):
+        resolution:
+            {
+                integrity: sha512-+akaPo6a0zpVCCseDed504KBJUQpEW5QZw7RMneNmKw+fGaML1Z9tUNLnHHAC8x6dzVRO1eB2oEMyZRnuBZg7Q==,
+            }
+        peerDependencies:
+            zod: ^3.22.4
+        dependencies:
+            zod: 3.22.4
+        dev: false
+
     /zod@3.21.4:
         resolution:
             {
                 integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==,
+            }
+        dev: false
+
+    /zod@3.22.4:
+        resolution:
+            {
+                integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==,
             }
         dev: false

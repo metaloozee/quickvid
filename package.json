@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",
+    "@langchain/core": "0.1.5",
+    "@langchain/openai": "^0.0.28",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -80,5 +82,10 @@
     "tailwindcss": "^3.3.2",
     "typescript": "^5.4.3"
   },
-  "packageManager": "pnpm@8.15.6+sha256.01c01eeb990e379b31ef19c03e9d06a14afa5250b82e81303f88721c99ff2e6f"
+  "packageManager": "pnpm@8.15.6+sha256.01c01eeb990e379b31ef19c03e9d06a14afa5250b82e81303f88721c99ff2e6f",
+  "pnpm": {
+    "overrides": {
+      "@langchain/core": "0.1.5"
+    }
+  }
 }
