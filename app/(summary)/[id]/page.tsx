@@ -93,7 +93,7 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 outline-dashed outline-2 outline-secondary">
+                    <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 text-justify outline-dashed outline-2 outline-secondary md:text-left">
                         {data.summary}
                         <Button className="w-full" variant={"secondary"}>
                             Regenerate Summary
@@ -118,7 +118,7 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
 
             <div className="flex w-full flex-col gap-10">
                 <div className="flex w-full flex-col gap-5 rounded-xl border-primary p-5 outline-dashed outline-2 outline-primary">
-                    <p className="text-xs">
+                    <p className="text-justify text-xs md:text-left">
                         Our fact checker verifies video content by searching the
                         internet and comparing information from reliable
                         sources. It labels videos as accurate, partially
