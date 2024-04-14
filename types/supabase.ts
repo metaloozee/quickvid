@@ -194,26 +194,23 @@ export type Database = {
                 Row: {
                     id: string
                     summary: string | null
-                    transcription: string | null
                     updated_at: string
                     userid: string
-                    video: string
+                    videoid: string
                 }
                 Insert: {
                     id?: string
                     summary?: string | null
-                    transcription?: string | null
                     updated_at?: string
                     userid?: string
-                    video: string
+                    videoid: string
                 }
                 Update: {
                     id?: string
                     summary?: string | null
-                    transcription?: string | null
                     updated_at?: string
                     userid?: string
-                    video?: string
+                    videoid?: string
                 }
                 Relationships: [
                     {
@@ -222,6 +219,13 @@ export type Database = {
                         isOneToOne: false
                         referencedRelation: "users"
                         referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "public_summaries_videoid_fkey"
+                        columns: ["videoid"]
+                        isOneToOne: false
+                        referencedRelation: "videos"
+                        referencedColumns: ["videoid"]
                     }
                 ]
             }
@@ -256,6 +260,30 @@ export type Database = {
                         referencedColumns: ["id"]
                     }
                 ]
+            }
+            videos: {
+                Row: {
+                    created_at: string
+                    id: string
+                    transcript: string
+                    videoid: string
+                    videotitle: string
+                }
+                Insert: {
+                    created_at?: string
+                    id?: string
+                    transcript: string
+                    videoid: string
+                    videotitle: string
+                }
+                Update: {
+                    created_at?: string
+                    id?: string
+                    transcript?: string
+                    videoid?: string
+                    videotitle?: string
+                }
+                Relationships: []
             }
         }
         Views: {
