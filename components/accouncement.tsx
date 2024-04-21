@@ -1,7 +1,7 @@
 export const AnnouncementBanner = ({ text }: { text: string }) => {
     return (
-        <div className="flex h-5 items-center justify-center bg-primary py-5 text-center text-xs md:py-0">
-            {text}
+        <div className="bg-primary py-1 text-left text-xs md:py-1">
+            <div className="container text-justify md:text-center">{text}</div>
         </div>
     )
 }

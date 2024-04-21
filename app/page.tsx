@@ -12,7 +12,7 @@ export default async function IndexPage() {
     } = await supabase.auth.getUser()
 
     return (
-        <section className="container mt-40 flex items-center">
+        <section className="container mt-10 flex items-center md:mt-40">
             <div className="flex max-w-5xl flex-col items-start gap-5">
                 <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
                     Save time and get the essence of any YouTube video with our
