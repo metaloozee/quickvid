@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { type User } from "@supabase/supabase-js"
-import { UserIcon } from "lucide-react"
+import { Bookmark, Settings, UserCog, UserIcon } from "lucide-react"
 
 import useSupabaseClient from "@/lib/supabase/client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -52,19 +52,27 @@ export const UserAccount = ({ user }: { user: User | null }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                        <Button variant={"ghost"} asChild>
-                            <Link
-                                className="w-full text-center"
-                                href={"/settings"}
-                            >
-                                Settings
-                            </Link>
-                        </Button>
+                        <Link
+                            className="w-full cursor-pointer py-2 text-left"
+                            href={"/summaries"}
+                        >
+                            <Bookmark className="mr-2 h-4 w-4" />
+                            Summaries
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                        <Link
+                            className="w-full cursor-pointer py-2 text-left"
+                            href={"/settings"}
+                        >
+                            <UserCog className="mr-2 h-4 w-4" />
+                            Settings
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                         <Button
-                            className="w-full"
+                            className="w-full cursor-pointer"
                             onClick={async () => {
                                 await supabase.auth.signOut()
                                 await router.refresh()

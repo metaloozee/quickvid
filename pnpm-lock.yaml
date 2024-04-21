@@ -68,6 +68,9 @@ dependencies:
     next-themes:
         specifier: ^0.2.1
         version: 0.2.1(next@14.1.4)(react-dom@18.2.0)(react@18.2.0)
+    next-view-transitions:
+        specifier: ^0.1.1
+        version: 0.1.1(next@14.1.4)(react-dom@18.2.0)(react@18.2.0)
     node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -5040,6 +5043,21 @@ packages:
             {
                 integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==,
             }
+        dev: false
+
+    /next-view-transitions@0.1.1(next@14.1.4)(react-dom@18.2.0)(react@18.2.0):
+        resolution:
+            {
+                integrity: sha512-1rpXhWF8j0VJwJG52c8WeeAYpr1K7o3ub82lahbSoUwAry54TEm1d3mqBbSLLIMl85c3OewkZjxncTHwYFk+IA==,
+            }
+        peerDependencies:
+            next: ^14.0.0
+            react: ^18.2.0
+            react-dom: ^18.2.0
+        dependencies:
+            next: 14.1.4(@babel/core@7.22.1)(react-dom@18.2.0)(react@18.2.0)
+            react: 18.2.0
+            react-dom: 18.2.0(react@18.2.0)
         dev: false
 
     /next@14.1.4(@babel/core@7.22.1)(react-dom@18.2.0)(react@18.2.0):
