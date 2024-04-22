@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ListVideo } from "lucide-react"
+import { ListVideo, RotateCw } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -69,8 +69,17 @@ export const InitialForm = ({ userid }: { userid: string }) => {
                     className="group w-full max-w-fit"
                     type="submit"
                 >
-                    Summarize
-                    <ListVideo className="ml-2 h-4 w-4 transition-all duration-200 group-hover:ml-4" />
+                    {form.formState.isSubmitting ? (
+                        <>
+                            Please Wait
+                            <RotateCw className="ml-2 h-4 w-4 animate-spin" />
+                        </>
+                    ) : (
+                        <>
+                            Summarize
+                            <ListVideo className="ml-2 h-4 w-4 transition-all duration-200 group-hover:ml-4" />
+                        </>
+                    )}
                 </Button>
             </form>
         </Form>
