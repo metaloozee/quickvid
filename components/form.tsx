@@ -15,18 +15,14 @@ import { handleInitialFormSubmit } from "@/app/actions"
 
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
-    userid: z.string().describe("The User's UUID"),
 })
 
-export const InitialForm = ({ userid }: { userid: string }) => {
+export const InitialForm = () => {
     const { toast } = useToast()
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            userid: userid,
-        },
     })
 
     return (
