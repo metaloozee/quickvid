@@ -4,8 +4,7 @@ import { eq } from "drizzle-orm"
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
-import { uploadAudio } from "@/lib/core/convert"
-import { speechToText } from "@/lib/core/stt"
+import { uploadAndTranscribe } from "@/lib/core/convert"
 import { summarizeTranscript } from "@/lib/core/summarize"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
@@ -35,12 +34,7 @@ export const handleInitialFormSubmit = async (
             }
         }
 
-        const isAudioUploaded = await uploadAudio(formData.link)
-        if (!isAudioUploaded) {
-            throw new Error("Couldn't upload the Audio into the Bucket.")
-        }
-
-        const transcript = await speechToText(videoId)
+        const transcript = await uploadAndTranscribe(formData.link)
         if (!transcript) {
             throw new Error("Couldn't transcribe the Audio.")
         }
