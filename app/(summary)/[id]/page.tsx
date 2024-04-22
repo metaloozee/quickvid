@@ -1,40 +1,19 @@
+import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
-import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { db } from "@/lib/db"
+import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummaryIndexPage({ params }: { params: any }) {
-    const supabase = await createSupabaseServerClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    const { data } = await supabase
-        .from("summaries")
-        .select("*, users(avatar_url, full_name)")
-        .eq("videoid", params.id)
-        .eq("userid", user?.id)
-        .single()
-
-    if (!user) {
-        return (
-            <section className="container mt-40 flex items-center">
-                <div className="flex max-w-5xl flex-col items-start gap-5">
-                    <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-                        Unauthorized
-                    </h1>
-                    <p className="text-muted-foreground">
-                        Insufficient privileges are restricting your access to
-                        this page; consider logging in or reaching out to the
-                        administrator for assistance.
-                    </p>
-                </div>
-            </section>
-        )
-    }
+    const [data] = await db
+        .select()
+        .from(summaries)
+        .where(eq(summaries.videoid, params.id!))
+        .limit(1)
 
     if (!data) {
         return (
