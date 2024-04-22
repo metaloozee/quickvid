@@ -15,11 +15,11 @@ export const Navbar = async () => {
                     </Link>
                 </div>
 
-                <div className="flex flex-1 items-center justify-end">
+                {/* <div className="flex flex-1 items-center justify-end">
                     <nav className="flex items-center justify-center gap-5">
                         <LinksDropdown />
                     </nav>
-                </div>
+                </div> */}
             </div>
         </header>
     )
