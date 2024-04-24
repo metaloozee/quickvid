@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { eq } from "drizzle-orm"
 import ytdl from "ytdl-core"
 import { z } from "zod"
@@ -59,5 +60,8 @@ export const handleInitialFormSubmit = async (
     } catch (e: any) {
         console.error(e)
         return null
+    } finally {
+        revalidatePath("/")
+        revalidatePath("/summaries")
     }
 }

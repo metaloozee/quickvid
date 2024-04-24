@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { desc } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
@@ -8,7 +9,10 @@ import { Badge } from "@/components/ui/badge"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummariesIndexPage() {
-    const data = await db.select({ videoid: summaries.videoid }).from(summaries)
+    const data = await db
+        .select({ videoid: summaries.videoid })
+        .from(summaries)
+        .orderBy(desc(summaries.updated_at))
 
     if (!data) {
         return (
@@ -63,14 +67,14 @@ export default async function SummariesIndexPage() {
                                         </p>
                                         <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                             <Badge>
-                                                <Tv className="mr-2 h-3 w-3" />{" "}
+                                                <Tv className="mr-2 size-3" />{" "}
                                                 {
                                                     videoInfo.videoDetails
                                                         .author.name
                                                 }
                                             </Badge>
                                             <Badge variant="outline">
-                                                <Eye className="mr-2 h-3 w-3" />{" "}
+                                                <Eye className="mr-2 size-3" />{" "}
                                                 {
                                                     videoInfo.videoDetails
                                                         .viewCount

@@ -77,6 +77,7 @@
     "git-format-staged": "^3.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.2",
+    "pg": "^8.11.5",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "tailwindcss": "^3.3.2",

@@ -1,10 +1,11 @@
-import { pgTable, text, uuid } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
 export const videos = pgTable("videos", {
     id: uuid("id").primaryKey().defaultRandom(),
     videoid: text("videoid").unique(),
     videotitle: text("videotitle"),
     transcript: text("transcript"),
+    created_at: timestamp("created_at").defaultNow(),
 })
 
 export const summaries = pgTable("summaries", {
@@ -16,6 +17,7 @@ export const summaries = pgTable("summaries", {
         })
         .notNull(),
     summary: text("summary"),
+    updated_at: timestamp("created_at").defaultNow(),
 })
 
 export type Video = typeof videos.$inferSelect

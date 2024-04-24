@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { desc } from "drizzle-orm"
 import { MoveRight } from "lucide-react"
 import ytdl from "ytdl-core"
 
@@ -10,6 +11,7 @@ export default async function SummariesIndexPage() {
     const data = await db
         .select({ videoid: summaries.videoid })
         .from(summaries)
+        .orderBy(desc(summaries.updated_at))
         .limit(2)
 
     return (
@@ -41,7 +43,7 @@ export default async function SummariesIndexPage() {
                     href={"/summaries"}
                 >
                     View all
-                    <MoveRight className="ml-2 h-3 w-3 transition-all duration-200 group-hover:ml-4" />
+                    <MoveRight className="ml-2 size-3 transition-all duration-200 group-hover:ml-4" />
                 </Link>
             </div>
         </section>
