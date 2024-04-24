@@ -17,7 +17,7 @@ export const summaries = pgTable("summaries", {
         })
         .notNull(),
     summary: text("summary"),
-    updated_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow(),
 })
 
 export type Video = typeof videos.$inferSelect
