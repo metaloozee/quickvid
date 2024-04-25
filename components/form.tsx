@@ -46,6 +46,7 @@ export const InitialForm = () => {
                 })}
             >
                 <FormField
+                    disabled={form.formState.isSubmitting}
                     control={form.control}
                     name="link"
                     render={({ field }) => (
@@ -68,12 +69,12 @@ export const InitialForm = () => {
                     {form.formState.isSubmitting ? (
                         <>
                             Please Wait
-                            <RotateCw className="ml-2 h-4 w-4 animate-spin" />
+                            <RotateCw className="ml-2 size-4 animate-spin" />
                         </>
                     ) : (
                         <>
                             Summarize
-                            <ListVideo className="ml-2 h-4 w-4 transition-all duration-200 group-hover:ml-4" />
+                            <ListVideo className="ml-2 size-4 transition-all duration-200 group-hover:ml-4" />
                         </>
                     )}
                 </Button>
