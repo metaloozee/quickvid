@@ -1,39 +1,18 @@
 import Link from "next/link"
+import { desc } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
-import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { db } from "@/lib/db"
+import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummariesIndexPage() {
-    const supabase = await createSupabaseServerClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    const { data } = await supabase
-        .from("summaries")
-        .select("videoid")
-        .eq("userid", user?.id)
-        .order("updated_at", { ascending: false })
-
-    if (!user) {
-        return (
-            <section className="container mt-40 flex items-center">
-                <div className="flex max-w-5xl flex-col items-start gap-5">
-                    <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-                        Unauthorized
-                    </h1>
-                    <p className="text-muted-foreground">
-                        Insufficient privileges are restricting your access to
-                        this page; consider logging in or reaching out to the
-                        administrator for assistance.
-                    </p>
-                </div>
-            </section>
-        )
-    }
+    const data = await db
+        .select({ videoid: summaries.videoid })
+        .from(summaries)
+        .orderBy(desc(summaries.updated_at))
 
     if (!data) {
         return (
@@ -88,14 +67,14 @@ export default async function SummariesIndexPage() {
                                         </p>
                                         <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                             <Badge>
-                                                <Tv className="mr-2 h-3 w-3" />{" "}
+                                                <Tv className="mr-2 size-3" />{" "}
                                                 {
                                                     videoInfo.videoDetails
                                                         .author.name
                                                 }
                                             </Badge>
                                             <Badge variant="outline">
-                                                <Eye className="mr-2 h-3 w-3" />{" "}
+                                                <Eye className="mr-2 size-3" />{" "}
                                                 {
                                                     videoInfo.videoDetails
                                                         .viewCount

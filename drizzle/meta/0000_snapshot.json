@@ -1,0 +1,95 @@
+{
+    "id": "420f548b-0dd7-4976-82e6-efb264af6b4a",
+    "prevId": "00000000-0000-0000-0000-000000000000",
+    "version": "5",
+    "dialect": "pg",
+    "tables": {
+        "summaries": {
+            "name": "summaries",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "videoid": {
+                    "name": "videoid",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "summary": {
+                    "name": "summary",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "summaries_videoid_videos_videoid_fk": {
+                    "name": "summaries_videoid_videos_videoid_fk",
+                    "tableFrom": "summaries",
+                    "tableTo": "videos",
+                    "columnsFrom": ["videoid"],
+                    "columnsTo": ["videoid"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "videos": {
+            "name": "videos",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "videoid": {
+                    "name": "videoid",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "videotitle": {
+                    "name": "videotitle",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "transcript": {
+                    "name": "transcript",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {
+                "videos_videoid_unique": {
+                    "name": "videos_videoid_unique",
+                    "nullsNotDistinct": false,
+                    "columns": ["videoid"]
+                }
+            }
+        }
+    },
+    "enums": {},
+    "schemas": {},
+    "_meta": {
+        "columns": {},
+        "schemas": {},
+        "tables": {}
+    }
+}

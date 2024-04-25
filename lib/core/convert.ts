@@ -1,10 +1,11 @@
+import path from "path"
+import { Readable } from "stream"
+import { env } from "@/env.mjs"
+import FormData from "form-data"
+import fetch from "node-fetch"
 import ytdl from "ytdl-core"
 
-import { createSupabaseServerClient } from "@/lib/supabase/server"
-
-export const uploadAudio = async (link: string) => {
-    const supabase = await createSupabaseServerClient()
-
+export const uploadAndTranscribe = async (link: string) => {
     try {
         const videoInfo = await ytdl.getInfo(link)
 
@@ -26,18 +27,38 @@ export const uploadAudio = async (link: string) => {
         }
 
         const audioFile = Buffer.from(audioBuffer)
+        const audioFileStream = new Readable()
+        audioFileStream.push(audioFile)
+        audioFileStream.push(null)
 
-        const { data: uploadedFile, error } = await supabase.storage
-            .from("audios")
-            .upload(`${videoInfo.videoDetails.videoId}.mp3`, audioFile)
-        if (error) {
-            throw new Error(error.message)
-        }
+        const formData = new FormData()
+        formData.append("file", audioFileStream, {
+            filename: path.basename(`${videoInfo.videoDetails.videoId}.mp3`),
+            contentType: "audio/mpeg",
+        })
+        formData.append("model", "whisper-1")
+        formData.append("timestamp_granularities", '["word"]')
+        formData.append("response_format", "verbose_json")
 
-        return true
+        const res = await fetch(
+            "https://api.openai.com/v1/audio/transcriptions",
+            {
+                method: "POST",
+                body: formData,
+                headers: {
+                    Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+                    ...formData.getHeaders(),
+                },
+            }
+        )
+
+        const response: any = await res.json()
+        const transcription = response.text
+
+        return transcription
     } catch (err) {
         console.error(err)
-        return false
+        return null
     }
 }
 

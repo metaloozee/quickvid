@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import Link from "next/link"
 import { GeistMono } from "geist/font/mono"
 
 import { siteConfig } from "@/config/site"
@@ -41,7 +42,21 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <div className="relative flex min-h-screen flex-col">
                         <AnnouncementBanner text="Access to QuickVid's closed version requires owner authorization; please reach out for permission." />
                         <Navbar />
-                        <div className="mb-10 flex-1">{children}</div>
+                        <div className="mb-10 flex-1">
+                            {children}
+
+                            <p className="container mt-10 font-mono text-xs text-neutral-500">
+                                made with ❤️ by{" "}
+                                <Link
+                                    className="underline"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href="https://github.com/metaloozee/"
+                                >
+                                    metaloozee
+                                </Link>
+                            </p>
+                        </div>
                     </div>
                     {/* <TailwindIndicator /> */}
                 </ThemeProvider>

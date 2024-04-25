@@ -1,40 +1,20 @@
+import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
-import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { db } from "@/lib/db"
+import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummaryIndexPage({ params }: { params: any }) {
-    const supabase = await createSupabaseServerClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    const { data } = await supabase
-        .from("summaries")
-        .select("*, users(avatar_url, full_name)")
-        .eq("videoid", params.id)
-        .eq("userid", user?.id)
-        .single()
-
-    if (!user) {
-        return (
-            <section className="container mt-40 flex items-center">
-                <div className="flex max-w-5xl flex-col items-start gap-5">
-                    <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-                        Unauthorized
-                    </h1>
-                    <p className="text-muted-foreground">
-                        Insufficient privileges are restricting your access to
-                        this page; consider logging in or reaching out to the
-                        administrator for assistance.
-                    </p>
-                </div>
-            </section>
-        )
-    }
+    const [data] = await db
+        .select()
+        .from(summaries)
+        .where(eq(summaries.videoid, params.id!))
+        .limit(1)
 
     if (!data) {
         return (
@@ -82,11 +62,11 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                                 </p>
                                 <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                     <Badge>
-                                        <Tv className="mr-2 h-3 w-3" />{" "}
+                                        <Tv className="mr-2 size-3" />{" "}
                                         {videoInfo.videoDetails.author.name}
                                     </Badge>
                                     <Badge variant="outline">
-                                        <Eye className="mr-2 h-3 w-3" />{" "}
+                                        <Eye className="mr-2 size-3" />{" "}
                                         {videoInfo.videoDetails.viewCount}
                                     </Badge>
                                 </div>
@@ -95,9 +75,7 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                     </div>
                     <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 text-justify outline-dashed outline-2 outline-secondary md:text-left">
                         {data.summary}
-                        <Button className="w-full" variant={"secondary"}>
-                            Regenerate Summary
-                        </Button>
+                        <RegenerateSummaryButton videoid={data.videoid} />
                     </div>
                 </div>
             ) : (
