@@ -6,7 +6,10 @@ import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
-import { summarizeTranscript } from "@/lib/core/summarize"
+import {
+    summarizeTranscript,
+    summarizeTranscriptWithGroq,
+} from "@/lib/core/summarize"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
@@ -46,7 +49,7 @@ export const handleInitialFormSubmit = async (
             transcript: transcript,
         })
 
-        const summary = await summarizeTranscript(transcript)
+        const summary = await summarizeTranscriptWithGroq(transcript)
         if (!summary) {
             throw new Error("Couldn't summarize the Transcript.")
         }
