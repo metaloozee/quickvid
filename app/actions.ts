@@ -13,6 +13,7 @@ import {
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
+import { RegenerateFormSchema } from "@/components/regenerate-btn"
 
 export const handleInitialFormSubmit = async (
     formData: z.infer<typeof formSchema>
@@ -66,5 +67,39 @@ export const handleInitialFormSubmit = async (
     } finally {
         revalidatePath("/")
         revalidatePath("/summaries")
+    }
+}
+
+export const handleRegenerateSummary = async (
+    formData: z.infer<typeof RegenerateFormSchema>
+) => {
+    try {
+        const [data] = await db
+            .select({
+                transcript: videos.transcript,
+            })
+            .from(videos)
+            .where(eq(videos.videoid, formData.videoid))
+            .limit(1)
+        if (!data) {
+            throw new Error("Couldn't find the transcription of this video.")
+        }
+
+        const summary = await summarizeTranscriptWithGroq(data.transcript!)
+        if (!summary) {
+            throw new Error("Couldn't summarize the Transcript.")
+        }
+
+        await db
+            .update(summaries)
+            .set({ summary: summary })
+            .where(eq(summaries.videoid, formData.videoid))
+
+        return true
+    } catch (e) {
+        console.error(e)
+        return false
+    } finally {
+        revalidatePath(`/${formData.videoid}`)
     }
 }

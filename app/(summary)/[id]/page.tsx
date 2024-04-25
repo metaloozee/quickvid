@@ -6,6 +6,7 @@ import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummaryIndexPage({ params }: { params: any }) {
@@ -61,11 +62,11 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                                 </p>
                                 <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                     <Badge>
-                                        <Tv className="mr-2 h-3 w-3" />{" "}
+                                        <Tv className="mr-2 size-3" />{" "}
                                         {videoInfo.videoDetails.author.name}
                                     </Badge>
                                     <Badge variant="outline">
-                                        <Eye className="mr-2 h-3 w-3" />{" "}
+                                        <Eye className="mr-2 size-3" />{" "}
                                         {videoInfo.videoDetails.viewCount}
                                     </Badge>
                                 </div>
@@ -74,9 +75,7 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                     </div>
                     <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 text-justify outline-dashed outline-2 outline-secondary md:text-left">
                         {data.summary}
-                        <Button className="w-full" variant={"secondary"}>
-                            Regenerate Summary
-                        </Button>
+                        <RegenerateSummaryButton videoid={data.videoid} />
                     </div>
                 </div>
             ) : (
