@@ -6,6 +6,7 @@ import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
+import { searchUsingTavilly } from "@/lib/core/search"
 import {
     summarizeTranscript,
     summarizeTranscriptWithGroq,
@@ -14,6 +15,13 @@ import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
 import { RegenerateFormSchema } from "@/components/regenerate-btn"
+import { VerifyFactsFormSchema } from "@/components/verify-facts"
+
+export type FactCheckerResponse = {
+    isAccurate: "true" | "false"
+    source: string
+    text: string
+}
 
 export const handleInitialFormSubmit = async (
     formData: z.infer<typeof formSchema>
@@ -101,5 +109,19 @@ export const handleRegenerateSummary = async (
         return false
     } finally {
         revalidatePath(`/${formData.videoid}`)
+    }
+}
+
+export const checkFacts = async (
+    formData: z.infer<typeof VerifyFactsFormSchema>
+) => {
+    try {
+        const res = await searchUsingTavilly(formData.summary)
+        const response: FactCheckerResponse = await JSON.parse(res.output)
+
+        return response
+    } catch (e) {
+        console.error(e)
+        return null
     }
 }

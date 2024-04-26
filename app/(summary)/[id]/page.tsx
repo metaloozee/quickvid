@@ -7,6 +7,7 @@ import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
+import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummaryIndexPage({ params }: { params: any }) {
@@ -95,17 +96,7 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
             )}
 
             <div className="flex w-full flex-col gap-10">
-                <div className="flex w-full flex-col gap-5 rounded-xl border-primary p-5 outline-dashed outline-2 outline-primary">
-                    <p className="text-justify text-xs md:text-left">
-                        Our fact checker verifies video content by searching the
-                        internet and comparing information from reliable
-                        sources. It labels videos as accurate, partially
-                        accurate, or inaccurate based on its analysis. Please
-                        note that accuracy depends on available internet
-                        information.
-                    </p>
-                    <Button>Check for Truth</Button>
-                </div>
+                <VerifyFacts summary={data.summary!} />
             </div>
         </section>
     )

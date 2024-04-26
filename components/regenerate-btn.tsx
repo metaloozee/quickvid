@@ -13,6 +13,7 @@ import { handleRegenerateSummary } from "@/app/actions"
 export const RegenerateFormSchema = z.object({
     videoid: z.string().describe("The YouTube video's unique ID"),
 })
+
 export const RegenerateSummaryButton = ({ videoid }: { videoid: string }) => {
     const regenerateForm = useForm<z.infer<typeof RegenerateFormSchema>>({
         resolver: zodResolver(RegenerateFormSchema),

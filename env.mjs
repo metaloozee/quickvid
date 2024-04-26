@@ -3,7 +3,7 @@ import { z } from "zod"
 const server = z.object({
     OPENAI_API_KEY: z.string(),
     NEON_DATABASE_URL: z.string().startsWith("postgresql://"),
-
+    TAVILY_API_KEY: z.string().startsWith("tvly-"),
     NODE_ENV: z.enum(["development", "test", "production"]),
 })
 
@@ -21,6 +21,7 @@ const client = z.object({
 const processEnv = {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NEON_DATABASE_URL: process.env.NEON_DATABASE_URL,
+    TAVILY_API_KEY: process.env.TAVILY_API_KEY,
     NODE_ENV: process.env.NODE_ENV,
 }
 
