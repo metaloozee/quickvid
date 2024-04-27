@@ -53,5 +53,7 @@ export const searchUsingTavilly = async (summary: string) => {
         input: summary,
     })
 
-    return result
+    // console.log(result.output)
+
+    return result.output
 }

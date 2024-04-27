@@ -117,7 +117,7 @@ export const checkFacts = async (
 ) => {
     try {
         const res = await searchUsingTavilly(formData.summary)
-        const response: FactCheckerResponse = await JSON.parse(res.output)
+        const response: FactCheckerResponse = await JSON.parse(res)
 
         return response
     } catch (e) {
