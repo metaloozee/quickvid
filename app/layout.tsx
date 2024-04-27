@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/sonner"
 import { AnnouncementBanner } from "@/components/accouncement"
 import { Navbar } from "@/components/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -40,11 +41,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     enableSystem
                 >
                     <div className="relative flex min-h-screen flex-col">
-                        <AnnouncementBanner text="Access to QuickVid's closed version requires owner authorization; please reach out for permission." />
+                        {/* <AnnouncementBanner text="Access to QuickVid's closed version requires owner authorization; please reach out for permission." /> */}
                         <Navbar />
                         <div className="mb-10 flex-1">
                             {children}
-
                             <p className="container mt-10 font-mono text-xs text-neutral-500">
                                 made with ❤️ by{" "}
                                 <Link
