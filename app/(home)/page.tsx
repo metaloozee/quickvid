@@ -19,11 +19,11 @@ export default async function IndexPage() {
 
                 <div className="mt-4 w-full">
                     <InitialForm />
-                    <p className="mt-4 flex items-center text-xs text-yellow-600">
+                    {/* <p className="mt-4 flex items-center text-xs text-yellow-600">
                         <TriangleAlert className="mr-2 size-4" />
                         If you need to summarize a long video, it&apos;s best to
                         use the GPT-4-Turbo model.
-                    </p>
+                    </p> */}
                 </div>
             </div>
         </section>
