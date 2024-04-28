@@ -46,12 +46,6 @@ export const InitialForm = () => {
                             if (value) {
                                 return router.push(`/${value}`)
                             }
-
-                            return toast({
-                                title: "Uh Oh! An Error Occurred",
-                                description:
-                                    "An unexpected error occurred, kindly contact the administrator or try again later.",
-                            })
                         }
                     )
                 })}

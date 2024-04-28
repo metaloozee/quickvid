@@ -7,7 +7,6 @@ import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
 import { handleRegenerateSummary } from "@/app/actions"
 
 export const RegenerateFormSchema = z.object({
@@ -27,17 +26,7 @@ export const RegenerateSummaryButton = ({ videoid }: { videoid: string }) => {
             <form
                 className="w-full"
                 onSubmit={regenerateForm.handleSubmit(async (data) => {
-                    await handleRegenerateSummary(data).then(
-                        (value: boolean) => {
-                            if (!value) {
-                                return toast({
-                                    title: "Uh Oh! An Error Occured!",
-                                    description:
-                                        "An unexpected error occurred, kindly contact the administrator or try again later.",
-                                })
-                            }
-                        }
-                    )
+                    await handleRegenerateSummary(data)
                 })}
             >
                 <Button

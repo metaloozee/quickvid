@@ -10,7 +10,6 @@ import { z } from "zod"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
-import { useToast } from "@/components/ui/use-toast"
 import { checkFacts, type FactCheckerResponse } from "@/app/actions"
 
 export const VerifyFactsFormSchema = z.object({
@@ -18,8 +17,6 @@ export const VerifyFactsFormSchema = z.object({
 })
 
 export const VerifyFacts = ({ summary }: { summary: string }) => {
-    const { toast } = useToast()
-
     const [isAccurate, setIsAccurate] = useState<"true" | "false" | null>(null)
     const [source, setSource] = useState<string | null>(null)
     const [output, setOutput] = useState<string | null>(null)
@@ -39,11 +36,7 @@ export const VerifyFacts = ({ summary }: { summary: string }) => {
                     await checkFacts(data).then(
                         (value: FactCheckerResponse | null) => {
                             if (!value) {
-                                return toast({
-                                    title: "Uh Oh! An Error Occured!",
-                                    description:
-                                        "An unexpected error occurred, kindly contact the administrator or try again later.",
-                                })
+                                return console.log("Couldn't Verify the facts.")
                             }
 
                             setIsAccurate(value.isAccurate)

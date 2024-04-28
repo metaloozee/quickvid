@@ -70,7 +70,7 @@ dependencies:
         version: 1.3.0(next@14.1.4)
     langchain:
         specifier: ^0.1.34
-        version: 0.1.36(@neondatabase/serverless@0.9.1)(openai@4.38.5)(pg@8.11.5)
+        version: 0.1.36(@neondatabase/serverless@0.9.1)(openai@4.38.5)(pg@8.11.5)(youtube-transcript@1.2.1)(youtubei.js@9.3.0)
     lucide-react:
         specifier: 0.364.0
         version: 0.364.0(react@18.3.1)
@@ -184,6 +184,12 @@ devDependencies:
     typescript:
         specifier: ^5.4.5
         version: 5.4.5
+    youtube-transcript:
+        specifier: ^1.2.1
+        version: 1.2.1
+    youtubei.js:
+        specifier: ^9.3.0
+        version: 9.3.0
 
 packages:
     /@alloc/quick-lru@5.2.0:
@@ -1073,6 +1079,13 @@ packages:
             }
         engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
         dev: true
+
+    /@fastify/busboy@2.1.1:
+        resolution:
+            {
+                integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==,
+            }
+        engines: { node: ">=14" }
 
     /@floating-ui/core@1.6.1:
         resolution:
@@ -2823,7 +2836,6 @@ packages:
             }
         engines: { node: ">=0.4.0" }
         hasBin: true
-        dev: true
 
     /agentkeepalive@4.5.0:
         resolution:
@@ -5763,6 +5775,14 @@ packages:
             }
         dev: true
 
+    /jintr@1.1.0:
+        resolution:
+            {
+                integrity: sha512-Tu9wk3BpN2v+kb8yT6YBtue+/nbjeLFv4vvVC4PJ7oCidHKbifWhvORrAbQfxVIQZG+67am/mDagpiGSVtvrZg==,
+            }
+        dependencies:
+            acorn: 8.11.3
+
     /jiti@1.21.0:
         resolution:
             {
@@ -5883,7 +5903,7 @@ packages:
             json-buffer: 3.0.1
         dev: true
 
-    /langchain@0.1.36(@neondatabase/serverless@0.9.1)(openai@4.38.5)(pg@8.11.5):
+    /langchain@0.1.36(@neondatabase/serverless@0.9.1)(openai@4.38.5)(pg@8.11.5)(youtube-transcript@1.2.1)(youtubei.js@9.3.0):
         resolution:
             {
                 integrity: sha512-NTbnCL/jKWIeEI//Nm1oG8nhW3vkYWvEMr1MPotmTThTfeKfO87eV/OAzAyh6Ruy6GFs/qofRgQZGIe6XvXTNQ==,
@@ -6064,6 +6084,8 @@ packages:
             p-retry: 4.6.2
             uuid: 9.0.1
             yaml: 2.4.2
+            youtube-transcript: 1.2.1
+            youtubei.js: 9.3.0
             zod: 3.23.4
             zod-to-json-schema: 3.23.0(zod@3.23.4)
         transitivePeerDependencies:
@@ -8354,7 +8376,6 @@ packages:
             {
                 integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==,
             }
-        dev: false
 
     /tsutils@3.21.0(typescript@5.4.5):
         resolution:
@@ -8500,6 +8521,15 @@ packages:
                 integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==,
             }
         dev: false
+
+    /undici@5.28.4:
+        resolution:
+            {
+                integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==,
+            }
+        engines: { node: ">=14.0" }
+        dependencies:
+            "@fastify/busboy": 2.1.1
 
     /update-browserslist-db@1.0.13(browserslist@4.23.0):
         resolution:
@@ -8775,6 +8805,23 @@ packages:
             }
         engines: { node: ">=10" }
         dev: true
+
+    /youtube-transcript@1.2.1:
+        resolution:
+            {
+                integrity: sha512-TvEGkBaajKw+B6y91ziLuBLsa5cawgowou+Bk0ciGpjELDfAzSzTGXaZmeSSkUeknCPpEr/WGApOHDwV7V+Y9Q==,
+            }
+        engines: { node: ">=18.0.0" }
+
+    /youtubei.js@9.3.0:
+        resolution:
+            {
+                integrity: sha512-hWTDyxNakwURkCpTh1YfGxKWp1JxU94uwtmwqUq6zSwLfyIJRTsyVZqBd3/bm+5d+lyetl+jEO5ajOsRXshefg==,
+            }
+        dependencies:
+            jintr: 1.1.0
+            tslib: 2.6.2
+            undici: 5.28.4
 
     /ytdl-core@4.11.5:
         resolution:

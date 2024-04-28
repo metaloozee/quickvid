@@ -8,6 +8,7 @@ import { z } from "zod"
 import { uploadAndTranscribe } from "@/lib/core/convert"
 import { searchUsingTavilly } from "@/lib/core/search"
 import { summarizeTranscriptWithGpt } from "@/lib/core/summarize"
+import { transcribeVideo } from "@/lib/core/transcribe"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
@@ -44,7 +45,8 @@ export const handleInitialFormSubmit = async (
             }
         }
 
-        const transcript = await uploadAndTranscribe(formData.link)
+        const transcript = await transcribeVideo(formData.link)
+        // const transcript = await uploadAndTranscribe(formData.link)
         if (!transcript) {
             throw new Error("Couldn't transcribe the Audio.")
         }
