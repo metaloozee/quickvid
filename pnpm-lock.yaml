@@ -53,6 +53,12 @@ dependencies:
     "@radix-ui/react-toast":
         specifier: ^1.1.5
         version: 1.1.5(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
+    "@vercel/analytics":
+        specifier: ^1.2.2
+        version: 1.2.2(next@14.1.4)(react@18.3.1)
+    "@vercel/speed-insights":
+        specifier: ^1.0.10
+        version: 1.0.10(next@14.1.4)(react@18.3.1)
     class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -178,9 +184,6 @@ devDependencies:
     tailwindcss:
         specifier: ^3.4.3
         version: 3.4.3
-    tsx:
-        specifier: ^4.7.3
-        version: 4.7.3
     typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -2807,6 +2810,56 @@ packages:
                 integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==,
             }
         dev: true
+
+    /@vercel/analytics@1.2.2(next@14.1.4)(react@18.3.1):
+        resolution:
+            {
+                integrity: sha512-X0rctVWkQV1e5Y300ehVNqpOfSOufo7ieA5PIdna8yX/U7Vjz0GFsGf4qvAhxV02uQ2CVt7GYcrFfddXXK2Y4A==,
+            }
+        peerDependencies:
+            next: ">= 13"
+            react: ^18 || ^19
+        peerDependenciesMeta:
+            next:
+                optional: true
+            react:
+                optional: true
+        dependencies:
+            next: 14.1.4(@babel/core@7.24.4)(react-dom@18.3.1)(react@18.3.1)
+            react: 18.3.1
+            server-only: 0.0.1
+        dev: false
+
+    /@vercel/speed-insights@1.0.10(next@14.1.4)(react@18.3.1):
+        resolution:
+            {
+                integrity: sha512-4uzdKB0RW6Ff2FkzshzjZ+RlJfLPxgm/00i0XXgxfMPhwnnsk92YgtqsxT9OcPLdJUyVU1DqFlSWWjIQMPkh0g==,
+            }
+        requiresBuild: true
+        peerDependencies:
+            "@sveltejs/kit": ^1 || ^2
+            next: ">= 13"
+            react: ^18 || ^19
+            svelte: ^4
+            vue: ^3
+            vue-router: ^4
+        peerDependenciesMeta:
+            "@sveltejs/kit":
+                optional: true
+            next:
+                optional: true
+            react:
+                optional: true
+            svelte:
+                optional: true
+            vue:
+                optional: true
+            vue-router:
+                optional: true
+        dependencies:
+            next: 14.1.4(@babel/core@7.24.4)(react-dom@18.3.1)(react@18.3.1)
+            react: 18.3.1
+        dev: false
 
     /abort-controller@3.0.0:
         resolution:
@@ -7775,6 +7828,13 @@ packages:
         dependencies:
             lru-cache: 6.0.0
 
+    /server-only@0.0.1:
+        resolution:
+            {
+                integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==,
+            }
+        dev: false
+
     /set-function-length@1.2.2:
         resolution:
             {
@@ -8388,20 +8448,6 @@ packages:
         dependencies:
             tslib: 1.14.1
             typescript: 5.4.5
-        dev: true
-
-    /tsx@4.7.3:
-        resolution:
-            {
-                integrity: sha512-+fQnMqIp/jxZEXLcj6WzYy9FhcS5/Dfk8y4AtzJ6ejKcKqmfTF8Gso/jtrzDggCF2zTU20gJa6n8XqPYwDAUYQ==,
-            }
-        engines: { node: ">=18.0.0" }
-        hasBin: true
-        dependencies:
-            esbuild: 0.19.12
-            get-tsconfig: 4.7.3
-        optionalDependencies:
-            fsevents: 2.3.3
         dev: true
 
     /tunnel-agent@0.6.0:

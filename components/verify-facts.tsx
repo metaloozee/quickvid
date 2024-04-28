@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RotateCw, ShieldCheck, ShieldX } from "lucide-react"
@@ -16,7 +16,7 @@ export const VerifyFactsFormSchema = z.object({
     summary: z.string(),
 })
 
-export const VerifyFacts = ({ summary }: { summary: string }) => {
+export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
     const [isAccurate, setIsAccurate] = useState<"true" | "false" | null>(null)
     const [source, setSource] = useState<string | null>(null)
     const [output, setOutput] = useState<string | null>(null)

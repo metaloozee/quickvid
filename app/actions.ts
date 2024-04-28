@@ -43,6 +43,20 @@ export const handleInitialFormSubmit = async (
             if (existingSummary) {
                 return existingSummary.videoid
             }
+
+            const summary = await summarizeTranscriptWithGpt(
+                existingVideo.transcript!
+            )
+            if (!summary) {
+                throw new Error("Couldn't summarize the Transcript.")
+            }
+
+            await db.insert(summaries).values({
+                videoid: videoId,
+                summary: summary as string,
+            })
+
+            return videoId
         }
 
         const transcript = await transcribeVideo(formData.link)

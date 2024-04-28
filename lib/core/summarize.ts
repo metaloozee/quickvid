@@ -1,9 +1,6 @@
 import { ChatPromptTemplate } from "@langchain/core/prompts"
 import { ChatOpenAI } from "@langchain/openai"
-import { config } from "dotenv"
 import { TokenTextSplitter } from "langchain/text_splitter"
-
-config({ path: ".env.local" })
 
 const gpt = new ChatOpenAI({
     model: "gpt-3.5-turbo",
@@ -41,7 +38,7 @@ export const summarizeTranscriptWithGpt = async (transcript: string) => {
                 "An Error Occurred while Summarizing the transcript."
             )
         }
-        console.log(res)
+
         return res.content
     } catch (e) {
         console.error(e)

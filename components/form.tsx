@@ -10,30 +10,17 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast"
 import { handleInitialFormSubmit } from "@/app/actions"
 
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
-    // model: z.enum(["gpt-3.5-turbo", "gpt-4-turbo", "mixtral-8x7b"]),
 })
 
-export const InitialForm = () => {
-    const { toast } = useToast()
+export const InitialForm: React.FC = () => {
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        // defaultValues: {
-        //     model: "gpt-4-turbo",
-        // },
     })
 
     return (
@@ -46,6 +33,8 @@ export const InitialForm = () => {
                             if (value) {
                                 return router.push(`/${value}`)
                             }
+
+                            return
                         }
                     )
                 })}
@@ -65,37 +54,6 @@ export const InitialForm = () => {
                         </FormItem>
                     )}
                 />
-
-                {/* <FormField
-                    disabled={form.formState.isSubmitting}
-                    control={form.control}
-                    name="model"
-                    render={({ field }) => (
-                        <FormItem>
-                            <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                            >
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select AI Model" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="gpt-3.5-turbo">
-                                        gpt-3.5-turbo
-                                    </SelectItem>
-                                    <SelectItem value="gpt-4-turbo">
-                                        gpt-4-turbo
-                                    </SelectItem>
-                                    <SelectItem value="mixtral-8x7b">
-                                        mixtral-8x7b
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </FormItem>
-                    )}
-                /> */}
 
                 <Button
                     disabled={form.formState.isSubmitting}

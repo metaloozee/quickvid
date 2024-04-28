@@ -1,11 +1,12 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
 import Link from "next/link"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GeistMono } from "geist/font/mono"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import { Toaster } from "@/components/ui/sonner"
 import { AnnouncementBanner } from "@/components/accouncement"
 import { Navbar } from "@/components/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -41,9 +42,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     enableSystem
                 >
                     <div className="relative flex min-h-screen flex-col">
-                        {/* <AnnouncementBanner text="Access to QuickVid's closed version requires owner authorization; please reach out for permission." /> */}
                         <Navbar />
                         <div className="mb-10 flex-1">
+                            <Analytics />
+                            <SpeedInsights />
                             {children}
                             <p className="container mt-10 font-mono text-xs text-neutral-500">
                                 made with ❤️ by{" "}
@@ -54,6 +56,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                     href="https://github.com/metaloozee/"
                                 >
                                     metaloozee
+                                </Link>{" "}
+                                •{" "}
+                                <Link
+                                    className="underline"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href="https://www.buymeacoffee.com/metaloozee"
+                                >
+                                    support
                                 </Link>
                             </p>
                         </div>

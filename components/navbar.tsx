@@ -1,6 +1,7 @@
 import Link from "next/link"
+import { Github } from "lucide-react"
 
-import { LinksDropdown } from "@/components/nav-dropdown"
+import { Button } from "@/components/ui/button"
 
 export const Navbar = async () => {
     return (
@@ -15,11 +16,19 @@ export const Navbar = async () => {
                     </Link>
                 </div>
 
-                {/* <div className="flex flex-1 items-center justify-end">
+                <div className="flex flex-1 items-center justify-end">
                     <nav className="flex items-center justify-center gap-5">
-                        <LinksDropdown />
+                        <Button size={"icon"} variant={"link"} asChild>
+                            <Link
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href={"https://github.com/metaloozee/quickvid"}
+                            >
+                                <Github />
+                            </Link>
+                        </Button>
                     </nav>
-                </div> */}
+                </div>
             </div>
         </header>
     )
