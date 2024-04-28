@@ -17,6 +17,9 @@ dependencies:
     "@langchain/core":
         specifier: 0.1.58
         version: 0.1.58(openai@4.38.5)
+    "@langchain/groq":
+        specifier: ^0.0.8
+        version: 0.0.8(openai@4.38.5)
     "@langchain/openai":
         specifier: ^0.0.28
         version: 0.0.28
@@ -65,17 +68,14 @@ dependencies:
     geist:
         specifier: ^1.3.0
         version: 1.3.0(next@14.1.4)
-    groq-sdk:
-        specifier: ^0.3.2
-        version: 0.3.2
     langchain:
-        specifier: ^0.1.36
+        specifier: ^0.1.34
         version: 0.1.36(@neondatabase/serverless@0.9.1)(openai@4.38.5)(pg@8.11.5)
     lucide-react:
         specifier: 0.364.0
         version: 0.364.0(react@18.3.1)
     next:
-        specifier: ^14.1.4
+        specifier: 14.1.4
         version: 14.1.4(@babel/core@7.24.4)(react-dom@18.3.1)(react@18.3.1)
     next-themes:
         specifier: ^0.2.1
@@ -1074,43 +1074,43 @@ packages:
         engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
         dev: true
 
-    /@floating-ui/core@1.6.0:
+    /@floating-ui/core@1.6.1:
         resolution:
             {
-                integrity: sha512-PcF++MykgmTj3CIyOQbKA/hDzOAiqI3mhuoN44WRCopIs1sgoDoU4oty4Jtqaj/y3oDU6fnVSm4QG0a3t5i0+g==,
+                integrity: sha512-42UH54oPZHPdRHdw6BgoBD6cg/eVTmVrFcgeRDM3jbO7uxSoipVcmcIGFcA5jmOHO5apcyvBhkSKES3fQJnu7A==,
             }
         dependencies:
-            "@floating-ui/utils": 0.2.1
+            "@floating-ui/utils": 0.2.2
         dev: false
 
-    /@floating-ui/dom@1.6.3:
+    /@floating-ui/dom@1.6.4:
         resolution:
             {
-                integrity: sha512-RnDthu3mzPlQ31Ss/BTwQ1zjzIhr3lk1gZB1OC56h/1vEtaXkESrOqL5fQVMfXpwGtRwX+YsZBdyHtJMQnkArw==,
+                integrity: sha512-0G8R+zOvQsAG1pg2Q99P21jiqxqGBW1iRe/iXHsBRBxnpXKFI8QwbB4x5KmYLggNO5m34IQgOIu9SCRfR/WWiQ==,
             }
         dependencies:
-            "@floating-ui/core": 1.6.0
-            "@floating-ui/utils": 0.2.1
+            "@floating-ui/core": 1.6.1
+            "@floating-ui/utils": 0.2.2
         dev: false
 
-    /@floating-ui/react-dom@2.0.8(react-dom@18.3.1)(react@18.3.1):
+    /@floating-ui/react-dom@2.0.9(react-dom@18.3.1)(react@18.3.1):
         resolution:
             {
-                integrity: sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==,
+                integrity: sha512-q0umO0+LQK4+p6aGyvzASqKbKOJcAHJ7ycE9CuUvfx3s9zTHWmGJTPOIlM/hmSBfUfg/XfY5YhLBLR/LHwShQQ==,
             }
         peerDependencies:
             react: ">=16.8.0"
             react-dom: ">=16.8.0"
         dependencies:
-            "@floating-ui/dom": 1.6.3
+            "@floating-ui/dom": 1.6.4
             react: 18.3.1
             react-dom: 18.3.1(react@18.3.1)
         dev: false
 
-    /@floating-ui/utils@0.2.1:
+    /@floating-ui/utils@0.2.2:
         resolution:
             {
-                integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==,
+                integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==,
             }
         dev: false
 
@@ -1574,6 +1574,23 @@ packages:
             zod: 3.23.4
             zod-to-json-schema: 3.23.0(zod@3.23.4)
         transitivePeerDependencies:
+            - openai
+        dev: false
+
+    /@langchain/groq@0.0.8(openai@4.38.5):
+        resolution:
+            {
+                integrity: sha512-xqbe35K+12fiYtC/uqkaTT4AXxqL5uvhCrHzc+nBoFkTwM6YfTFE1ch95RZ5G2JnK1U9pKAre/trUSzlU1/6Kg==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            "@langchain/core": 0.1.58(openai@4.38.5)
+            "@langchain/openai": 0.0.28
+            groq-sdk: 0.3.2
+            zod: 3.23.4
+            zod-to-json-schema: 3.23.0(zod@3.23.4)
+        transitivePeerDependencies:
+            - encoding
             - openai
         dev: false
 
@@ -2224,7 +2241,7 @@ packages:
                 optional: true
         dependencies:
             "@babel/runtime": 7.24.4
-            "@floating-ui/react-dom": 2.0.8(react-dom@18.3.1)(react@18.3.1)
+            "@floating-ui/react-dom": 2.0.9(react-dom@18.3.1)(react@18.3.1)
             "@radix-ui/react-arrow": 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
             "@radix-ui/react-compose-refs": 1.0.1(@types/react@18.3.1)(react@18.3.1)
             "@radix-ui/react-context": 1.0.1(@types/react@18.3.1)(react@18.3.1)
@@ -3089,7 +3106,7 @@ packages:
             postcss: ^8.1.0
         dependencies:
             browserslist: 4.23.0
-            caniuse-lite: 1.0.30001612
+            caniuse-lite: 1.0.30001613
             fraction.js: 4.3.7
             normalize-range: 0.1.2
             picocolors: 1.0.0
@@ -3204,7 +3221,7 @@ packages:
         engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
         hasBin: true
         dependencies:
-            caniuse-lite: 1.0.30001612
+            caniuse-lite: 1.0.30001613
             electron-to-chromium: 1.4.750
             node-releases: 2.0.14
             update-browserslist-db: 1.0.13(browserslist@4.23.0)
@@ -3281,10 +3298,10 @@ packages:
         engines: { node: ">=14.16" }
         dev: true
 
-    /caniuse-lite@1.0.30001612:
+    /caniuse-lite@1.0.30001613:
         resolution:
             {
-                integrity: sha512-lFgnZ07UhaCcsSZgWW0K5j4e69dK1u/ltrL9lTUiFOwNHs12S3UMIEYgBV0Z6C6hRDev7iRnMzzYmKabYdXF9g==,
+                integrity: sha512-BNjJULJfOONQERivfxte7alLfeLW4QnwHvNW4wEcLEbXfV6VSCYvr+REbf2Sojv8tC1THpjPXBxWgDbq4NtLWg==,
             }
 
     /chalk@2.4.2:
@@ -6046,7 +6063,7 @@ packages:
             openapi-types: 12.1.3
             p-retry: 4.6.2
             uuid: 9.0.1
-            yaml: 2.4.1
+            yaml: 2.4.2
             zod: 3.23.4
             zod-to-json-schema: 3.23.0(zod@3.23.4)
         transitivePeerDependencies:
@@ -6671,7 +6688,7 @@ packages:
             "@next/env": 14.1.4
             "@swc/helpers": 0.5.2
             busboy: 1.6.0
-            caniuse-lite: 1.0.30001612
+            caniuse-lite: 1.0.30001613
             graceful-fs: 4.2.11
             postcss: 8.4.31
             react: 18.3.1
@@ -7245,7 +7262,7 @@ packages:
         dependencies:
             lilconfig: 3.1.1
             postcss: 8.4.38
-            yaml: 2.4.1
+            yaml: 2.4.2
 
     /postcss-nested@6.0.1(postcss@8.4.38):
         resolution:
@@ -8743,10 +8760,10 @@ packages:
         engines: { node: ">= 14" }
         dev: true
 
-    /yaml@2.4.1:
+    /yaml@2.4.2:
         resolution:
             {
-                integrity: sha512-pIXzoImaqmfOrL7teGUBt/T7ZDnyeGBWyXQBvOVhLkWLN37GXv8NMLK406UY6dS51JfcQHsmcW5cJ441bHg6Lg==,
+                integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==,
             }
         engines: { node: ">= 14" }
         hasBin: true

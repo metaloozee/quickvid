@@ -7,10 +7,7 @@ import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
 import { searchUsingTavilly } from "@/lib/core/search"
-import {
-    summarizeTranscript,
-    summarizeTranscriptWithGroq,
-} from "@/lib/core/summarize"
+import { summarizeTranscriptWithGpt } from "@/lib/core/summarize"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
@@ -58,14 +55,14 @@ export const handleInitialFormSubmit = async (
             transcript: transcript,
         })
 
-        const summary = await summarizeTranscriptWithGroq(transcript)
+        const summary = await summarizeTranscriptWithGpt(transcript)
         if (!summary) {
             throw new Error("Couldn't summarize the Transcript.")
         }
 
         await db.insert(summaries).values({
             videoid: videoId,
-            summary: summary,
+            summary: summary as string,
         })
 
         return videoId
@@ -93,14 +90,14 @@ export const handleRegenerateSummary = async (
             throw new Error("Couldn't find the transcription of this video.")
         }
 
-        const summary = await summarizeTranscriptWithGroq(data.transcript!)
+        const summary = await summarizeTranscriptWithGpt(data.transcript!)
         if (!summary) {
             throw new Error("Couldn't summarize the Transcript.")
         }
 
         await db
             .update(summaries)
-            .set({ summary: summary })
+            .set({ summary: summary as string })
             .where(eq(summaries.videoid, formData.videoid))
 
         return true

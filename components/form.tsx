@@ -22,7 +22,7 @@ import { handleInitialFormSubmit } from "@/app/actions"
 
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
-    model: z.enum(["gpt-3.5-turbo", "gpt-4-turbo", "mixtral-8x7b"]),
+    // model: z.enum(["gpt-3.5-turbo", "gpt-4-turbo", "mixtral-8x7b"]),
 })
 
 export const InitialForm = () => {
@@ -31,9 +31,9 @@ export const InitialForm = () => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            model: "gpt-4-turbo",
-        },
+        // defaultValues: {
+        //     model: "gpt-4-turbo",
+        // },
     })
 
     return (
@@ -72,7 +72,7 @@ export const InitialForm = () => {
                     )}
                 />
 
-                <FormField
+                {/* <FormField
                     disabled={form.formState.isSubmitting}
                     control={form.control}
                     name="model"
@@ -101,7 +101,7 @@ export const InitialForm = () => {
                             </Select>
                         </FormItem>
                     )}
-                />
+                /> */}
 
                 <Button
                     disabled={form.formState.isSubmitting}
