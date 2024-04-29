@@ -3,17 +3,32 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ListVideo, RotateCw } from "lucide-react"
+import { Bolt, ListVideo, RotateCw, Settings } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { handleInitialFormSubmit } from "@/app/actions"
 
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
+    model: z.enum([
+        "gpt-3.5-turbo",
+        "llama3-8b-8192",
+        "llama3-70b-8192",
+        "mixtral-8x7b-32768",
+    ]),
 })
 
 export const InitialForm: React.FC = () => {
@@ -21,12 +36,15 @@ export const InitialForm: React.FC = () => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            model: "gpt-3.5-turbo",
+        },
     })
 
     return (
         <Form {...form}>
             <form
-                className="flex w-full items-center space-x-2"
+                className="flex w-full flex-col items-start gap-2 md:flex-row"
                 onSubmit={form.handleSubmit(async (data) => {
                     await handleInitialFormSubmit(data).then(
                         (value: string | null) => {
@@ -39,25 +57,74 @@ export const InitialForm: React.FC = () => {
                     )
                 })}
             >
-                <FormField
-                    disabled={form.formState.isSubmitting}
-                    control={form.control}
-                    name="link"
-                    render={({ field }) => (
-                        <FormItem className="w-full max-w-lg">
-                            <FormControl>
-                                <Input
-                                    placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                                    {...field}
-                                />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                />
+                <div className="flex w-full gap-2 md:max-w-2xl">
+                    <FormField
+                        disabled={form.formState.isSubmitting}
+                        control={form.control}
+                        name="link"
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormControl>
+                                    <Input
+                                        placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                        {...field}
+                                    />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        disabled={form.formState.isSubmitting}
+                        control={form.control}
+                        name="model"
+                        render={({ field }) => (
+                            <FormItem>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            disabled={
+                                                form.formState.isSubmitting
+                                            }
+                                            className="group"
+                                            variant="secondary"
+                                            size={"icon"}
+                                        >
+                                            <Bolt className="size-4 transition-all duration-500 group-hover:rotate-180" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56">
+                                        <DropdownMenuLabel>
+                                            Choose your AI Model
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuRadioGroup
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                        >
+                                            <DropdownMenuRadioItem value="gpt-3.5-turbo">
+                                                gpt-3.5-turbo (16k)
+                                            </DropdownMenuRadioItem>
+                                            <DropdownMenuRadioItem value="llama3-8b-8192">
+                                                llama3-8b (8k)
+                                            </DropdownMenuRadioItem>
+                                            <DropdownMenuRadioItem value="llama3-70b-8192">
+                                                llama3-70b (8k)
+                                            </DropdownMenuRadioItem>
+                                            <DropdownMenuRadioItem value="mixtral-8x7b-32768">
+                                                mixtral-8x7b (32k)
+                                            </DropdownMenuRadioItem>
+                                        </DropdownMenuRadioGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
                 <Button
                     disabled={form.formState.isSubmitting}
-                    className="group w-full max-w-fit"
+                    className="group w-full md:max-w-fit"
                     type="submit"
                 >
                     {form.formState.isSubmitting ? (

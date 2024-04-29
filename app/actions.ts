@@ -1,13 +1,17 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { type MessageContent } from "@langchain/core/messages"
 import { eq } from "drizzle-orm"
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
 import { searchUsingTavilly } from "@/lib/core/search"
-import { summarizeTranscriptWithGpt } from "@/lib/core/summarize"
+import {
+    summarizeTranscriptWithGpt,
+    summarizeTranscriptWithGroq,
+} from "@/lib/core/summarize"
 import { transcribeVideo } from "@/lib/core/transcribe"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
@@ -44,9 +48,18 @@ export const handleInitialFormSubmit = async (
                 return existingSummary.videoid
             }
 
-            const summary = await summarizeTranscriptWithGpt(
-                existingVideo.transcript!
-            )
+            let summary: MessageContent | null = null
+            if (formData.model == "gpt-3.5-turbo") {
+                summary = await summarizeTranscriptWithGpt(
+                    existingVideo.transcript!
+                )
+            } else {
+                summary = await summarizeTranscriptWithGroq(
+                    existingVideo.transcript!,
+                    formData.model
+                )
+            }
+
             if (!summary) {
                 throw new Error("Couldn't summarize the Transcript.")
             }
@@ -71,7 +84,16 @@ export const handleInitialFormSubmit = async (
             transcript: transcript,
         })
 
-        const summary = await summarizeTranscriptWithGpt(transcript)
+        let summary: MessageContent | null = null
+        if (formData.model == "gpt-3.5-turbo") {
+            summary = await summarizeTranscriptWithGpt(transcript)
+        } else {
+            summary = await summarizeTranscriptWithGroq(
+                transcript,
+                formData.model
+            )
+        }
+
         if (!summary) {
             throw new Error("Couldn't summarize the Transcript.")
         }
@@ -106,7 +128,16 @@ export const handleRegenerateSummary = async (
             throw new Error("Couldn't find the transcription of this video.")
         }
 
-        const summary = await summarizeTranscriptWithGpt(data.transcript!)
+        let summary: MessageContent | null = null
+        if (formData.model == "gpt-3.5-turbo") {
+            summary = await summarizeTranscriptWithGpt(data.transcript!)
+        } else {
+            summary = await summarizeTranscriptWithGroq(
+                data.transcript!,
+                formData.model
+            )
+        }
+
         if (!summary) {
             throw new Error("Couldn't summarize the Transcript.")
         }
