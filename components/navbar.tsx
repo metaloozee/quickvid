@@ -29,7 +29,7 @@ export const Navbar = async () => {
                             <Link
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href={"https://github.com/metaloozee/quickvid"}
+                                href={"https://git.new/summary"}
                             >
                                 <Github />
                             </Link>
