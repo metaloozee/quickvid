@@ -1,6 +1,5 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
-import Link from "next/link"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GeistMono } from "geist/font/mono"
@@ -8,6 +7,7 @@ import { GeistMono } from "geist/font/mono"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { AnnouncementBanner } from "@/components/accouncement"
+import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -41,33 +41,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     defaultTheme="system"
                     enableSystem
                 >
+                    <Analytics />
+                    <SpeedInsights />
+
                     <div className="relative flex min-h-screen flex-col">
                         <Navbar />
-                        <div className="mb-10 flex-1">
-                            <Analytics />
-                            <SpeedInsights />
-                            {children}
-                            <p className="container mt-10 font-mono text-xs text-neutral-500">
-                                made with ❤️ by{" "}
-                                <Link
-                                    className="underline"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href="https://github.com/metaloozee/"
-                                >
-                                    metaloozee
-                                </Link>{" "}
-                                •{" "}
-                                <Link
-                                    className="underline"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href="https://www.buymeacoffee.com/metaloozee"
-                                >
-                                    support
-                                </Link>
-                            </p>
-                        </div>
+                        <div className="flex-1">{children}</div>
+                        <Footer />
                     </div>
                     {/* <TailwindIndicator /> */}
                 </ThemeProvider>

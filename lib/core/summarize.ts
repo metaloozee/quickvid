@@ -17,10 +17,9 @@ export const summarizeTranscriptWithGpt = async (transcript: string) => {
 
     try {
         const outputs = await splitter.createDocuments([transcript])
-        const messages: ["human", string][] = outputs.map((output) => [
-            "human",
-            output.pageContent,
-        ])
+        const messages: ["human", string][] = outputs.map(
+            (output: { pageContent: string }) => ["human", output.pageContent]
+        )
 
         const prompt = ChatPromptTemplate.fromMessages([
             [
