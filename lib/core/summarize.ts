@@ -12,7 +12,7 @@ const splitter = new TokenTextSplitter({
 
 export const summarizeTranscriptWithGroq = async (
     transcript: string,
-    model: "llama3-8b-8192" | "llama3-70b-8192" | "mixtral-8x7b-32768"
+    model: "llama3-70b-8192" | "mixtral-8x7b-32768"
 ) => {
     const groq = new ChatGroq({
         model,
@@ -51,9 +51,12 @@ export const summarizeTranscriptWithGroq = async (
     }
 }
 
-export const summarizeTranscriptWithGpt = async (transcript: string) => {
+export const summarizeTranscriptWithGpt = async (
+    transcript: string,
+    model: "gpt-3.5-turbo" | "gpt-4-turbo"
+) => {
     const gpt = new ChatOpenAI({
-        model: "gpt-3.5-turbo",
+        model,
         temperature: 0,
         streaming: false,
     })

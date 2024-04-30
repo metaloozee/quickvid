@@ -49,9 +49,13 @@ export const handleInitialFormSubmit = async (
             }
 
             let summary: MessageContent | null = null
-            if (formData.model == "gpt-3.5-turbo") {
+            if (
+                formData.model == "gpt-3.5-turbo" ||
+                formData.model == "gpt-4-turbo"
+            ) {
                 summary = await summarizeTranscriptWithGpt(
-                    existingVideo.transcript!
+                    existingVideo.transcript!,
+                    formData.model
                 )
             } else {
                 summary = await summarizeTranscriptWithGroq(
@@ -85,8 +89,14 @@ export const handleInitialFormSubmit = async (
         })
 
         let summary: MessageContent | null = null
-        if (formData.model == "gpt-3.5-turbo") {
-            summary = await summarizeTranscriptWithGpt(transcript)
+        if (
+            formData.model == "gpt-3.5-turbo" ||
+            formData.model == "gpt-4-turbo"
+        ) {
+            summary = await summarizeTranscriptWithGpt(
+                transcript,
+                formData.model
+            )
         } else {
             summary = await summarizeTranscriptWithGroq(
                 transcript,
@@ -129,8 +139,14 @@ export const handleRegenerateSummary = async (
         }
 
         let summary: MessageContent | null = null
-        if (formData.model == "gpt-3.5-turbo") {
-            summary = await summarizeTranscriptWithGpt(data.transcript!)
+        if (
+            formData.model == "gpt-3.5-turbo" ||
+            formData.model == "gpt-4-turbo"
+        ) {
+            summary = await summarizeTranscriptWithGpt(
+                data.transcript!,
+                formData.model
+            )
         } else {
             summary = await summarizeTranscriptWithGroq(
                 data.transcript!,
