@@ -3,7 +3,6 @@ import { Github } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 export const Navbar = async () => {
     return (
@@ -35,7 +34,6 @@ export const Navbar = async () => {
                                 <Github className="size-5" />
                             </Link>
                         </Button>
-                        <ThemeToggle />
                     </nav>
                 </div>
             </div>

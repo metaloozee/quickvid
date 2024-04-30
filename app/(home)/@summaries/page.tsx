@@ -5,6 +5,7 @@ import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
+import { Button } from "@/components/ui/button"
 import { VideoWidget } from "@/components/video-widget"
 
 export default async function SummariesIndexPage() {
@@ -12,7 +13,7 @@ export default async function SummariesIndexPage() {
         .select({ videoid: summaries.videoid })
         .from(summaries)
         .orderBy(desc(summaries.updated_at))
-        .limit(2)
+        .limit(3)
 
     return (
         <section className="container mt-10 flex w-screen flex-col items-start gap-5">
@@ -38,13 +39,19 @@ export default async function SummariesIndexPage() {
                     )
                 })}
 
-                <Link
-                    className="group flex items-center text-xs text-muted-foreground underline decoration-muted-foreground/50 underline-offset-4"
-                    href={"/summaries"}
+                <Button
+                    variant={"link"}
+                    asChild
+                    className="text-xs text-muted-foreground"
                 >
-                    View all
-                    <MoveRight className="ml-2 size-3 transition-all duration-200 group-hover:ml-4" />
-                </Link>
+                    <Link
+                        className="group underline decoration-muted-foreground/50 underline-offset-4"
+                        href={"/summaries"}
+                    >
+                        View all
+                        <MoveRight className="ml-2 size-3 transition-all duration-200 group-hover:ml-4" />
+                    </Link>
+                </Button>
             </div>
         </section>
     )

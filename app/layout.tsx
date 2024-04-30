@@ -38,7 +38,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <body className={cn("min-h-screen bg-background antialiased")}>
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="system"
+                    defaultTheme="dark"
                     enableSystem
                 >
                     <Analytics />

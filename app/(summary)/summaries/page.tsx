@@ -13,7 +13,7 @@ export default async function SummariesIndexPage() {
         .select({ videoid: summaries.videoid })
         .from(summaries)
         .orderBy(desc(summaries.updated_at))
-        .limit(10)
+        .limit(5)
 
     if (!data) {
         return (
