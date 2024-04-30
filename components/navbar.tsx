@@ -1,10 +1,14 @@
 import Link from "next/link"
 import { Github } from "lucide-react"
 
+import { auth } from "@/lib/auth"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { UserButton } from "@/components/user-btn"
 
 export const Navbar = async () => {
+    const session = await auth()
+
     return (
         <header className="top-0 z-40 w-full border-b bg-background/30 backdrop-blur-md">
             <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
@@ -24,16 +28,18 @@ export const Navbar = async () => {
                 </div>
 
                 <div className="flex flex-1 items-center justify-end">
-                    <nav className="flex items-center justify-center gap-3">
+                    <nav className="flex items-center justify-center gap-5">
                         <Button size={"icon"} variant={"link"} asChild>
                             <Link
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href={"https://git.new/summary"}
                             >
-                                <Github className="size-5" />
+                                <Github className="size-6" />
                             </Link>
                         </Button>
+
+                        <UserButton />
                     </nav>
                 </div>
             </div>

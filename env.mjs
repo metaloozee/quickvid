@@ -5,6 +5,11 @@ const server = z.object({
     NEON_DATABASE_URL: z.string().startsWith("postgresql://"),
     TAVILY_API_KEY: z.string().startsWith("tvly-"),
     GROQ_API_KEY: z.string().startsWith("gsk_"),
+
+    AUTH_SECRET: z.string(),
+    AUTH_GITHUB_ID: z.string(),
+    AUTH_GITHUB_SECRET: z.string(),
+
     NODE_ENV: z.enum(["development", "test", "production"]),
 })
 
@@ -24,6 +29,11 @@ const processEnv = {
     NEON_DATABASE_URL: process.env.NEON_DATABASE_URL,
     TAVILY_API_KEY: process.env.TAVILY_API_KEY,
     GROQ_API_KEY: process.env.GROQ_API_KEY,
+
+    AUTH_SECRET: process.env.AUTH_SECRET,
+    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
+    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
+
     NODE_ENV: process.env.NODE_ENV,
 }
 

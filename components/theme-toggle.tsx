@@ -1,14 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { MonitorSmartphone, MoonStar, Sun } from "lucide-react"
+import { MoonStar, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
-import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 export function ThemeToggle() {
-    const { setTheme, theme } = useTheme()
+    const { setTheme } = useTheme()
 
     return (
         <div className="flex justify-center md:justify-start">
@@ -25,15 +24,6 @@ export function ThemeToggle() {
                 >
                     <Sun className="size-3" />
                 </ToggleGroupItem>
-
-                {/* <ToggleGroupItem
-                    className="rounded-full"
-                    onClick={() => setTheme("system")}
-                    value="system"
-                    aria-label="Toggle system"
-                >
-                    <MonitorSmartphone className="size-3" />
-                </ToggleGroupItem> */}
 
                 <ToggleGroupItem
                     className="rounded-full"
