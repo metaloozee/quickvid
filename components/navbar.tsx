@@ -3,6 +3,7 @@ import { Github } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export const Navbar = async () => {
     return (
@@ -24,16 +25,17 @@ export const Navbar = async () => {
                 </div>
 
                 <div className="flex flex-1 items-center justify-end">
-                    <nav className="flex items-center justify-center gap-5">
+                    <nav className="flex items-center justify-center gap-3">
                         <Button size={"icon"} variant={"link"} asChild>
                             <Link
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href={"https://git.new/summary"}
                             >
-                                <Github />
+                                <Github className="size-5" />
                             </Link>
                         </Button>
+                        <ThemeToggle />
                     </nav>
                 </div>
             </div>
