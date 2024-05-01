@@ -71,7 +71,7 @@ export const UserButton = ({
             </DropdownMenuContent>
         </DropdownMenu>
     ) : (
-        <Button size={"sm"} onClick={() => signIn("google")}>
+        <Button disabled size={"sm"} onClick={() => signIn("google")}>
             Login
         </Button>
     )

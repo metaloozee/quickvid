@@ -47,6 +47,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
                     <SessionProvider>
                         <div className="relative flex min-h-screen flex-col">
+                            <AnnouncementBanner text="Authentication has been temporarily suspended due to the experimental models being non-operational." />
                             <Navbar />
                             <div className="flex-1">{children}</div>
                             <Footer />

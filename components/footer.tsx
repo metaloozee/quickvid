@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 
 export const Footer = () => {
     return (
-        <div className="container my-10 flex flex-row items-center justify-start gap-5">
+        <div className="container my-10 flex flex-col items-center justify-start gap-5 md:flex-row">
             <ThemeToggle />
             <p className="text-left font-mono text-xs text-muted-foreground">
                 made with ❤️ by{" "}
