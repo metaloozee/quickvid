@@ -7,8 +7,8 @@ const server = z.object({
     GROQ_API_KEY: z.string().startsWith("gsk_"),
 
     AUTH_SECRET: z.string(),
-    AUTH_GITHUB_ID: z.string(),
-    AUTH_GITHUB_SECRET: z.string(),
+    AUTH_GOOGLE_ID: z.string(),
+    AUTH_GOOGLE_SECRET: z.string(),
 
     NODE_ENV: z.enum(["development", "test", "production"]),
 })
@@ -31,8 +31,8 @@ const processEnv = {
     GROQ_API_KEY: process.env.GROQ_API_KEY,
 
     AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
-    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
+    AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
+    AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
 
     NODE_ENV: process.env.NODE_ENV,
 }

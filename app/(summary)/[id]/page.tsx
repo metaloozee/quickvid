@@ -2,8 +2,9 @@ import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
+import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { summaries } from "@/lib/db/schema"
+import { summaries, users } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
@@ -11,10 +12,18 @@ import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
 
 export default async function SummaryIndexPage({ params }: { params: any }) {
+    const session = await auth()
+
     const [data] = await db
         .select()
         .from(summaries)
         .where(eq(summaries.videoid, params.id!))
+        .limit(1)
+
+    const [userData] = await db
+        .select({ credits: users.credits })
+        .from(users)
+        .where(eq(users.id, session?.user?.id!))
         .limit(1)
 
     if (!data) {
@@ -74,7 +83,10 @@ export default async function SummaryIndexPage({ params }: { params: any }) {
                 </div>
                 <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 text-justify outline-dashed outline-2 outline-secondary md:text-left">
                     {data.summary}
-                    <RegenerateSummaryButton videoid={data.videoid} />
+                    <RegenerateSummaryButton
+                        credits={userData?.credits}
+                        videoid={data.videoid}
+                    />
                 </div>
             </div>
 

@@ -16,6 +16,7 @@ export const users = pgTable("user", {
     email: text("email").notNull(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
+    credits: integer("credits").default(3).notNull(),
 })
 
 export const accounts = pgTable(

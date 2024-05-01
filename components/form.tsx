@@ -32,7 +32,11 @@ export const formSchema = z.object({
     ]),
 })
 
-export const InitialForm: React.FC = () => {
+export const InitialForm = ({
+    credits,
+}: {
+    credits: number | null | undefined
+}) => {
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -106,12 +110,7 @@ export const InitialForm: React.FC = () => {
                                             <DropdownMenuRadioItem value="gpt-3.5-turbo">
                                                 gpt-3.5-turbo (16k)
                                             </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem
-                                                disabled
-                                                value="gpt-4-turbo"
-                                            >
-                                                gpt-4-turbo (128k)
-                                            </DropdownMenuRadioItem>
+
                                             <DropdownMenuSeparator />
 
                                             <DropdownMenuLabel>
@@ -122,10 +121,34 @@ export const InitialForm: React.FC = () => {
                                                     Experimental
                                                 </Badge>
                                             </DropdownMenuLabel>
-                                            <DropdownMenuRadioItem value="llama3-70b-8192">
+                                            <DropdownMenuRadioItem
+                                                disabled={
+                                                    credits
+                                                        ? credits <= 0
+                                                        : true
+                                                }
+                                                value="gpt-4-turbo"
+                                            >
+                                                gpt-4-turbo (128k)
+                                            </DropdownMenuRadioItem>
+                                            <DropdownMenuRadioItem
+                                                disabled={
+                                                    credits
+                                                        ? credits <= 0
+                                                        : true
+                                                }
+                                                value="llama3-70b-8192"
+                                            >
                                                 llama3-70b (8k){" "}
                                             </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem value="mixtral-8x7b-32768">
+                                            <DropdownMenuRadioItem
+                                                disabled={
+                                                    credits
+                                                        ? credits <= 0
+                                                        : true
+                                                }
+                                                value="mixtral-8x7b-32768"
+                                            >
                                                 mixtral-8x7b (32k)
                                             </DropdownMenuRadioItem>
                                         </DropdownMenuRadioGroup>

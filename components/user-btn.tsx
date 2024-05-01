@@ -15,7 +15,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export const UserButton = () => {
+export const UserButton = ({
+    credits,
+}: {
+    credits: number | null | undefined
+}) => {
     const { data: session } = useSession()
 
     return session?.user ? (
@@ -55,7 +59,7 @@ export const UserButton = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem className="text-xs">
-                        Pro Credits: 0
+                        Credits: {credits}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
@@ -67,7 +71,7 @@ export const UserButton = () => {
             </DropdownMenuContent>
         </DropdownMenu>
     ) : (
-        <Button size={"sm"} onClick={() => signIn("github")}>
+        <Button size={"sm"} onClick={() => signIn("google")}>
             Login
         </Button>
     )

@@ -1,6 +1,18 @@
+import { eq } from "drizzle-orm"
+
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { users } from "@/lib/db/schema"
 import { InitialForm } from "@/components/form"
 
 export default async function IndexPage() {
+    const session = await auth()
+    const [userData] = await db
+        .select({ credits: users.credits })
+        .from(users)
+        .where(eq(users.id, session?.user?.id!))
+        .limit(1)
+
     return (
         <section className="container mt-10 flex items-center md:mt-28">
             <div className="flex max-w-5xl flex-col items-start gap-5">
@@ -16,7 +28,7 @@ export default async function IndexPage() {
                 </p>
 
                 <div className="mt-4 w-full">
-                    <InitialForm />
+                    <InitialForm credits={userData?.credits} />
                 </div>
             </div>
         </section>

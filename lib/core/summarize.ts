@@ -30,7 +30,7 @@ export const summarizeTranscriptWithGroq = async (
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points.",
+                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
             ],
             ...messages,
         ])
@@ -58,7 +58,6 @@ export const summarizeTranscriptWithGpt = async (
     const gpt = new ChatOpenAI({
         model,
         temperature: 0,
-        streaming: false,
     })
 
     try {
@@ -70,7 +69,7 @@ export const summarizeTranscriptWithGpt = async (
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points.",
+                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
             ],
             ...messages,
         ])
