@@ -47,7 +47,7 @@ export const Navbar = async () => {
                             </Link>
                         </Button>
 
-                        <UserButton credits={userData?.credits} />
+                        {/* <UserButton credits={userData?.credits} /> */}
                     </nav>
                 </div>
             </div>

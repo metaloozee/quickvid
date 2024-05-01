@@ -6,7 +6,7 @@ import { TokenTextSplitter } from "langchain/text_splitter"
 
 const splitter = new TokenTextSplitter({
     encodingName: "gpt2",
-    chunkSize: 500,
+    chunkSize: 8000,
     chunkOverlap: 0,
 })
 
@@ -23,16 +23,36 @@ export const summarizeTranscriptWithGroq = async (
 
     try {
         const outputs = await splitter.createDocuments([transcript])
-        const messages: ["human", string][] = outputs.map(
-            (output: { pageContent: string }) => ["human", output.pageContent]
+
+        const summaryPromises = outputs.map(
+            async (output: { pageContent: string }) => {
+                const prompt = ChatPromptTemplate.fromMessages([
+                    [
+                        "system",
+                        "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following sub-section of a transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                    ],
+                    ["human", output.pageContent],
+                ])
+
+                const chain = prompt.pipe(groq)
+                const res = await chain.invoke({})
+                if (!res) {
+                    throw new Error(
+                        "An Error Occurred while Summarizing the Sub-section of the transcript"
+                    )
+                }
+
+                return res.content as string
+            }
         )
 
+        const summaries = await Promise.all(summaryPromises)
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of summaries generated from sub-sections of a transcript from a youtube video; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
             ],
-            ...messages,
+            ["human", summaries.join()],
         ])
 
         const chain = prompt.pipe(groq)
@@ -62,16 +82,36 @@ export const summarizeTranscriptWithGpt = async (
 
     try {
         const outputs = await splitter.createDocuments([transcript])
-        const messages: ["human", string][] = outputs.map(
-            (output: { pageContent: string }) => ["human", output.pageContent]
+
+        const summaryPromises = outputs.map(
+            async (output: { pageContent: string }) => {
+                const prompt = ChatPromptTemplate.fromMessages([
+                    [
+                        "system",
+                        "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following sub-section of a transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                    ],
+                    ["human", output.pageContent],
+                ])
+
+                const chain = prompt.pipe(gpt)
+                const res = await chain.invoke({})
+                if (!res) {
+                    throw new Error(
+                        "An Error Occurred while Summarizing the Sub-section of the transcript"
+                    )
+                }
+
+                return res.content as string
+            }
         )
 
+        const summaries = await Promise.all(summaryPromises)
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following transcript from a youtube video and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of summaries generated from sub-sections of a transcript from a youtube video; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
             ],
-            ...messages,
+            ["human", summaries.join()],
         ])
 
         const chain = prompt.pipe(gpt)
