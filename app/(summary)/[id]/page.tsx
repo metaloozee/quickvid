@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from "next"
 import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
@@ -6,12 +7,48 @@ import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { summaries, users } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
 
-export default async function SummaryIndexPage({ params }: { params: any }) {
+type Props = {
+    params: { id: string }
+}
+
+export async function generateMetadata(
+    { params }: Props,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const id = params.id
+
+    const [data] = await db
+        .select()
+        .from(summaries)
+        .where(eq(summaries.videoid, id!))
+        .limit(1)
+
+    const videoInfo = await ytdl.getInfo(data?.videoid ?? "")
+
+    return {
+        title:
+            videoInfo.videoDetails.title.length > 10
+                ? videoInfo.videoDetails.title.slice(0, 10).concat("...")
+                : videoInfo.videoDetails.title,
+        description: data.summary?.slice(0, 30).concat("..."),
+        keywords: [
+            "YouTube Summary",
+            "Video Summary",
+            "Summary",
+            videoInfo.videoDetails.title,
+            videoInfo.videoDetails.author.name,
+        ],
+        openGraph: {
+            images: [videoInfo.videoDetails.thumbnails.reverse()[0].url],
+        },
+    }
+}
+
+export default async function SummaryIndexPage({ params }: Props) {
     const session = await auth()
 
     const [data] = await db
