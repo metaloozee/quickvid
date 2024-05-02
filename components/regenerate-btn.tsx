@@ -31,8 +31,7 @@ export const RegenerateFormSchema = z.object({
 
 export const RegenerateSummaryButton: React.FC<{
     videoid: string
-    credits: number | null | undefined
-}> = ({ videoid, credits }) => {
+}> = ({ videoid }) => {
     const regenerateForm = useForm<z.infer<typeof RegenerateFormSchema>>({
         resolver: zodResolver(RegenerateFormSchema),
         defaultValues: {
@@ -82,36 +81,20 @@ export const RegenerateSummaryButton: React.FC<{
                                             gpt-3.5-turbo (16k)
                                         </DropdownMenuRadioItem>
 
-                                        <DropdownMenuSeparator />
-
-                                        <DropdownMenuLabel>
-                                            <Badge
-                                                className="text-xs"
-                                                variant={"secondary"}
-                                            >
-                                                Experimental
-                                            </Badge>
-                                        </DropdownMenuLabel>
                                         <DropdownMenuRadioItem
-                                            disabled={
-                                                credits ? credits <= 0 : true
-                                            }
+                                            disabled
                                             value="gpt-4-turbo"
                                         >
                                             gpt-4-turbo (128k)
                                         </DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem
-                                            disabled={
-                                                credits ? credits <= 0 : true
-                                            }
+                                            disabled
                                             value="llama3-70b-8192"
                                         >
                                             llama3-70b (8k){" "}
                                         </DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem
-                                            disabled={
-                                                credits ? credits <= 0 : true
-                                            }
+                                            disabled
                                             value="mixtral-8x7b-32768"
                                         >
                                             mixtral-8x7b (32k)

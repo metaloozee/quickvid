@@ -3,7 +3,6 @@ import { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GeistMono } from "geist/font/mono"
-import { SessionProvider } from "next-auth/react"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -41,14 +40,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <Analytics />
                     <SpeedInsights />
 
-                    <SessionProvider>
-                        <div className="relative flex min-h-screen flex-col">
-                            <AnnouncementBanner text="Authentication has been temporarily suspended due to the experimental models being non-operational." />
-                            <Navbar />
-                            <div className="flex-1">{children}</div>
-                            <Footer />
-                        </div>
-                    </SessionProvider>
+                    <div className="relative flex min-h-screen flex-col">
+                        {/* <AnnouncementBanner text="Authentication has been temporarily suspended due to the experimental models being non-operational." /> */}
+                        <Navbar />
+                        <div className="flex-1">{children}</div>
+                        <Footer />
+                    </div>
                     {/* <TailwindIndicator /> */}
                 </ThemeProvider>
             </body>

@@ -6,7 +6,7 @@ import { TokenTextSplitter } from "langchain/text_splitter"
 
 const splitter = new TokenTextSplitter({
     encodingName: "gpt2",
-    chunkSize: 8000,
+    chunkSize: 12000,
     chunkOverlap: 0,
 })
 

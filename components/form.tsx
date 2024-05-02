@@ -32,11 +32,7 @@ export const formSchema = z.object({
     ]),
 })
 
-export const InitialForm = ({
-    credits,
-}: {
-    credits: number | null | undefined
-}) => {
+export const InitialForm = () => {
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -111,7 +107,7 @@ export const InitialForm = ({
                                                 gpt-3.5-turbo (16k)
                                             </DropdownMenuRadioItem>
 
-                                            <DropdownMenuSeparator />
+                                            {/* <DropdownMenuSeparator />
 
                                             <DropdownMenuLabel>
                                                 <Badge
@@ -120,33 +116,21 @@ export const InitialForm = ({
                                                 >
                                                     Experimental
                                                 </Badge>
-                                            </DropdownMenuLabel>
+                                            </DropdownMenuLabel> */}
                                             <DropdownMenuRadioItem
-                                                disabled={
-                                                    credits
-                                                        ? credits <= 0
-                                                        : true
-                                                }
+                                                disabled
                                                 value="gpt-4-turbo"
                                             >
                                                 gpt-4-turbo (128k)
                                             </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem
-                                                disabled={
-                                                    credits
-                                                        ? credits <= 0
-                                                        : true
-                                                }
+                                                disabled
                                                 value="llama3-70b-8192"
                                             >
                                                 llama3-70b (8k){" "}
                                             </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem
-                                                disabled={
-                                                    credits
-                                                        ? credits <= 0
-                                                        : true
-                                                }
+                                                disabled
                                                 value="mixtral-8x7b-32768"
                                             >
                                                 mixtral-8x7b (32k)

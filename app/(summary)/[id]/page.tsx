@@ -3,9 +3,8 @@ import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
-import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { summaries, users } from "@/lib/db/schema"
+import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { VerifyFacts } from "@/components/verify-facts"
@@ -31,10 +30,10 @@ export async function generateMetadata(
 
     return {
         title:
-            videoInfo.videoDetails.title.length > 10
-                ? videoInfo.videoDetails.title.slice(0, 10).concat("...")
+            videoInfo.videoDetails.title.length > 20
+                ? videoInfo.videoDetails.title.slice(0, 20).concat("...")
                 : videoInfo.videoDetails.title,
-        description: data.summary?.slice(0, 30).concat("..."),
+        description: data.summary?.slice(0, 100).concat("..."),
         keywords: [
             "YouTube Summary",
             "Video Summary",
@@ -49,18 +48,10 @@ export async function generateMetadata(
 }
 
 export default async function SummaryIndexPage({ params }: Props) {
-    const session = await auth()
-
     const [data] = await db
         .select()
         .from(summaries)
         .where(eq(summaries.videoid, params.id!))
-        .limit(1)
-
-    const [userData] = await db
-        .select({ credits: users.credits })
-        .from(users)
-        .where(eq(users.id, session?.user?.id!))
         .limit(1)
 
     if (!data) {
@@ -120,10 +111,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                 </div>
                 <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 text-justify outline-dashed outline-2 outline-secondary md:text-left">
                     {data.summary}
-                    <RegenerateSummaryButton
-                        credits={userData?.credits}
-                        videoid={data.videoid}
-                    />
+                    <RegenerateSummaryButton videoid={data.videoid} />
                 </div>
             </div>
 

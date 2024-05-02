@@ -6,7 +6,6 @@ import { eq } from "drizzle-orm"
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
-import { auth } from "@/lib/auth"
 import { uploadAndTranscribe } from "@/lib/core/convert"
 import { searchUsingTavilly } from "@/lib/core/search"
 import {
@@ -15,7 +14,7 @@ import {
 } from "@/lib/core/summarize"
 import { transcribeVideo } from "@/lib/core/transcribe"
 import { db } from "@/lib/db"
-import { summaries, users, videos } from "@/lib/db/schema"
+import { summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
 import { RegenerateFormSchema } from "@/components/regenerate-btn"
 import { VerifyFactsFormSchema } from "@/components/verify-facts"
@@ -29,7 +28,7 @@ export type FactCheckerResponse = {
 export const handleInitialFormSubmit = async (
     formData: z.infer<typeof formSchema>
 ) => {
-    const session = await auth()
+    const start = Date.now()
 
     try {
         const videoInfo = await ytdl.getInfo(formData.link)
@@ -56,50 +55,11 @@ export const handleInitialFormSubmit = async (
                 formData.model == "gpt-3.5-turbo" ||
                 formData.model == "gpt-4-turbo"
             ) {
-                if (formData.model == "gpt-4-turbo") {
-                    if (!session?.user) {
-                        throw new Error("Invalid session")
-                    }
-
-                    const [userData] = await db
-                        .select({ credits: users.credits })
-                        .from(users)
-                        .where(eq(users.id, session.user.id!))
-                        .limit(1)
-
-                    if (userData.credits == 0) {
-                        throw new Error("0 Credits")
-                    }
-
-                    await db
-                        .update(users)
-                        .set({ credits: userData.credits - 1 })
-                        .where(eq(users.id, session.user.id!))
-                }
-
                 summary = await summarizeTranscriptWithGpt(
                     existingVideo.transcript!,
                     formData.model
                 )
             } else {
-                if (!session?.user) {
-                    throw new Error("Invalid session")
-                }
-
-                const [userData] = await db
-                    .select({ credits: users.credits })
-                    .from(users)
-                    .where(eq(users.id, session.user.id!))
-                    .limit(1)
-
-                if (userData.credits == 0) {
-                    throw new Error("0 Credits")
-                }
-
-                await db
-                    .update(users)
-                    .set({ credits: userData.credits - 1 })
-                    .where(eq(users.id, session.user.id!))
                 summary = await summarizeTranscriptWithGroq(
                     existingVideo.transcript!,
                     formData.model
@@ -135,51 +95,11 @@ export const handleInitialFormSubmit = async (
             formData.model == "gpt-3.5-turbo" ||
             formData.model == "gpt-4-turbo"
         ) {
-            if (formData.model == "gpt-4-turbo") {
-                if (!session?.user) {
-                    throw new Error("Invalid session")
-                }
-
-                const [userData] = await db
-                    .select({ credits: users.credits })
-                    .from(users)
-                    .where(eq(users.id, session.user.id!))
-                    .limit(1)
-
-                if (userData.credits == 0) {
-                    throw new Error("0 Credits")
-                }
-
-                await db
-                    .update(users)
-                    .set({ credits: userData.credits - 1 })
-                    .where(eq(users.id, session.user.id!))
-            }
-
             summary = await summarizeTranscriptWithGpt(
                 transcript,
                 formData.model
             )
         } else {
-            if (!session?.user) {
-                throw new Error("Invalid session")
-            }
-
-            const [userData] = await db
-                .select({ credits: users.credits })
-                .from(users)
-                .where(eq(users.id, session.user.id!))
-                .limit(1)
-
-            if (userData.credits == 0) {
-                throw new Error("0 Credits")
-            }
-
-            await db
-                .update(users)
-                .set({ credits: userData.credits - 1 })
-                .where(eq(users.id, session.user.id!))
-
             summary = await summarizeTranscriptWithGroq(
                 transcript,
                 formData.model
@@ -200,6 +120,7 @@ export const handleInitialFormSubmit = async (
         console.error(e)
         return null
     } finally {
+        console.log("generated in " + (Date.now() - start) / 1000 + " seconds")
         revalidatePath("/")
         revalidatePath("/summaries")
     }
@@ -208,8 +129,6 @@ export const handleInitialFormSubmit = async (
 export const handleRegenerateSummary = async (
     formData: z.infer<typeof RegenerateFormSchema>
 ) => {
-    const session = await auth()
-
     try {
         const [data] = await db
             .select({
@@ -227,51 +146,11 @@ export const handleRegenerateSummary = async (
             formData.model == "gpt-3.5-turbo" ||
             formData.model == "gpt-4-turbo"
         ) {
-            if (formData.model == "gpt-4-turbo") {
-                if (!session?.user) {
-                    throw new Error("Invalid session")
-                }
-
-                const [userData] = await db
-                    .select({ credits: users.credits })
-                    .from(users)
-                    .where(eq(users.id, session.user.id!))
-                    .limit(1)
-
-                if (userData.credits == 0) {
-                    throw new Error("0 Credits")
-                }
-
-                await db
-                    .update(users)
-                    .set({ credits: userData.credits - 1 })
-                    .where(eq(users.id, session.user.id!))
-            }
-
             summary = await summarizeTranscriptWithGpt(
                 data.transcript!,
                 formData.model
             )
         } else {
-            if (!session?.user) {
-                throw new Error("Invalid session")
-            }
-
-            const [userData] = await db
-                .select({ credits: users.credits })
-                .from(users)
-                .where(eq(users.id, session.user.id!))
-                .limit(1)
-
-            if (userData.credits == 0) {
-                throw new Error("0 Credits")
-            }
-
-            await db
-                .update(users)
-                .set({ credits: userData.credits - 1 })
-                .where(eq(users.id, session.user.id!))
-
             summary = await summarizeTranscriptWithGroq(
                 data.transcript!,
                 formData.model
