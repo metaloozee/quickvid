@@ -24,7 +24,6 @@
     "*.js": "eslint --cache --fix"
   },
   "dependencies": {
-    "@auth/drizzle-adapter": "^1.0.1",
     "@hookform/resolvers": "^3.3.4",
     "@langchain/community": "^0.0.53",
     "@langchain/core": "0.1.58",
@@ -53,7 +52,6 @@
     "langchain": "^0.1.36",
     "lucide-react": "0.364.0",
     "next": "14.1.4",
-    "next-auth": "5.0.0-beta.17",
     "next-themes": "^0.2.1",
     "next-view-transitions": "^0.1.1",
     "node-fetch": "^3.3.2",

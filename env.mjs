@@ -6,10 +6,6 @@ const server = z.object({
     TAVILY_API_KEY: z.string().startsWith("tvly-"),
     GROQ_API_KEY: z.string().startsWith("gsk_"),
 
-    AUTH_SECRET: z.string(),
-    AUTH_GOOGLE_ID: z.string(),
-    AUTH_GOOGLE_SECRET: z.string(),
-
     NODE_ENV: z.enum(["development", "test", "production"]),
 })
 
@@ -29,10 +25,6 @@ const processEnv = {
     NEON_DATABASE_URL: process.env.NEON_DATABASE_URL,
     TAVILY_API_KEY: process.env.TAVILY_API_KEY,
     GROQ_API_KEY: process.env.GROQ_API_KEY,
-
-    AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
-    AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
 
     NODE_ENV: process.env.NODE_ENV,
 }
