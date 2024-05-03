@@ -53,7 +53,7 @@ export const InitialForm = () => {
                                 return router.push(`/${value}`)
                             }
 
-                            return
+                            return router.refresh()
                         }
                     )
                 })}

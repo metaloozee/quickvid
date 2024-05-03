@@ -41,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <SpeedInsights />
 
                     <div className="relative flex min-h-screen flex-col">
-                        {/* <AnnouncementBanner text="Authentication has been temporarily suspended due to the experimental models being non-operational." /> */}
+                        <AnnouncementBanner text="Kindly verify the domain name; if it differs from quickvid.oozee.me, please utilize that particular website." />
                         <Navbar />
                         <div className="flex-1">{children}</div>
                         <Footer />
