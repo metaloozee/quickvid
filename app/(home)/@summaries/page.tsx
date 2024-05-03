@@ -6,6 +6,7 @@ import ytdl from "ytdl-core"
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
 import { Button } from "@/components/ui/button"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { VideoWidget } from "@/components/video-widget"
 
 export default async function SummariesIndexPage() {
@@ -17,7 +18,7 @@ export default async function SummariesIndexPage() {
 
     return (
         <section className="container mt-10 flex w-screen flex-col items-start gap-5">
-            <div className="flex w-full flex-row items-center gap-10 overflow-scroll md:overflow-visible">
+            <div className="flex w-full flex-row flex-wrap items-center justify-center gap-5 md:justify-start md:gap-10">
                 {data.map(async (d: (typeof data)[0]) => {
                     const videoInfo = await ytdl.getInfo(d.videoid)
                     return (
@@ -48,7 +49,7 @@ export default async function SummariesIndexPage() {
                         className="group underline decoration-muted-foreground/50 underline-offset-4"
                         href={"/summaries"}
                     >
-                        View all
+                        View More
                         <MoveRight className="ml-2 size-3 transition-all duration-200 group-hover:ml-4" />
                     </Link>
                 </Button>

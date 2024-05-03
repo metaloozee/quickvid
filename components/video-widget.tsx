@@ -12,7 +12,7 @@ export const VideoWidget = ({
     thumbnail: string
 }) => {
     return (
-        <div className="w-[250px] rounded-lg md:w-[300px]">
+        <div className="w-full rounded-lg md:w-[300px]">
             <AspectRatio
                 suppressHydrationWarning
                 ratio={16 / 9}
