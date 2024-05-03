@@ -67,7 +67,7 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                                 href={source!}
                                 className="mt-2 text-xs text-muted-foreground"
                             >
-                                {source}
+                                {source?.slice(0, 40).concat("...")}
                             </Link>
                         </div>
                     ) : (
