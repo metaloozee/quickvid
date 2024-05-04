@@ -20,6 +20,7 @@ import { RegenerateFormSchema } from "@/components/regenerate-btn"
 import { VerifyFactsFormSchema } from "@/components/verify-facts"
 
 export type FactCheckerResponse = {
+    input: "string"
     isAccurate: "true" | "false"
     source: string
     text: string
@@ -180,9 +181,7 @@ export const checkFacts = async (
 ) => {
     try {
         const res = await searchUsingTavilly(formData.summary)
-        const response: FactCheckerResponse = await JSON.parse(res)
-
-        return response
+        return await JSON.parse(res)
     } catch (e) {
         console.error(e)
         return null
