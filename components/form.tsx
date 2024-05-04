@@ -7,7 +7,6 @@ import { Bolt, ListVideo, RotateCw } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -26,6 +25,7 @@ export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
     model: z.enum([
         "gpt-3.5-turbo",
+        "gemma-7b-it",
         "gpt-4-turbo",
         "llama3-70b-8192",
         "mixtral-8x7b-32768",
@@ -107,16 +107,10 @@ export const InitialForm = () => {
                                                 gpt-3.5-turbo (16k)
                                             </DropdownMenuRadioItem>
 
-                                            {/* <DropdownMenuSeparator />
+                                            <DropdownMenuRadioItem value="gemma-7b-it">
+                                                gemma-7b-it (8k)
+                                            </DropdownMenuRadioItem>
 
-                                            <DropdownMenuLabel>
-                                                <Badge
-                                                    className="text-xs"
-                                                    variant={"secondary"}
-                                                >
-                                                    Experimental
-                                                </Badge>
-                                            </DropdownMenuLabel> */}
                                             <DropdownMenuRadioItem
                                                 disabled
                                                 value="gpt-4-turbo"

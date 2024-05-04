@@ -23,6 +23,7 @@ export const RegenerateFormSchema = z.object({
     videoid: z.string().describe("The YouTube video's unique ID"),
     model: z.enum([
         "gpt-3.5-turbo",
+        "gemma-7b-it",
         "gpt-4-turbo",
         "llama3-70b-8192",
         "mixtral-8x7b-32768",
@@ -79,6 +80,10 @@ export const RegenerateSummaryButton: React.FC<{
                                     >
                                         <DropdownMenuRadioItem value="gpt-3.5-turbo">
                                             gpt-3.5-turbo (16k)
+                                        </DropdownMenuRadioItem>
+
+                                        <DropdownMenuRadioItem value="gemma-7b-it">
+                                            gemma-7b-it (8k)
                                         </DropdownMenuRadioItem>
 
                                         <DropdownMenuRadioItem
