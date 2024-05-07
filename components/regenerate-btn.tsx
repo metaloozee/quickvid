@@ -79,30 +79,42 @@ export const RegenerateSummaryButton: React.FC<{
                                         onValueChange={field.onChange}
                                     >
                                         <DropdownMenuRadioItem value="gpt-3.5-turbo">
-                                            gpt-3.5-turbo (16k)
+                                            gpt-3.5-turbo
                                         </DropdownMenuRadioItem>
 
                                         <DropdownMenuRadioItem value="gemma-7b-it">
-                                            gemma-7b-it (8k)
+                                            gemma-7b-it
+                                            <Badge
+                                                className="ml-2 text-xs"
+                                                variant={"secondary"}
+                                            >
+                                                Experimental
+                                            </Badge>
                                         </DropdownMenuRadioItem>
 
+                                        <DropdownMenuRadioItem value="llama3-70b-8192">
+                                            llama3-70b0
+                                            <Badge
+                                                className="ml-2 text-xs"
+                                                variant={"secondary"}
+                                            >
+                                                Experimental
+                                            </Badge>
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="mixtral-8x7b-32768">
+                                            mixtral-8x7b
+                                            <Badge
+                                                className="ml-2 text-xs"
+                                                variant={"secondary"}
+                                            >
+                                                Experimental
+                                            </Badge>
+                                        </DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem
                                             disabled
                                             value="gpt-4-turbo"
                                         >
-                                            gpt-4-turbo (128k)
-                                        </DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem
-                                            disabled
-                                            value="llama3-70b-8192"
-                                        >
-                                            llama3-70b (8k){" "}
-                                        </DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem
-                                            disabled
-                                            value="mixtral-8x7b-32768"
-                                        >
-                                            mixtral-8x7b (32k)
+                                            gpt-4-turbo
                                         </DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>

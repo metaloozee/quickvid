@@ -7,6 +7,7 @@ import { Bolt, ListVideo, RotateCw } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -94,7 +95,7 @@ export const InitialForm = () => {
                                             <Bolt className="size-4 transition-all duration-500 group-hover:rotate-180" />
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-56">
+                                    <DropdownMenuContent className="w-full">
                                         <DropdownMenuLabel>
                                             Choose your AI Model
                                         </DropdownMenuLabel>
@@ -104,30 +105,41 @@ export const InitialForm = () => {
                                             onValueChange={field.onChange}
                                         >
                                             <DropdownMenuRadioItem value="gpt-3.5-turbo">
-                                                gpt-3.5-turbo (16k)
+                                                gpt-3.5-turbo
                                             </DropdownMenuRadioItem>
 
+                                            <DropdownMenuRadioItem value="llama3-70b-8192">
+                                                llama3-70b
+                                                <Badge
+                                                    className="ml-2 text-xs"
+                                                    variant={"secondary"}
+                                                >
+                                                    Experimental
+                                                </Badge>
+                                            </DropdownMenuRadioItem>
+                                            <DropdownMenuRadioItem value="mixtral-8x7b-32768">
+                                                mixtral-8x7b
+                                                <Badge
+                                                    className="ml-2 text-xs"
+                                                    variant={"secondary"}
+                                                >
+                                                    Experimental
+                                                </Badge>
+                                            </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem value="gemma-7b-it">
-                                                gemma-7b-it (8k)
+                                                gemma-7b-it
+                                                <Badge
+                                                    className="ml-2 text-xs"
+                                                    variant={"secondary"}
+                                                >
+                                                    Experimental
+                                                </Badge>
                                             </DropdownMenuRadioItem>
-
                                             <DropdownMenuRadioItem
                                                 disabled
                                                 value="gpt-4-turbo"
                                             >
-                                                gpt-4-turbo (128k)
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem
-                                                disabled
-                                                value="llama3-70b-8192"
-                                            >
-                                                llama3-70b (8k){" "}
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem
-                                                disabled
-                                                value="mixtral-8x7b-32768"
-                                            >
-                                                mixtral-8x7b (32k)
+                                                gpt-4-turbo
                                             </DropdownMenuRadioItem>
                                         </DropdownMenuRadioGroup>
                                     </DropdownMenuContent>
