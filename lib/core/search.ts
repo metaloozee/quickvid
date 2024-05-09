@@ -19,17 +19,7 @@ import {
 import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
-const responseSchema = z.object({
-    isAccurate: z
-        .enum(["true", "false"])
-        .describe("Whether the video is accurate or not."),
-    source: z.string().url().describe("The actual source on the internet."),
-    text: z
-        .string()
-        .describe(
-            "A message stating or describing more about the video based on the source."
-        ),
-})
+import { searchResponseSchema } from "@/lib/schemas"
 
 const llm = new ChatOpenAI({
     model: "gpt-3.5-turbo",
@@ -48,7 +38,7 @@ const searchTool = new DynamicTool({
 const responseOpenAIFunction = {
     name: "response",
     description: "Return the response to the user",
-    parameters: zodToJsonSchema(responseSchema),
+    parameters: zodToJsonSchema(searchResponseSchema),
 }
 
 const prompt = ChatPromptTemplate.fromMessages([
