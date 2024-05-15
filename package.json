@@ -15,7 +15,7 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "docker:build": "docker build -t quickvid .",
-    "docker:run": "docker run -p 3000:3000 --env-file .env.local quickvid",
+    "docker:run": "docker run -d -p 3000:3000 --env-file .env.local quickvid",
     "prepare": "husky && husky install"
   },
   "lint-staged": {
