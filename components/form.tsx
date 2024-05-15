@@ -27,7 +27,7 @@ export const formSchema = z.object({
     model: z.enum([
         "gpt-3.5-turbo",
         "gemma-7b-it",
-        "gpt-4-turbo",
+        "gpt-4o",
         "llama3-70b-8192",
         "mixtral-8x7b-32768",
     ]),
@@ -108,6 +108,10 @@ export const InitialForm = () => {
                                                 gpt-3.5-turbo
                                             </DropdownMenuRadioItem>
 
+                                            <DropdownMenuRadioItem value="gpt-4o">
+                                                gpt-4o
+                                            </DropdownMenuRadioItem>
+
                                             <DropdownMenuRadioItem value="llama3-70b-8192">
                                                 llama3-70b
                                                 <Badge
@@ -134,12 +138,6 @@ export const InitialForm = () => {
                                                 >
                                                     Experimental
                                                 </Badge>
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem
-                                                disabled
-                                                value="gpt-4-turbo"
-                                            >
-                                                gpt-4-turbo
                                             </DropdownMenuRadioItem>
                                         </DropdownMenuRadioGroup>
                                     </DropdownMenuContent>

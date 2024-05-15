@@ -24,7 +24,7 @@ export const RegenerateFormSchema = z.object({
     model: z.enum([
         "gpt-3.5-turbo",
         "gemma-7b-it",
-        "gpt-4-turbo",
+        "gpt-4o",
         "llama3-70b-8192",
         "mixtral-8x7b-32768",
     ]),
@@ -82,14 +82,8 @@ export const RegenerateSummaryButton: React.FC<{
                                             gpt-3.5-turbo
                                         </DropdownMenuRadioItem>
 
-                                        <DropdownMenuRadioItem value="gemma-7b-it">
-                                            gemma-7b-it
-                                            <Badge
-                                                className="ml-2 text-xs"
-                                                variant={"secondary"}
-                                            >
-                                                Experimental
-                                            </Badge>
+                                        <DropdownMenuRadioItem value="gpt-4o">
+                                            gpt-4o
                                         </DropdownMenuRadioItem>
 
                                         <DropdownMenuRadioItem value="llama3-70b-8192">
@@ -110,11 +104,14 @@ export const RegenerateSummaryButton: React.FC<{
                                                 Experimental
                                             </Badge>
                                         </DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem
-                                            disabled
-                                            value="gpt-4-turbo"
-                                        >
-                                            gpt-4-turbo
+                                        <DropdownMenuRadioItem value="gemma-7b-it">
+                                            gemma-7b-it
+                                            <Badge
+                                                className="ml-2 text-xs"
+                                                variant={"secondary"}
+                                            >
+                                                Experimental
+                                            </Badge>
                                         </DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>

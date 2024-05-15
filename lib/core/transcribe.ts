@@ -1,10 +1,9 @@
 import { YoutubeLoader } from "langchain/document_loaders/web/youtube"
 
-export const transcribeVideo = async (videoId: string) => {
-    const loader = YoutubeLoader.createFromUrl(
-        `https://www.youtube.com/watch?v=${videoId}`,
-        { addVideoInfo: true }
-    )
+import { uploadAndTranscribe } from "@/lib/core/convert"
+
+export const transcribeVideo = async (link: string) => {
+    const loader = YoutubeLoader.createFromUrl(link, { addVideoInfo: true })
 
     try {
         const docs = await loader.load()
@@ -14,7 +13,19 @@ export const transcribeVideo = async (videoId: string) => {
 
         return docs[0].pageContent
     } catch (e) {
-        console.error(e)
-        return null
+        try {
+            console.log("Couldnt find captions... running whsiper...")
+            const transcript = await uploadAndTranscribe(link)
+            if (!transcript) {
+                throw new Error(
+                    "An error occurred in whisper while transcribing the audio."
+                )
+            }
+
+            return transcript
+        } catch (e) {
+            console.error(e)
+            return null
+        }
     }
 }

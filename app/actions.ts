@@ -54,7 +54,7 @@ export const handleInitialFormSubmit = async (
             let summary: MessageContent | null = null
             if (
                 formData.model == "gpt-3.5-turbo" ||
-                formData.model == "gpt-4-turbo"
+                formData.model == "gpt-4o"
             ) {
                 summary = await summarizeTranscriptWithGpt(
                     existingVideo.transcript!,
@@ -80,7 +80,6 @@ export const handleInitialFormSubmit = async (
         }
 
         const transcript = await transcribeVideo(formData.link)
-        // const transcript = await uploadAndTranscribe(formData.link)
         if (!transcript) {
             throw new Error("Couldn't transcribe the Audio.")
         }
@@ -92,10 +91,7 @@ export const handleInitialFormSubmit = async (
         })
 
         let summary: MessageContent | null = null
-        if (
-            formData.model == "gpt-3.5-turbo" ||
-            formData.model == "gpt-4-turbo"
-        ) {
+        if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
             summary = await summarizeTranscriptWithGpt(
                 transcript,
                 formData.model
@@ -121,7 +117,11 @@ export const handleInitialFormSubmit = async (
         console.error(e)
         return null
     } finally {
-        console.log("generated in " + (Date.now() - start) / 1000 + " seconds")
+        console.log(
+            `Generated ${formData.link} in ${
+                (Date.now() - start) / 1000
+            } seconds.`
+        )
         revalidatePath("/")
         revalidatePath("/summaries")
     }
@@ -130,6 +130,8 @@ export const handleInitialFormSubmit = async (
 export const handleRegenerateSummary = async (
     formData: z.infer<typeof RegenerateFormSchema>
 ) => {
+    const start = Date.now()
+
     try {
         const [data] = await db
             .select({
@@ -143,10 +145,7 @@ export const handleRegenerateSummary = async (
         }
 
         let summary: MessageContent | null = null
-        if (
-            formData.model == "gpt-3.5-turbo" ||
-            formData.model == "gpt-4-turbo"
-        ) {
+        if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
             summary = await summarizeTranscriptWithGpt(
                 data.transcript!,
                 formData.model
@@ -172,6 +171,11 @@ export const handleRegenerateSummary = async (
         console.error(e)
         return false
     } finally {
+        console.log(
+            `Re-Generated ${formData.videoid} in ${
+                (Date.now() - start) / 1000
+            } seconds.`
+        )
         revalidatePath(`/${formData.videoid}`)
     }
 }
