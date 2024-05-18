@@ -1,8 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Bolt, RotateCw } from "lucide-react"
+import { Bolt, Loader, Settings2 } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 
 import { Badge } from "@/components/ui/badge"
@@ -46,7 +47,17 @@ export const RegenerateSummaryButton: React.FC<{
             <form
                 className="flex w-full gap-2"
                 onSubmit={regenerateForm.handleSubmit(async (data) => {
-                    await handleRegenerateSummary(data)
+                    await handleRegenerateSummary(data).then(async (res) => {
+                        if (!res) {
+                            return toast.error(
+                                "An Error Occurred while Re-Generating the Summary."
+                            )
+                        }
+
+                        return toast.success(
+                            "Successfully Re-Generated the Summary"
+                        )
+                    })
                 })}
             >
                 <FormField
@@ -66,7 +77,7 @@ export const RegenerateSummaryButton: React.FC<{
                                         variant="secondary"
                                         size={"icon"}
                                     >
-                                        <Bolt className="size-4 transition-all duration-500 group-hover:rotate-180" />
+                                        <Settings2 className="size-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
@@ -128,8 +139,7 @@ export const RegenerateSummaryButton: React.FC<{
                 >
                     {regenerateForm.formState.isSubmitting ? (
                         <>
-                            Please Wait
-                            <RotateCw className="ml-2 size-4 animate-spin" />
+                            <Loader className="size-4 animate-spin duration-1000" />
                         </>
                     ) : (
                         <>Regenerate Summary</>

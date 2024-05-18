@@ -167,7 +167,7 @@ export const handleRegenerateSummary = async (
             .where(eq(summaries.videoid, formData.videoid))
 
         return true
-    } catch (e) {
+    } catch (e: any) {
         console.error(e)
         return false
     } finally {

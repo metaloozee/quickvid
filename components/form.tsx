@@ -3,8 +3,9 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Bolt, ListVideo, RotateCw } from "lucide-react"
+import { ListVideo, Loader, Settings2 } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 
 import { Badge } from "@/components/ui/badge"
@@ -51,8 +52,14 @@ export const InitialForm = () => {
                     await handleInitialFormSubmit(data).then(
                         (value: string | null) => {
                             if (value) {
+                                toast.info("Redirecting...")
+
                                 return router.push(`/${value}`)
                             }
+
+                            toast.error(
+                                "An Error Occurred while Generating the Summary."
+                            )
 
                             return router.refresh()
                         }
@@ -92,7 +99,7 @@ export const InitialForm = () => {
                                             variant="secondary"
                                             size={"icon"}
                                         >
-                                            <Bolt className="size-4 transition-all duration-500 group-hover:rotate-180" />
+                                            <Settings2 className="size-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-full">
@@ -154,8 +161,7 @@ export const InitialForm = () => {
                 >
                     {form.formState.isSubmitting ? (
                         <>
-                            Please Wait
-                            <RotateCw className="ml-2 size-4 animate-spin" />
+                            <Loader className="size-4 animate-spin duration-1000" />
                         </>
                     ) : (
                         <>

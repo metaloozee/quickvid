@@ -3,8 +3,9 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { RotateCw, ShieldCheck, ShieldX } from "lucide-react"
+import { Loader, ShieldCheck, ShieldX } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 
 import { Badge } from "@/components/ui/badge"
@@ -36,7 +37,9 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                     await checkFacts(data).then(
                         (value: FactCheckerResponse | null) => {
                             if (!value) {
-                                return console.log("Couldn't Verify the facts.")
+                                return toast.error(
+                                    "An unknown error occrred, Please try again later."
+                                )
                             }
 
                             setIsAccurate(value.isAccurate)
@@ -90,8 +93,7 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                     >
                         {verifyFactsForm.formState.isSubmitting ? (
                             <>
-                                Please Wait
-                                <RotateCw className="ml-2 size-4 animate-spin" />
+                                <Loader className="size-4 animate-spin duration-1000" />
                             </>
                         ) : (
                             <>Check For Truth</>
