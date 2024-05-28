@@ -72,7 +72,7 @@ QuickVid is here to revolutionize how you interact with YouTube content. It's si
 -   [Typescript](https://www.typescriptlang.org/) – Language
 -   [Whisper](https://openai.com/research/whisper) - Speech-to-Text
 -   [LangChain](https://docs.langchain.com/docs/) - AI Orchestration
--   [Neon](https://neon.com/) – Database
+-   [Neon](https://neon.tech/) – Database
 -   [shadcn/ui](https://ui.shadcn.com/) - UI Component Library
 
 ## Contributing
