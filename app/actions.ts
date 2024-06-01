@@ -9,6 +9,7 @@ import { z } from "zod"
 import { uploadAndTranscribe } from "@/lib/core/convert"
 import { searchUsingTavilly } from "@/lib/core/search"
 import {
+    summarizeTranscriptWithGemini,
     summarizeTranscriptWithGpt,
     summarizeTranscriptWithGroq,
 } from "@/lib/core/summarize"
@@ -60,6 +61,11 @@ export const handleInitialFormSubmit = async (
                     existingVideo.transcript!,
                     formData.model
                 )
+            } else if (formData.model == "gemini-1.5-flash") {
+                summary = await summarizeTranscriptWithGemini(
+                    existingVideo.transcript!,
+                    formData.model
+                )
             } else {
                 summary = await summarizeTranscriptWithGroq(
                     existingVideo.transcript!,
@@ -93,6 +99,11 @@ export const handleInitialFormSubmit = async (
         let summary: MessageContent | null = null
         if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
             summary = await summarizeTranscriptWithGpt(
+                transcript,
+                formData.model
+            )
+        } else if (formData.model == "gemini-1.5-flash") {
+            summary = await summarizeTranscriptWithGemini(
                 transcript,
                 formData.model
             )
@@ -147,6 +158,11 @@ export const handleRegenerateSummary = async (
         let summary: MessageContent | null = null
         if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
             summary = await summarizeTranscriptWithGpt(
+                data.transcript!,
+                formData.model
+            )
+        } else if (formData.model == "gemini-1.5-flash") {
+            summary = await summarizeTranscriptWithGemini(
                 data.transcript!,
                 formData.model
             )

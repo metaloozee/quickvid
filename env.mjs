@@ -3,7 +3,7 @@ import { z } from "zod"
 const server = z.object({
     OPENAI_API_KEY: z.string(),
     GROQ_API_KEY: z.string().startsWith("gsk_"),
-    GEMINI_API_KEY: z.string(),
+    GOOGLE_API_KEY: z.string(),
     NEON_DATABASE_URL: z.string().startsWith("postgresql://"),
     TAVILY_API_KEY: z.string().startsWith("tvly-"),
 
@@ -24,7 +24,7 @@ const client = z.object({
 const processEnv = {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     GROQ_API_KEY: process.env.GROQ_API_KEY,
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     NEON_DATABASE_URL: process.env.NEON_DATABASE_URL,
     TAVILY_API_KEY: process.env.TAVILY_API_KEY,
 

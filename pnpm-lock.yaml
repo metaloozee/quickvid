@@ -17,6 +17,9 @@ dependencies:
     "@langchain/core":
         specifier: 0.1.60
         version: 0.1.60(openai@4.38.5)
+    "@langchain/google-genai":
+        specifier: ^0.0.16
+        version: 0.0.16(openai@4.38.5)(zod@3.23.4)
     "@langchain/groq":
         specifier: ^0.0.8
         version: 0.0.8(openai@4.38.5)
@@ -1185,6 +1188,14 @@ packages:
             }
         dev: false
 
+    /@google/generative-ai@0.7.1:
+        resolution:
+            {
+                integrity: sha512-WTjMLLYL/xfA5BW6xAycRPiAX7FNHKAxrid/ayqC1QMam0KAK0NbMeS9Lubw80gVg5xFMLE+H7pw4wdNzTOlxw==,
+            }
+        engines: { node: ">=18.0.0" }
+        dev: false
+
     /@hono/node-server@1.11.1:
         resolution:
             {
@@ -2031,6 +2042,21 @@ packages:
             zod-to-json-schema: 3.23.0(zod@3.23.4)
         transitivePeerDependencies:
             - openai
+        dev: false
+
+    /@langchain/google-genai@0.0.16(openai@4.38.5)(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-aUHEeY7sTwxNqj7L5scvnOhNLOKPVSvf7HR6p1Y3M7BPyU63fXP7faB+qyuHmibtKU8pj+ApoXPpjRflYKSv4w==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            "@google/generative-ai": 0.7.1
+            "@langchain/core": 0.1.60(openai@4.38.5)
+            zod-to-json-schema: 3.23.0(zod@3.23.4)
+        transitivePeerDependencies:
+            - openai
+            - zod
         dev: false
 
     /@langchain/groq@0.0.8(openai@4.38.5):

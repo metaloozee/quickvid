@@ -26,6 +26,7 @@ import { handleInitialFormSubmit } from "@/app/actions"
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
     model: z.enum([
+        "gemini-1.5-flash",
         "gpt-3.5-turbo",
         "gemma-7b-it",
         "gpt-4o",
@@ -40,7 +41,7 @@ export const InitialForm = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            model: "gpt-3.5-turbo",
+            model: "gemini-1.5-flash",
         },
     })
 
@@ -111,6 +112,9 @@ export const InitialForm = () => {
                                             value={field.value}
                                             onValueChange={field.onChange}
                                         >
+                                            <DropdownMenuRadioItem value="gemini-1.5-flash">
+                                                gemini-1.5-flash
+                                            </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem value="gpt-3.5-turbo">
                                                 gpt-3.5-turbo
                                             </DropdownMenuRadioItem>

@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Bolt, Loader, Settings2 } from "lucide-react"
+import { Bolt, Loader, Settings2, Zap } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -23,6 +23,7 @@ import { handleRegenerateSummary } from "@/app/actions"
 export const RegenerateFormSchema = z.object({
     videoid: z.string().describe("The YouTube video's unique ID"),
     model: z.enum([
+        "gemini-1.5-flash",
         "gpt-3.5-turbo",
         "gemma-7b-it",
         "gpt-4o",
@@ -38,7 +39,7 @@ export const RegenerateSummaryButton: React.FC<{
         resolver: zodResolver(RegenerateFormSchema),
         defaultValues: {
             videoid: videoid,
-            model: "gpt-3.5-turbo",
+            model: "gemini-1.5-flash",
         },
     })
 
@@ -89,6 +90,9 @@ export const RegenerateSummaryButton: React.FC<{
                                         value={field.value}
                                         onValueChange={field.onChange}
                                     >
+                                        <DropdownMenuRadioItem value="gemini-1.5-flash">
+                                            gemini-1.5-flash
+                                        </DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="gpt-3.5-turbo">
                                             gpt-3.5-turbo
                                         </DropdownMenuRadioItem>
