@@ -5,18 +5,18 @@ import { ChatGroq } from "@langchain/groq"
 import { ChatOpenAI } from "@langchain/openai"
 import { TokenTextSplitter } from "langchain/text_splitter"
 
+const splitter = new TokenTextSplitter({
+    encodingName: "gpt2",
+    chunkSize: 500,
+    chunkOverlap: 0,
+})
+
 export const summarizeTranscriptWithGemini = async (
     transcript: string,
     model: "gemini-1.5-flash"
 ) => {
-    const splitter = new TokenTextSplitter({
-        encodingName: "gpt2",
-        chunkSize: 1000000,
-        chunkOverlap: 0,
-    })
-
     const gemini = new ChatGoogleGenerativeAI({
-        model: "gemini-1.5-flash",
+        model: model,
         temperature: 0,
         streaming: false,
     })
@@ -73,15 +73,8 @@ export const summarizeTranscriptWithGemini = async (
 
 export const summarizeTranscriptWithGroq = async (
     transcript: string,
-    model: "llama3-70b-8192" | "mixtral-8x7b-32768" | "gemma-7b-it"
+    model: "llama3-70b-8192" | "mixtral-8x7b-32768"
 ) => {
-    const splitter = new TokenTextSplitter({
-        encodingName: "gpt2",
-        chunkSize:
-            model == "llama3-70b-8192" || model == "gemma-7b-it" ? 8000 : 32000,
-        chunkOverlap: 0,
-    })
-
     const groq = new ChatGroq({
         model,
         temperature: 0,
@@ -143,12 +136,6 @@ export const summarizeTranscriptWithGpt = async (
     transcript: string,
     model: "gpt-3.5-turbo" | "gpt-4o"
 ) => {
-    const splitter = new TokenTextSplitter({
-        encodingName: "gpt2",
-        chunkSize: model == "gpt-4o" ? 128000 : 16000,
-        chunkOverlap: 0,
-    })
-
     const gpt = new ChatOpenAI({
         model,
         temperature: 0,

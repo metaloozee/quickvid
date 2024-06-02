@@ -25,7 +25,7 @@ export const Navbar = async () => {
 
                 <div className="flex flex-1 items-center justify-end">
                     <nav className="flex items-center justify-center gap-5">
-                        <Button size={"icon"} variant={"link"} asChild>
+                        <Button size={null} variant={"link"} asChild>
                             <Link
                                 target="_blank"
                                 rel="noopener noreferrer"

@@ -25,7 +25,6 @@ export const RegenerateFormSchema = z.object({
     model: z.enum([
         "gemini-1.5-flash",
         "gpt-3.5-turbo",
-        "gemma-7b-it",
         "gpt-4o",
         "llama3-70b-8192",
         "mixtral-8x7b-32768",
@@ -93,15 +92,24 @@ export const RegenerateSummaryButton: React.FC<{
                                         <DropdownMenuRadioItem value="gemini-1.5-flash">
                                             gemini-1.5-flash
                                         </DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="gpt-3.5-turbo">
+                                        <DropdownMenuRadioItem
+                                            disabled
+                                            value="gpt-3.5-turbo"
+                                        >
                                             gpt-3.5-turbo
                                         </DropdownMenuRadioItem>
 
-                                        <DropdownMenuRadioItem value="gpt-4o">
+                                        <DropdownMenuRadioItem
+                                            disabled
+                                            value="gpt-4o"
+                                        >
                                             gpt-4o
                                         </DropdownMenuRadioItem>
 
-                                        <DropdownMenuRadioItem value="llama3-70b-8192">
+                                        <DropdownMenuRadioItem
+                                            disabled
+                                            value="llama3-70b-8192"
+                                        >
                                             llama3-70b0
                                             <Badge
                                                 className="ml-2 text-xs"
@@ -110,17 +118,11 @@ export const RegenerateSummaryButton: React.FC<{
                                                 Experimental
                                             </Badge>
                                         </DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="mixtral-8x7b-32768">
+                                        <DropdownMenuRadioItem
+                                            disabled
+                                            value="mixtral-8x7b-32768"
+                                        >
                                             mixtral-8x7b
-                                            <Badge
-                                                className="ml-2 text-xs"
-                                                variant={"secondary"}
-                                            >
-                                                Experimental
-                                            </Badge>
-                                        </DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="gemma-7b-it">
-                                            gemma-7b-it
                                             <Badge
                                                 className="ml-2 text-xs"
                                                 variant={"secondary"}

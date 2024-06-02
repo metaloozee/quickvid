@@ -67,6 +67,8 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                             </Badge>
                             <p className="mt-4">{output}</p>
                             <Link
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 href={source!}
                                 className="mt-2 text-xs text-muted-foreground"
                             >

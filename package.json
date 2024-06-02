@@ -28,6 +28,7 @@
     "@langchain/community": "^0.0.53",
     "@langchain/core": "0.1.58",
     "@langchain/google-genai": "^0.0.16",
+    "@langchain/google-vertexai": "^0.0.17",
     "@langchain/groq": "^0.0.8",
     "@langchain/openai": "^0.0.29",
     "@neondatabase/serverless": "^0.9.1",
