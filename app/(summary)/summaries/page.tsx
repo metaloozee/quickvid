@@ -66,18 +66,19 @@ export default async function SummariesIndexPage({
                         videoInfo && (
                             <Link
                                 suppressHydrationWarning
-                                className="flex w-full flex-col items-start gap-5 rounded-xl bg-secondary/30 p-5 transition-all duration-300 hover:bg-secondary/60"
+                                className="group flex w-full flex-col items-start gap-5 rounded-xl bg-secondary/30 p-5 transition-all duration-300 hover:bg-secondary/60"
                                 href={`/${d.videoid}`}
                             >
                                 <div className="flex max-w-3xl flex-col items-center justify-between gap-5 md:flex-row md:items-center">
                                     <Embed
+                                        className="outline-none transition-all duration-300 group-hover:outline-2 group-hover:outline-primary"
                                         thumbnail={
                                             videoInfo.videoDetails.thumbnails.reverse()[0]
                                                 .url
                                         }
                                     />
                                     <div className="flex w-full flex-col gap-2">
-                                        <h1 className="text-md text-center font-extrabold leading-tight tracking-tighter md:text-left md:text-lg">
+                                        <h1 className="text-md text-center font-extrabold leading-tight tracking-tighter transition-all duration-300 group-hover:text-primary md:text-left md:text-lg">
                                             {videoInfo.videoDetails.title}
                                         </h1>
                                         <p className="text-center text-xs text-muted-foreground md:text-left">

@@ -27,15 +27,15 @@ export const Search = ({ placeholder }: { placeholder: string }) => {
 
     return (
         <div className="relative flex w-full items-center justify-center">
-            <SearchIcon className="absolute left-3 size-4 text-muted-foreground" />
             <Input
                 placeholder={placeholder}
                 onChange={(e) => {
                     handleSearch(e.target.value)
                 }}
                 defaultValue={searchParams.get("query")?.toString()}
-                className="pl-10"
+                className="peer pl-10"
             />
+            <SearchIcon className="absolute left-3 size-4 text-muted-foreground peer-focus:text-primary" />
         </div>
     )
 }
