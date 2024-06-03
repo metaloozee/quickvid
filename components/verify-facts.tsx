@@ -89,7 +89,10 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
 
                 {!output && (
                     <Button
-                        disabled={verifyFactsForm.formState.isSubmitting}
+                        disabled={
+                            process.env.NODE_ENV === "production" ||
+                            verifyFactsForm.formState.isSubmitting
+                        }
                         className="group w-full"
                         type="submit"
                     >

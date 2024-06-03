@@ -41,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <SpeedInsights />
 
                     <div className="relative flex min-h-screen flex-col">
-                        <AnnouncementBanner text="To conserve credits, please host the application locally to use the GPT models and the fact-checker." />
+                        {/* <AnnouncementBanner text="To conserve credits, please host the application locally to use the GPT models and the fact-checker." /> */}
                         <Navbar />
                         <div className="flex-1">{children}</div>
                         <Footer />

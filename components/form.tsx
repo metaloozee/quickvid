@@ -123,21 +123,30 @@ export const InitialForm = () => {
                                                 gemini-1.5-flash
                                             </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem
-                                                disabled
+                                                disabled={
+                                                    process.env.NODE_ENV ===
+                                                    "production"
+                                                }
                                                 value="gpt-3.5-turbo"
                                             >
                                                 gpt-3.5-turbo
                                             </DropdownMenuRadioItem>
 
                                             <DropdownMenuRadioItem
-                                                disabled
+                                                disabled={
+                                                    process.env.NODE_ENV ===
+                                                    "production"
+                                                }
                                                 value="gpt-4o"
                                             >
                                                 gpt-4o
                                             </DropdownMenuRadioItem>
 
                                             <DropdownMenuRadioItem
-                                                disabled
+                                                disabled={
+                                                    process.env.NODE_ENV ===
+                                                    "production"
+                                                }
                                                 value="llama3-70b-8192"
                                             >
                                                 llama3-70b
@@ -149,7 +158,10 @@ export const InitialForm = () => {
                                                 </Badge>
                                             </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem
-                                                disabled
+                                                disabled={
+                                                    process.env.NODE_ENV ===
+                                                    "production"
+                                                }
                                                 value="mixtral-8x7b-32768"
                                             >
                                                 mixtral-8x7b
