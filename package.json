@@ -66,6 +66,7 @@
     "sonner": "^1.4.41",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.1",
     "ytdl-core": "^4.11.5",
     "zod": "^3.23.4",
     "zod-to-json-schema": "^3.23.0"

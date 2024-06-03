@@ -1,19 +1,43 @@
 import Link from "next/link"
-import { desc } from "drizzle-orm"
+import { desc, eq, sql } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
-import { summaries } from "@/lib/db/schema"
+import { summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
+import { Search } from "@/components/search"
 import { Embed } from "@/components/youtube-embed"
 
-export default async function SummariesIndexPage() {
-    const data = await db
-        .select({ videoid: summaries.videoid })
-        .from(summaries)
-        .orderBy(desc(summaries.updated_at))
-        .limit(5)
+export default async function SummariesIndexPage({
+    searchParams,
+}: {
+    searchParams?: {
+        query?: string
+    }
+}) {
+    const query = searchParams?.query
+
+    let data: any
+
+    query
+        ? (data = await db
+              .select({
+                  videoid: summaries.videoid,
+                  videotitle: videos.videotitle,
+              })
+              .from(summaries)
+              .leftJoin(videos, eq(videos.videoid, summaries.videoid))
+              .orderBy(desc(summaries.updated_at))
+              .limit(5)
+              .where(
+                  sql`to_tsvector('simple', ${videos.videotitle}) @@ plainto_tsquery('simple', ${query})`
+              ))
+        : (data = await db
+              .select({ videoid: summaries.videoid })
+              .from(summaries)
+              .orderBy(desc(summaries.updated_at))
+              .limit(5))
 
     if (!data) {
         return (
@@ -35,6 +59,7 @@ export default async function SummariesIndexPage() {
     return (
         <section className="container mt-10 flex w-screen items-center">
             <div className="flex w-full flex-col items-start gap-5">
+                <Search placeholder="How to not get Rick Rolled?" />
                 {data.map(async (d: (typeof data)[0]) => {
                     const videoInfo = await ytdl.getInfo(d.videoid)
                     return (
