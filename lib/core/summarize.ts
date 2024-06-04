@@ -147,35 +147,37 @@ export const summarizeTranscriptWithGpt = async (
     try {
         const outputs = await splitter.createDocuments([transcript])
 
-        const summaryPromises = outputs.map(
-            async (output: { pageContent: string }) => {
-                const prompt = ChatPromptTemplate.fromMessages([
-                    [
-                        "system",
-                        "You are a highly skilled AI trained in language comprehension. I would like you to read the following sub-section of a transcript from a youtube video retain the most important points, providing a coherent and readable paragraph that could help a person understand the main points of the video without needing to read the entire text or watch the video. Please avoid unnecessary details or tangential points. The output should only be in English language.",
-                    ],
-                    ["human", output.pageContent],
-                ])
+        const chains = outputs.map((output: { pageContent: string }) => {
+            const prompt = ChatPromptTemplate.fromMessages([
+                [
+                    "system",
+                    "You are a highly skilled AI trained in language comprehension. I would like you to read the following sub-section of a transcript from a youtube video retain the most important points, providing a coherent and readable paragraph that could help a person understand the main points of the video without needing to read the entire text or watch the video. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                ],
+                ["human", output.pageContent],
+            ])
+            return prompt.pipe(gpt)
+        })
 
-                const chain = prompt.pipe(gpt)
-                const res = await chain.invoke({})
-                if (!res) {
-                    throw new Error(
-                        "An Error Occurred while Summarizing the Sub-section of the transcript"
-                    )
-                }
+        const mapChain = RunnableMap.from(chains)
+        const pointers = await mapChain.invoke({})
 
-                return res.content as string
-            }
-        )
+        if (!pointers) {
+            throw new Error(
+                "An Error Occurred while Processing the Sub-Sections of the transcript"
+            )
+        }
 
-        const summaries = await Promise.all(summaryPromises)
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
                 "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
             ],
-            ["human", summaries.join()],
+            [
+                "human",
+                Object.values(pointers)
+                    .map((m) => m.content)
+                    .toString(),
+            ],
         ])
 
         const chain = prompt.pipe(gpt)
