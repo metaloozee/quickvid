@@ -8,6 +8,9 @@ overrides:
     "@langchain/core": 0.1.60
 
 dependencies:
+    "@google/generative-ai":
+        specifier: ^0.12.0
+        version: 0.12.0
     "@hookform/resolvers":
         specifier: ^3.3.4
         version: 3.3.4(react-hook-form@7.51.3)
@@ -1192,6 +1195,14 @@ packages:
             {
                 integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==,
             }
+        dev: false
+
+    /@google/generative-ai@0.12.0:
+        resolution:
+            {
+                integrity: sha512-krWjurjEUHSFhCX4lGHMOhbnpBfYZGU31mpHpPBQwcfWm0T+/+wxC4UCAJfkxxc3/HvGJVG8r4AqrffaeDHDlA==,
+            }
+        engines: { node: ">=18.0.0" }
         dev: false
 
     /@google/generative-ai@0.7.1:
