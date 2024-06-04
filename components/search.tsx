@@ -33,7 +33,7 @@ export const Search = ({ placeholder }: { placeholder: string }) => {
                     handleSearch(e.target.value)
                 }}
                 defaultValue={searchParams.get("query")?.toString()}
-                className="peer pl-10"
+                className="peer pl-10 text-xs"
             />
             <SearchIcon className="absolute left-3 size-4 text-muted-foreground peer-focus:text-primary" />
         </div>
