@@ -40,8 +40,6 @@ export const formSchema = z.object({
 })
 
 export const InitialForm = () => {
-    const [status, setStatus] = React.useState<string | null>(null)
-
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -59,49 +57,51 @@ export const InitialForm = () => {
                     await handleInitialFormSubmit(data).then((value) => {
                         if (value) {
                             return toast.promise(
-                                new Promise(async (resolve) => {
+                                new Promise(async (resolve, reject) => {
                                     if (value.summary && value.transcript) {
-                                        setStatus("Redirecting...")
-                                        resolve(
+                                        return resolve(
                                             router.push(`/${value.videoId}`)
                                         )
                                     }
 
                                     if (!value.summary && value.transcript) {
-                                        setStatus("Uploading Transcript...")
-
                                         const res = await uploadTranscript({
                                             transcript: value.transcript,
                                             videoId: value.videoId,
                                             videoTitle: value.videoTitle,
                                         })
 
-                                        if (res) {
-                                            setStatus(
-                                                "Summarizing the Transcript..."
+                                        if (!res) {
+                                            return reject({
+                                                reason: "An unknown error occurred while processing the transcript.",
+                                            })
+                                        }
+
+                                        const summary =
+                                            await summarizeTranscript({
+                                                transcript: value.transcript,
+                                                model: data.model,
+                                            })
+
+                                        if (!summary) {
+                                            return reject({
+                                                reason: "An unknown error occurred while summarizing... Most probably due to vercel's timeout.",
+                                            })
+                                        }
+
+                                        const vid = await uploadSummary({
+                                            summary: summary,
+                                            videoId: value.videoId,
+                                        })
+
+                                        if (vid) {
+                                            return resolve(
+                                                router.push(`/${vid}`)
                                             )
-
-                                            const summary =
-                                                await summarizeTranscript({
-                                                    transcript:
-                                                        value.transcript,
-                                                    model: data.model,
-                                                })
-
-                                            if (summary) {
-                                                const vid = await uploadSummary(
-                                                    {
-                                                        summary: summary,
-                                                        videoId: value.videoId,
-                                                    }
-                                                )
-
-                                                if (vid) {
-                                                    resolve(
-                                                        router.push(`/${vid}`)
-                                                    )
-                                                }
-                                            }
+                                        } else {
+                                            return reject({
+                                                reason: "Error while uploading the summary.",
+                                            })
                                         }
                                     }
                                 }),
@@ -111,8 +111,8 @@ export const InitialForm = () => {
                                     success: () => {
                                         return "Successfully Summarized"
                                     },
-                                    error: () => {
-                                        return "An unknown error occurred"
+                                    error: (data) => {
+                                        return data.reason
                                     },
                                 }
                             )
