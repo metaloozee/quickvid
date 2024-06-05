@@ -21,7 +21,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { handleInitialFormSubmit } from "@/app/actions"
+import {
+    handleInitialFormSubmit,
+    summarizeTranscript,
+    uploadSummary,
+    uploadTranscript,
+} from "@/app/actions"
 
 export const formSchema = z.object({
     link: z.string().describe("The YouTube Video you would like to summarize."),
@@ -35,6 +40,8 @@ export const formSchema = z.object({
 })
 
 export const InitialForm = () => {
+    const [status, setStatus] = React.useState<string | null>(null)
+
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -49,29 +56,68 @@ export const InitialForm = () => {
             <form
                 className="flex w-full flex-col items-start gap-2 md:flex-row"
                 onSubmit={form.handleSubmit(async (data) => {
-                    await handleInitialFormSubmit(data).then(
-                        (value: string | null) => {
-                            if (value) {
-                                return toast.promise(
-                                    new Promise((resolve) =>
-                                        resolve(router.push(`/${value}`))
-                                    ),
-                                    {
-                                        loading: "Redirecting...",
-                                        success: () => {
-                                            return "Successfully Summarized"
-                                        },
+                    await handleInitialFormSubmit(data).then((value) => {
+                        if (value) {
+                            return toast.promise(
+                                new Promise(async (resolve) => {
+                                    if (value.summary && value.transcript) {
+                                        setStatus("Redirecting...")
+                                        resolve(
+                                            router.push(`/${value.videoId}`)
+                                        )
                                     }
-                                )
-                            }
 
-                            toast.error(
-                                "An Error Occurred while Generating the Summary."
+                                    if (!value.summary && value.transcript) {
+                                        setStatus("Uploading Transcript...")
+
+                                        const res = await uploadTranscript({
+                                            transcript: value.transcript,
+                                            videoId: value.videoId,
+                                            videoTitle: value.videoTitle,
+                                        })
+
+                                        if (res) {
+                                            setStatus(
+                                                "Summarizing the Transcript..."
+                                            )
+
+                                            const summary =
+                                                await summarizeTranscript({
+                                                    transcript:
+                                                        value.transcript,
+                                                    model: data.model,
+                                                })
+
+                                            if (summary) {
+                                                const vid = await uploadSummary(
+                                                    {
+                                                        summary: summary,
+                                                        videoId: value.videoId,
+                                                    }
+                                                )
+
+                                                if (vid) {
+                                                    resolve(
+                                                        router.push(`/${vid}`)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }),
+                                {
+                                    loading:
+                                        "Hold Up! It's taking more than expected.",
+                                    success: () => {
+                                        return "Successfully Summarized"
+                                    },
+                                    error: () => {
+                                        return "An unknown error occurred"
+                                    },
+                                }
                             )
-
-                            return router.refresh()
                         }
-                    )
+                    })
                 })}
             >
                 <div className="flex w-full gap-2 md:max-w-2xl">

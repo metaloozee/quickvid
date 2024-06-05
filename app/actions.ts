@@ -27,114 +27,136 @@ export type FactCheckerResponse = {
     text: string
 }
 
-export const handleInitialFormSubmit = async (
-    formData: z.infer<typeof formSchema>
-) => {
-    const start = Date.now()
-
+export const summarizeTranscript = async ({
+    transcript,
+    model,
+}: {
+    transcript: string
+    model:
+        | "gemini-1.5-flash"
+        | "gpt-3.5-turbo"
+        | "gpt-4o"
+        | "llama3-70b-8192"
+        | "mixtral-8x7b-32768"
+}) => {
     try {
-        const videoInfo = await ytdl.getInfo(formData.link)
-        const videoId = videoInfo.videoDetails.videoId
-
-        const [existingVideo] = await db
-            .select()
-            .from(videos)
-            .where(eq(videos.videoid, videoId))
-            .limit(1)
-
-        if (existingVideo) {
-            const [existingSummary] = await db
-                .select()
-                .from(summaries)
-                .where(eq(summaries.videoid, existingVideo.videoid!))
-                .limit(1)
-            if (existingSummary) {
-                return existingSummary.videoid
-            }
-
-            let summary: MessageContent | null = null
-            if (
-                formData.model == "gpt-3.5-turbo" ||
-                formData.model == "gpt-4o"
-            ) {
-                summary = await summarizeTranscriptWithGpt(
-                    existingVideo.transcript!,
-                    formData.model
-                )
-            } else if (formData.model == "gemini-1.5-flash") {
-                summary = await summarizeTranscriptWithGemini(
-                    existingVideo.transcript!,
-                    formData.model
-                )
-            } else {
-                summary = await summarizeTranscriptWithGroq(
-                    existingVideo.transcript!,
-                    formData.model
-                )
-            }
-
-            if (!summary) {
-                throw new Error("Couldn't summarize the Transcript.")
-            }
-
-            await db.insert(summaries).values({
-                videoid: videoId,
-                summary: summary as string,
-            })
-
-            return videoId
-        }
-
-        const transcript = await transcribeVideo(formData.link)
-        if (!transcript) {
-            throw new Error("Couldn't transcribe the Audio.")
-        }
-
-        await db.insert(videos).values({
-            videoid: videoId,
-            videotitle: videoInfo.videoDetails.title,
-            transcript: transcript,
-        })
-
         let summary: MessageContent | null = null
-        if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
-            summary = await summarizeTranscriptWithGpt(
-                transcript,
-                formData.model
-            )
-        } else if (formData.model == "gemini-1.5-flash") {
-            summary = await summarizeTranscriptWithGemini(
-                transcript,
-                formData.model
-            )
+        if (model == "gpt-3.5-turbo" || model == "gpt-4o") {
+            summary = await summarizeTranscriptWithGpt(transcript, model)
+        } else if (model == "gemini-1.5-flash") {
+            summary = await summarizeTranscriptWithGemini(transcript, model)
         } else {
-            summary = await summarizeTranscriptWithGroq(
-                transcript,
-                formData.model
-            )
+            summary = await summarizeTranscriptWithGroq(transcript, model)
         }
 
-        if (!summary) {
-            throw new Error("Couldn't summarize the Transcript.")
-        }
+        return summary as string
+    } catch (e) {
+        console.error(e)
+        return null
+    }
+}
 
+export const uploadSummary = async ({
+    summary,
+    videoId,
+}: {
+    summary: string
+    videoId: string
+}) => {
+    try {
         await db.insert(summaries).values({
             videoid: videoId,
             summary: summary as string,
         })
 
         return videoId
-    } catch (e: any) {
+    } catch (e) {
         console.error(e)
         return null
     } finally {
-        console.log(
-            `Generated ${formData.link} in ${
-                (Date.now() - start) / 1000
-            } seconds.`
-        )
         revalidatePath("/")
         revalidatePath("/summaries")
+    }
+}
+
+export const uploadTranscript = async ({
+    transcript,
+    videoId,
+    videoTitle,
+}: {
+    transcript: string
+    videoId: string
+    videoTitle: string
+}) => {
+    try {
+        await db.insert(videos).values({
+            videoid: videoId,
+            videotitle: videoTitle,
+            transcript: transcript,
+        })
+
+        return true
+    } catch (e) {
+        console.error(e)
+        return false
+    }
+}
+
+export const handleInitialFormSubmit = async (
+    formData: z.infer<typeof formSchema>
+) => {
+    try {
+        const videoInfo = await ytdl.getInfo(formData.link)
+        const videoId = videoInfo.videoDetails.videoId
+
+        const [existingVideo] = await db
+            .select({
+                summary: summaries.summary,
+                transcript: videos.transcript,
+            })
+            .from(videos)
+            .fullJoin(summaries, eq(videos.videoid, summaries.videoid))
+            .where(eq(videos.videoid, videoId))
+            .limit(1)
+
+        if (
+            existingVideo &&
+            existingVideo.summary &&
+            existingVideo.transcript
+        ) {
+            return {
+                videoId: videoId,
+                videoTitle: videoInfo.videoDetails.title,
+                summary: existingVideo.summary,
+                transcript: existingVideo.transcript,
+            }
+        } else if (
+            existingVideo &&
+            !existingVideo.summary &&
+            existingVideo.transcript
+        ) {
+            return {
+                videoId: videoId,
+                videoTitle: videoInfo.videoDetails.title,
+                summary: null,
+                transcript: existingVideo.transcript,
+            }
+        } else {
+            const transcript = await transcribeVideo(formData.link)
+            if (!transcript) {
+                throw new Error("Couldn't transcribe the Video.")
+            }
+
+            return {
+                videoId: videoId,
+                videoTitle: videoInfo.videoDetails.title,
+                summary: null,
+                transcript: transcript,
+            }
+        }
+    } catch (e) {
+        console.error(e)
+        return null
     }
 }
 
