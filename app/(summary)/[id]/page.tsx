@@ -26,7 +26,13 @@ export async function generateMetadata(
         .where(eq(summaries.videoid, id!))
         .limit(1)
 
-    const videoInfo = await ytdl.getInfo(data?.videoid ?? "")
+    const videoInfo = await ytdl.getInfo(id)
+
+    if (!data || !videoInfo) {
+        return {
+            title: "404 - Not Found",
+        }
+    }
 
     return {
         title:
@@ -54,7 +60,9 @@ export default async function SummaryIndexPage({ params }: Props) {
         .where(eq(summaries.videoid, params.id!))
         .limit(1)
 
-    if (!data) {
+    const videoInfo = await ytdl.getInfo(params.id!)
+
+    if (!videoInfo || !data) {
         return (
             <section className="container mt-40 flex items-center">
                 <div className="flex max-w-5xl flex-col items-start gap-5">
@@ -70,8 +78,6 @@ export default async function SummaryIndexPage({ params }: Props) {
             </section>
         )
     }
-
-    const videoInfo = await ytdl.getInfo(data?.videoid ?? "")
 
     return (
         <section className="container mt-10 grid w-full grid-cols-1 gap-10 md:grid-cols-3">

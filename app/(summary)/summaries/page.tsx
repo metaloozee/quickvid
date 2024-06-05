@@ -29,7 +29,6 @@ export default async function SummariesIndexPage({
               .from(summaries)
               .leftJoin(videos, eq(videos.videoid, summaries.videoid))
               .orderBy(desc(summaries.updated_at))
-              .limit(5)
               .where(
                   sql`to_tsvector('simple', ${videos.videotitle}) @@ plainto_tsquery('simple', ${query})`
               ))
@@ -62,56 +61,52 @@ export default async function SummariesIndexPage({
                 <Search placeholder="How to not get Rick Rolled?" />
                 {data.map(async (d: (typeof data)[0]) => {
                     const videoInfo = await ytdl.getInfo(d.videoid)
+
+                    if (!videoInfo) {
+                        return <></>
+                    }
+
                     return (
-                        videoInfo && (
-                            <Link
-                                suppressHydrationWarning
-                                className="group flex w-full flex-col items-start gap-5 rounded-xl bg-secondary/30 p-5 transition-all duration-300 hover:bg-secondary/60"
-                                href={`/${d.videoid}`}
-                            >
-                                <div className="flex max-w-3xl flex-col items-center justify-between gap-5 md:flex-row md:items-center">
-                                    <Embed
-                                        className="outline-none transition-all duration-300 group-hover:outline-2 group-hover:outline-primary"
-                                        thumbnail={
-                                            videoInfo.videoDetails.thumbnails.reverse()[0]
-                                                .url
-                                        }
-                                    />
-                                    <div className="flex w-full flex-col gap-2">
-                                        <h1 className="text-md text-center font-extrabold leading-tight tracking-tighter transition-all duration-300 group-hover:text-primary md:text-left md:text-lg">
-                                            {videoInfo.videoDetails.title}
-                                        </h1>
-                                        <p className="text-center text-xs text-muted-foreground md:text-left">
-                                            {videoInfo.videoDetails
-                                                .description &&
-                                            videoInfo.videoDetails.description
-                                                ?.length > 100
-                                                ? videoInfo.videoDetails.description
-                                                      ?.slice(0, 100)
-                                                      .concat("...")
-                                                : videoInfo.videoDetails
-                                                      .description}
-                                        </p>
-                                        <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
-                                            <Badge>
-                                                <Tv className="mr-2 size-3" />{" "}
-                                                {
-                                                    videoInfo.videoDetails
-                                                        .author.name
-                                                }
-                                            </Badge>
-                                            <Badge variant="outline">
-                                                <Eye className="mr-2 size-3" />{" "}
-                                                {
-                                                    videoInfo.videoDetails
-                                                        .viewCount
-                                                }
-                                            </Badge>
-                                        </div>
+                        <Link
+                            suppressHydrationWarning
+                            className="group flex w-full flex-col items-start gap-5 rounded-xl bg-secondary/30 p-5 transition-all duration-300 hover:bg-secondary/60"
+                            href={`/${d.videoid}`}
+                        >
+                            <div className="flex max-w-3xl flex-col items-center justify-between gap-5 md:flex-row md:items-center">
+                                <Embed
+                                    className="outline-none transition-all duration-300 group-hover:outline-2 group-hover:outline-primary"
+                                    thumbnail={
+                                        videoInfo.videoDetails.thumbnails.reverse()[0]
+                                            .url
+                                    }
+                                />
+                                <div className="flex w-full flex-col gap-2">
+                                    <h1 className="text-md text-center font-extrabold leading-tight tracking-tighter transition-all duration-300 group-hover:text-primary md:text-left md:text-lg">
+                                        {videoInfo.videoDetails.title}
+                                    </h1>
+                                    <p className="text-center text-xs text-muted-foreground md:text-left">
+                                        {videoInfo.videoDetails.description &&
+                                        videoInfo.videoDetails.description
+                                            ?.length > 100
+                                            ? videoInfo.videoDetails.description
+                                                  ?.slice(0, 100)
+                                                  .concat("...")
+                                            : videoInfo.videoDetails
+                                                  .description}
+                                    </p>
+                                    <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
+                                        <Badge>
+                                            <Tv className="mr-2 size-3" />{" "}
+                                            {videoInfo.videoDetails.author.name}
+                                        </Badge>
+                                        <Badge variant="outline">
+                                            <Eye className="mr-2 size-3" />{" "}
+                                            {videoInfo.videoDetails.viewCount}
+                                        </Badge>
                                     </div>
                                 </div>
-                            </Link>
-                        )
+                            </div>
+                        </Link>
                     )
                 })}
             </div>
