@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ListVideo, Loader, Settings2 } from "lucide-react"
@@ -116,7 +115,7 @@ export const InitialForm = () => {
                                     return router.push(`/${vid}`)
                                 } else {
                                     return toast.error(
-                                        "Error while uploading the summary.",
+                                        "An unknown error occurred while saving the summary.",
                                         { id: status }
                                     )
                                 }

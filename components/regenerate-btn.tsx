@@ -18,7 +18,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
-import { handleRegenerateSummary } from "@/app/actions"
+import {
+    handleRegenerateSummary,
+    summarizeTranscript,
+    updateSummary,
+} from "@/app/actions"
 
 export const RegenerateFormSchema = z.object({
     videoid: z.string().describe("The YouTube video's unique ID"),
@@ -47,16 +51,52 @@ export const RegenerateSummaryButton: React.FC<{
             <form
                 className="flex w-full gap-2"
                 onSubmit={regenerateForm.handleSubmit(async (data) => {
-                    await handleRegenerateSummary(data).then(async (res) => {
-                        if (!res) {
-                            return toast.error(
-                                "An Error Occurred while Re-Generating the Summary."
+                    await handleRegenerateSummary(data).then(async (value) => {
+                        if (value) {
+                            const status = toast.loading(
+                                "Give me some more time..."
                             )
-                        }
 
-                        return toast.success(
-                            "Successfully Re-Generated the Summary"
-                        )
+                            if (value.transcript && value.videoId) {
+                                toast.loading("Summarizing...", { id: status })
+                                const summary = await summarizeTranscript({
+                                    transcript: value.transcript,
+                                    model: data.model,
+                                })
+
+                                if (!summary) {
+                                    return toast.error(
+                                        "An unknown error occurred while summarizing.",
+                                        {
+                                            description:
+                                                "If this occurs again, it's more likely to be Vercel's Timeout.",
+                                            id: status,
+                                        }
+                                    )
+                                }
+
+                                toast.loading("Saving the Summary...", {
+                                    id: status,
+                                })
+
+                                const vid = await updateSummary({
+                                    summary,
+                                    videoId: value.videoId,
+                                })
+
+                                if (vid) {
+                                    return toast.success(
+                                        "Successfully Re Generated the Summary",
+                                        { id: status }
+                                    )
+                                } else {
+                                    return toast.error(
+                                        "An unknown error occurred while saving the summary.",
+                                        { id: status }
+                                    )
+                                }
+                            }
+                        }
                     })
                 })}
             >

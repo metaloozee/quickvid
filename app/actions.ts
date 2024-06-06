@@ -55,7 +55,27 @@ export const summarizeTranscript = async ({
         return null
     }
 }
+export const updateSummary = async ({
+    summary,
+    videoId,
+}: {
+    summary: string
+    videoId: string
+}) => {
+    try {
+        await db
+            .update(summaries)
+            .set({ summary: summary })
+            .where(eq(summaries.videoid, videoId))
 
+        return true
+    } catch (e) {
+        console.error(e)
+        return false
+    } finally {
+        revalidatePath(`/${videoId}`)
+    }
+}
 export const uploadSummary = async ({
     summary,
     videoId,
@@ -163,8 +183,6 @@ export const handleInitialFormSubmit = async (
 export const handleRegenerateSummary = async (
     formData: z.infer<typeof RegenerateFormSchema>
 ) => {
-    const start = Date.now()
-
     try {
         const [data] = await db
             .select({
@@ -177,44 +195,42 @@ export const handleRegenerateSummary = async (
             throw new Error("Couldn't find the transcription of this video.")
         }
 
-        let summary: MessageContent | null = null
-        if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
-            summary = await summarizeTranscriptWithGpt(
-                data.transcript!,
-                formData.model
-            )
-        } else if (formData.model == "gemini-1.5-flash") {
-            summary = await summarizeTranscriptWithGemini(
-                data.transcript!,
-                formData.model
-            )
-        } else {
-            summary = await summarizeTranscriptWithGroq(
-                data.transcript!,
-                formData.model
-            )
+        return {
+            videoId: formData.videoid,
+            transcript: data.transcript,
         }
 
-        if (!summary) {
-            throw new Error("Couldn't summarize the Transcript.")
-        }
+        // let summary: MessageContent | null = null
+        // if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
+        //     summary = await summarizeTranscriptWithGpt(
+        //         data.transcript!,
+        //         formData.model
+        //     )
+        // } else if (formData.model == "gemini-1.5-flash") {
+        //     summary = await summarizeTranscriptWithGemini(
+        //         data.transcript!,
+        //         formData.model
+        //     )
+        // } else {
+        //     summary = await summarizeTranscriptWithGroq(
+        //         data.transcript!,
+        //         formData.model
+        //     )
+        // }
 
-        await db
-            .update(summaries)
-            .set({ summary: summary as string })
-            .where(eq(summaries.videoid, formData.videoid))
+        // if (!summary) {
+        //     throw new Error("Couldn't summarize the Transcript.")
+        // }
 
-        return true
+        // await db
+        //     .update(summaries)
+        //     .set({ summary: summary as string })
+        //     .where(eq(summaries.videoid, formData.videoid))
+
+        // return true
     } catch (e: any) {
         console.error(e)
         return false
-    } finally {
-        console.log(
-            `Re-Generated ${formData.videoid} in ${
-                (Date.now() - start) / 1000
-            } seconds.`
-        )
-        revalidatePath(`/${formData.videoid}`)
     }
 }
 
