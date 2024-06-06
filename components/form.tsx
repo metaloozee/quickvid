@@ -54,68 +54,73 @@ export const InitialForm = () => {
             <form
                 className="flex w-full flex-col items-start gap-2 md:flex-row"
                 onSubmit={form.handleSubmit(async (data) => {
-                    await handleInitialFormSubmit(data).then((value) => {
+                    await handleInitialFormSubmit(data).then(async (value) => {
                         if (value) {
-                            return toast.promise(
-                                new Promise(async (resolve, reject) => {
-                                    if (value.summary && value.transcript) {
-                                        return resolve(
-                                            router.push(`/${value.videoId}`)
-                                        )
-                                    }
-
-                                    if (!value.summary && value.transcript) {
-                                        const res = await uploadTranscript({
-                                            transcript: value.transcript,
-                                            videoId: value.videoId,
-                                            videoTitle: value.videoTitle,
-                                        })
-
-                                        if (!res) {
-                                            return reject({
-                                                reason: "An unknown error occurred while processing the transcript.",
-                                            })
-                                        }
-
-                                        const summary =
-                                            await summarizeTranscript({
-                                                transcript: value.transcript,
-                                                model: data.model,
-                                            })
-
-                                        if (!summary) {
-                                            return reject({
-                                                reason: "An unknown error occurred while summarizing... Most probably due to vercel's timeout.",
-                                            })
-                                        }
-
-                                        const vid = await uploadSummary({
-                                            summary: summary,
-                                            videoId: value.videoId,
-                                        })
-
-                                        if (vid) {
-                                            return resolve(
-                                                router.push(`/${vid}`)
-                                            )
-                                        } else {
-                                            return reject({
-                                                reason: "Error while uploading the summary.",
-                                            })
-                                        }
-                                    }
-                                }),
-                                {
-                                    loading:
-                                        "Hold Up! It's taking more than expected.",
-                                    success: () => {
-                                        return "Successfully Summarized"
-                                    },
-                                    error: (data) => {
-                                        return data.reason
-                                    },
-                                }
+                            const status = toast.loading(
+                                "Give me some more time..."
                             )
+
+                            if (value.summary && value.transcript) {
+                                toast.success("Successfully Summarized", {
+                                    id: status,
+                                })
+                                return router.push(`/${value.videoId}`)
+                            }
+
+                            if (!value.summary && value.transcript) {
+                                toast.loading("Processing the Transcript...", {
+                                    id: status,
+                                })
+                                const res = await uploadTranscript({
+                                    transcript: value.transcript,
+                                    videoId: value.videoId,
+                                    videoTitle: value.videoTitle,
+                                })
+
+                                if (!res) {
+                                    return toast.error(
+                                        "An unknown error occurred while processing the transcript.",
+                                        { id: status }
+                                    )
+                                }
+
+                                toast.loading("Summarizing...", { id: status })
+                                const summary = await summarizeTranscript({
+                                    transcript: value.transcript,
+                                    model: data.model,
+                                })
+
+                                if (!summary) {
+                                    return toast.error(
+                                        "An unknown error occurred while summarizing.",
+                                        {
+                                            description:
+                                                "If this occurs again, it's more likely to be Vercel's Timeout.",
+                                            id: status,
+                                        }
+                                    )
+                                }
+
+                                toast.loading("Saving the Summary...", {
+                                    id: status,
+                                })
+                                const vid = await uploadSummary({
+                                    summary: summary,
+                                    videoId: value.videoId,
+                                })
+
+                                if (vid) {
+                                    toast.success("Successfully Summarized", {
+                                        id: status,
+                                    })
+                                    return router.push(`/${vid}`)
+                                } else {
+                                    return toast.error(
+                                        "Error while uploading the summary.",
+                                        { id: status }
+                                    )
+                                }
+                            }
                         }
                     })
                 })}
