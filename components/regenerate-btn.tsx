@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Bolt, Loader, Settings2, Zap } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -38,6 +39,31 @@ export const RegenerateFormSchema = z.object({
 export const RegenerateSummaryButton: React.FC<{
     videoid: string
 }> = ({ videoid }) => {
+    const [status, setStatus] = useState<string | null>("Loading...")
+    const [time, setTime] = useState(0)
+    const [isRunning, setIsRunning] = useState(false)
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout
+        if (isRunning) {
+            intervalId = setInterval(() => setTime(time + 1), 10)
+        }
+        return () => clearInterval(intervalId)
+    }, [isRunning, time])
+
+    const seconds = Math.floor((time % 6000) / 100)
+    const miliseconds = time % 100
+
+    const stop = () => {
+        setTime(0)
+        setIsRunning(false)
+    }
+
+    const restart = () => {
+        setTime(0)
+        setIsRunning(true)
+    }
+
     const regenerateForm = useForm<z.infer<typeof RegenerateFormSchema>>({
         resolver: zodResolver(RegenerateFormSchema),
         defaultValues: {
@@ -53,31 +79,33 @@ export const RegenerateSummaryButton: React.FC<{
                 onSubmit={regenerateForm.handleSubmit(async (data) => {
                     await handleRegenerateSummary(data).then(async (value) => {
                         if (value) {
-                            const status = toast.loading(
-                                "Give me some more time..."
-                            )
+                            restart()
+                            setStatus("Give me some more time...")
 
                             if (value.transcript && value.videoId) {
-                                toast.loading("Summarizing...", { id: status })
+                                restart()
+                                setStatus("Summarizing...")
+
                                 const summary = await summarizeTranscript({
                                     transcript: value.transcript,
                                     model: data.model,
                                 })
 
                                 if (!summary) {
+                                    stop()
+                                    setStatus(null)
+
                                     return toast.error(
                                         "An unknown error occurred while summarizing.",
                                         {
                                             description:
                                                 "If this occurs again, it's more likely to be Vercel's Timeout.",
-                                            id: status,
                                         }
                                     )
                                 }
 
-                                toast.loading("Saving the Summary...", {
-                                    id: status,
-                                })
+                                restart()
+                                setStatus("Saving the Summary...")
 
                                 const vid = await updateSummary({
                                     summary,
@@ -85,14 +113,18 @@ export const RegenerateSummaryButton: React.FC<{
                                 })
 
                                 if (vid) {
+                                    stop()
+                                    setStatus(null)
+
                                     return toast.success(
-                                        "Successfully Re Generated the Summary",
-                                        { id: status }
+                                        "Successfully Re Generated the Summary"
                                     )
                                 } else {
+                                    stop()
+                                    setStatus(null)
+
                                     return toast.error(
-                                        "An unknown error occurred while saving the summary.",
-                                        { id: status }
+                                        "An unknown error occurred while saving the summary."
                                     )
                                 }
                             }
@@ -197,7 +229,8 @@ export const RegenerateSummaryButton: React.FC<{
                 >
                     {regenerateForm.formState.isSubmitting ? (
                         <>
-                            <Loader className="size-4 animate-spin duration-1000" />
+                            <Loader className="mr-2 size-4 animate-spin duration-1000" />{" "}
+                            {status} {seconds}s {miliseconds}ms
                         </>
                     ) : (
                         <>Regenerate Summary</>

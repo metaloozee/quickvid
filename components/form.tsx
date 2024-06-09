@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ListVideo, Loader, Settings2 } from "lucide-react"
@@ -41,6 +42,31 @@ export const formSchema = z.object({
 export const InitialForm = () => {
     const router = useRouter()
 
+    const [status, setStatus] = useState<string | null>("Loading...")
+    const [time, setTime] = useState(0)
+    const [isRunning, setIsRunning] = useState(false)
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout
+        if (isRunning) {
+            intervalId = setInterval(() => setTime(time + 1), 10)
+        }
+        return () => clearInterval(intervalId)
+    }, [isRunning, time])
+
+    const seconds = Math.floor((time % 6000) / 100)
+    const miliseconds = time % 100
+
+    const stop = () => {
+        setTime(0)
+        setIsRunning(false)
+    }
+
+    const restart = () => {
+        setTime(0)
+        setIsRunning(true)
+    }
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -55,21 +81,22 @@ export const InitialForm = () => {
                 onSubmit={form.handleSubmit(async (data) => {
                     await handleInitialFormSubmit(data).then(async (value) => {
                         if (value) {
-                            const status = toast.loading(
-                                "Give me some more time..."
-                            )
+                            restart()
+                            setStatus("Give me some more time...")
 
                             if (value.summary && value.transcript) {
-                                toast.success("Successfully Summarized", {
-                                    id: status,
-                                })
+                                stop()
+                                setStatus(null)
+
+                                toast.success("Successfully Summarized")
+
                                 return router.push(`/${value.videoId}`)
                             }
 
                             if (!value.summary && value.transcript) {
-                                toast.loading("Processing the Transcript...", {
-                                    id: status,
-                                })
+                                restart()
+                                setStatus("Processing the Transcript...")
+
                                 const res = await uploadTranscript({
                                     transcript: value.transcript,
                                     videoId: value.videoId,
@@ -77,46 +104,55 @@ export const InitialForm = () => {
                                 })
 
                                 if (!res) {
+                                    stop()
+                                    setStatus(null)
+
                                     return toast.error(
-                                        "An unknown error occurred while processing the transcript.",
-                                        { id: status }
+                                        "An unknown error occurred while processing the transcript."
                                     )
                                 }
 
-                                toast.loading("Summarizing...", { id: status })
+                                restart()
+                                setStatus("Summarizing...")
+
                                 const summary = await summarizeTranscript({
                                     transcript: value.transcript,
                                     model: data.model,
                                 })
 
                                 if (!summary) {
+                                    stop()
+                                    setStatus(null)
+
                                     return toast.error(
                                         "An unknown error occurred while summarizing.",
                                         {
                                             description:
                                                 "If this occurs again, it's more likely to be Vercel's Timeout.",
-                                            id: status,
                                         }
                                     )
                                 }
 
-                                toast.loading("Saving the Summary...", {
-                                    id: status,
-                                })
+                                restart()
+                                setStatus("Saving the Summary...")
+
                                 const vid = await uploadSummary({
                                     summary: summary,
                                     videoId: value.videoId,
                                 })
 
                                 if (vid) {
-                                    toast.success("Successfully Summarized", {
-                                        id: status,
-                                    })
+                                    stop()
+                                    setStatus(null)
+
+                                    toast.success("Successfully Summarized")
                                     return router.push(`/${vid}`)
                                 } else {
+                                    stop()
+                                    setStatus(null)
+
                                     return toast.error(
-                                        "An unknown error occurred while saving the summary.",
-                                        { id: status }
+                                        "An unknown error occurred while saving the summary."
                                     )
                                 }
                             }
@@ -237,7 +273,8 @@ export const InitialForm = () => {
                 >
                     {form.formState.isSubmitting ? (
                         <>
-                            <Loader className="size-4 animate-spin duration-1000" />
+                            <Loader className="mr-2 size-4 animate-spin duration-1000" />{" "}
+                            {status} {seconds}s {miliseconds}ms
                         </>
                     ) : (
                         <>
