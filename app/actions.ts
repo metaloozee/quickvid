@@ -109,11 +109,14 @@ export const uploadTranscript = async ({
     videoTitle: string
 }) => {
     try {
-        await db.insert(videos).values({
-            videoid: videoId,
-            videotitle: videoTitle,
-            transcript: transcript,
-        })
+        await db
+            .insert(videos)
+            .values({
+                videoid: videoId,
+                videotitle: videoTitle,
+                transcript: transcript,
+            })
+            .onConflictDoNothing()
 
         return true
     } catch (e) {
