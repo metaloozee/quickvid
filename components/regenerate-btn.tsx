@@ -89,6 +89,8 @@ export const RegenerateSummaryButton: React.FC<{
                                 const summary = await summarizeTranscript({
                                     transcript: value.transcript,
                                     model: data.model,
+                                    videoTitle: value.videoTitle,
+                                    videoAuthor: value.videoAuthor,
                                 })
 
                                 if (!summary) {

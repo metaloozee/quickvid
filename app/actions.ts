@@ -30,6 +30,8 @@ export type FactCheckerResponse = {
 export const summarizeTranscript = async ({
     transcript,
     model,
+    videoTitle,
+    videoAuthor,
 }: {
     transcript: string
     model:
@@ -38,13 +40,20 @@ export const summarizeTranscript = async ({
         | "gpt-4o"
         | "llama3-70b-8192"
         | "mixtral-8x7b-32768"
+    videoTitle: string
+    videoAuthor: string
 }) => {
     try {
         let summary: MessageContent | null = null
         if (model == "gpt-3.5-turbo" || model == "gpt-4o") {
             summary = await summarizeTranscriptWithGpt(transcript, model)
         } else if (model == "gemini-1.5-flash") {
-            summary = await summarizeTranscriptWithGemini(transcript, model)
+            summary = await summarizeTranscriptWithGemini(
+                transcript,
+                model,
+                videoTitle,
+                videoAuthor
+            )
         } else {
             summary = await summarizeTranscriptWithGroq(transcript, model)
         }
@@ -150,6 +159,7 @@ export const handleInitialFormSubmit = async (
             return {
                 videoId: videoId,
                 videoTitle: videoInfo.videoDetails.title,
+                videoAuthor: videoInfo.videoDetails.author.name,
                 summary: existingVideo.summary,
                 transcript: existingVideo.transcript,
             }
@@ -161,6 +171,7 @@ export const handleInitialFormSubmit = async (
             return {
                 videoId: videoId,
                 videoTitle: videoInfo.videoDetails.title,
+                videoAuthor: videoInfo.videoDetails.author.name,
                 summary: null,
                 transcript: existingVideo.transcript,
             }
@@ -173,6 +184,7 @@ export const handleInitialFormSubmit = async (
             return {
                 videoId: videoId,
                 videoTitle: videoInfo.videoDetails.title,
+                videoAuthor: videoInfo.videoDetails.author.name,
                 summary: null,
                 transcript: transcript,
             }
@@ -187,6 +199,10 @@ export const handleRegenerateSummary = async (
     formData: z.infer<typeof RegenerateFormSchema>
 ) => {
     try {
+        const videoInfo = await ytdl.getBasicInfo(
+            "https://www.youtube.com/watch?v=" + formData.videoid
+        )
+
         const [data] = await db
             .select({
                 transcript: videos.transcript,
@@ -201,36 +217,9 @@ export const handleRegenerateSummary = async (
         return {
             videoId: formData.videoid,
             transcript: data.transcript,
+            videoTitle: videoInfo.videoDetails.title,
+            videoAuthor: videoInfo.videoDetails.author.name,
         }
-
-        // let summary: MessageContent | null = null
-        // if (formData.model == "gpt-3.5-turbo" || formData.model == "gpt-4o") {
-        //     summary = await summarizeTranscriptWithGpt(
-        //         data.transcript!,
-        //         formData.model
-        //     )
-        // } else if (formData.model == "gemini-1.5-flash") {
-        //     summary = await summarizeTranscriptWithGemini(
-        //         data.transcript!,
-        //         formData.model
-        //     )
-        // } else {
-        //     summary = await summarizeTranscriptWithGroq(
-        //         data.transcript!,
-        //         formData.model
-        //     )
-        // }
-
-        // if (!summary) {
-        //     throw new Error("Couldn't summarize the Transcript.")
-        // }
-
-        // await db
-        //     .update(summaries)
-        //     .set({ summary: summary as string })
-        //     .where(eq(summaries.videoid, formData.videoid))
-
-        // return true
     } catch (e: any) {
         console.error(e)
         return false

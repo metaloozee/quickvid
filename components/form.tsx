@@ -118,6 +118,8 @@ export const InitialForm = () => {
                                 const summary = await summarizeTranscript({
                                     transcript: value.transcript,
                                     model: data.model,
+                                    videoTitle: value.videoTitle,
+                                    videoAuthor: value.videoAuthor,
                                 })
 
                                 if (!summary) {

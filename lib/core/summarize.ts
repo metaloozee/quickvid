@@ -15,7 +15,9 @@ const splitter = new TokenTextSplitter({
 
 export const summarizeTranscriptWithGemini = async (
     transcript: string,
-    model: "gemini-1.5-flash"
+    model: "gemini-1.5-flash",
+    videoTitle: string,
+    videoAuthor: string
 ) => {
     const gemini = new ChatGoogleGenerativeAI({
         model: model,
@@ -67,7 +69,7 @@ export const summarizeTranscriptWithGemini = async (
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video entitled {title} by {author}; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary. The output should only be in English language.",
             ],
             [
                 "human",
@@ -78,7 +80,10 @@ export const summarizeTranscriptWithGemini = async (
         ])
 
         const chain = prompt.pipe(gemini)
-        const res = await chain.invoke({})
+        const res = await chain.invoke({
+            title: videoTitle,
+            author: videoAuthor,
+        })
 
         if (!res) {
             throw new Error(
