@@ -42,7 +42,7 @@ export const formSchema = z.object({
 export const InitialForm = () => {
     const router = useRouter()
 
-    const [status, setStatus] = useState<string | null>("Loading...")
+    const [status, setStatus] = useState<string | null>("Preparing...")
     const [time, setTime] = useState(0)
     const [isRunning, setIsRunning] = useState(false)
 
@@ -80,83 +80,91 @@ export const InitialForm = () => {
                 className="flex w-full flex-col items-start gap-2 md:flex-row"
                 onSubmit={form.handleSubmit(async (data) => {
                     await handleInitialFormSubmit(data).then(async (value) => {
-                        if (value) {
-                            restart()
-                            setStatus("Give me some more time...")
+                        if (!value) {
+                            stop()
+                            return toast.error(
+                                "Couldn't find a transcript for the requested video.",
+                                {
+                                    description: "Failed to run Speech-To-Text",
+                                }
+                            )
+                        }
 
-                            if (value.summary && value.transcript) {
+                        restart()
+                        setStatus("Give me some more time...")
+
+                        if (value.summary && value.transcript) {
+                            stop()
+                            setStatus(null)
+
+                            toast.success("Successfully Summarized")
+
+                            return router.push(`/${value.videoId}`)
+                        }
+
+                        if (!value.summary && value.transcript) {
+                            restart()
+                            setStatus("Processing...")
+
+                            const res = await uploadTranscript({
+                                transcript: value.transcript,
+                                videoId: value.videoId,
+                                videoTitle: value.videoTitle,
+                            })
+
+                            if (!res) {
+                                stop()
+                                setStatus(null)
+
+                                return toast.error(
+                                    "An unknown error occurred while processing the transcript."
+                                )
+                            }
+
+                            restart()
+                            setStatus("Summarizing...")
+
+                            const summary = await summarizeTranscript({
+                                transcript: value.transcript,
+                                model: data.model,
+                                videoTitle: value.videoTitle,
+                                videoAuthor: value.videoAuthor,
+                            })
+
+                            if (!summary) {
+                                stop()
+                                setStatus(null)
+
+                                return toast.error(
+                                    "An unknown error occurred while summarizing.",
+                                    {
+                                        description:
+                                            "If this occurs again, it's more likely to be Vercel's Timeout.",
+                                    }
+                                )
+                            }
+
+                            restart()
+                            setStatus("Saving...")
+
+                            const vid = await uploadSummary({
+                                summary: summary,
+                                videoId: value.videoId,
+                            })
+
+                            if (vid) {
                                 stop()
                                 setStatus(null)
 
                                 toast.success("Successfully Summarized")
+                                return router.push(`/${vid}`)
+                            } else {
+                                stop()
+                                setStatus(null)
 
-                                return router.push(`/${value.videoId}`)
-                            }
-
-                            if (!value.summary && value.transcript) {
-                                restart()
-                                setStatus("Processing the Transcript...")
-
-                                const res = await uploadTranscript({
-                                    transcript: value.transcript,
-                                    videoId: value.videoId,
-                                    videoTitle: value.videoTitle,
-                                })
-
-                                if (!res) {
-                                    stop()
-                                    setStatus(null)
-
-                                    return toast.error(
-                                        "An unknown error occurred while processing the transcript."
-                                    )
-                                }
-
-                                restart()
-                                setStatus("Summarizing...")
-
-                                const summary = await summarizeTranscript({
-                                    transcript: value.transcript,
-                                    model: data.model,
-                                    videoTitle: value.videoTitle,
-                                    videoAuthor: value.videoAuthor,
-                                })
-
-                                if (!summary) {
-                                    stop()
-                                    setStatus(null)
-
-                                    return toast.error(
-                                        "An unknown error occurred while summarizing.",
-                                        {
-                                            description:
-                                                "If this occurs again, it's more likely to be Vercel's Timeout.",
-                                        }
-                                    )
-                                }
-
-                                restart()
-                                setStatus("Saving the Summary...")
-
-                                const vid = await uploadSummary({
-                                    summary: summary,
-                                    videoId: value.videoId,
-                                })
-
-                                if (vid) {
-                                    stop()
-                                    setStatus(null)
-
-                                    toast.success("Successfully Summarized")
-                                    return router.push(`/${vid}`)
-                                } else {
-                                    stop()
-                                    setStatus(null)
-
-                                    return toast.error(
-                                        "An unknown error occurred while saving the summary."
-                                    )
-                                }
+                                return toast.error(
+                                    "An unknown error occurred while saving the summary."
+                                )
                             }
                         }
                     })

@@ -39,7 +39,7 @@ export const RegenerateFormSchema = z.object({
 export const RegenerateSummaryButton: React.FC<{
     videoid: string
 }> = ({ videoid }) => {
-    const [status, setStatus] = useState<string | null>("Loading...")
+    const [status, setStatus] = useState<string | null>("Preparing...")
     const [time, setTime] = useState(0)
     const [isRunning, setIsRunning] = useState(false)
 
@@ -78,57 +78,62 @@ export const RegenerateSummaryButton: React.FC<{
                 className="flex w-full gap-2"
                 onSubmit={regenerateForm.handleSubmit(async (data) => {
                     await handleRegenerateSummary(data).then(async (value) => {
-                        if (value) {
+                        if (!value) {
+                            stop()
+                            return toast.error(
+                                "Couldn't find the transcript of this video."
+                            )
+                        }
+
+                        restart()
+                        setStatus("Give me some more time...")
+
+                        if (value.transcript && value.videoId) {
                             restart()
-                            setStatus("Give me some more time...")
+                            setStatus("Summarizing...")
 
-                            if (value.transcript && value.videoId) {
-                                restart()
-                                setStatus("Summarizing...")
+                            const summary = await summarizeTranscript({
+                                transcript: value.transcript,
+                                model: data.model,
+                                videoTitle: value.videoTitle,
+                                videoAuthor: value.videoAuthor,
+                            })
 
-                                const summary = await summarizeTranscript({
-                                    transcript: value.transcript,
-                                    model: data.model,
-                                    videoTitle: value.videoTitle,
-                                    videoAuthor: value.videoAuthor,
-                                })
+                            if (!summary) {
+                                stop()
+                                setStatus(null)
 
-                                if (!summary) {
-                                    stop()
-                                    setStatus(null)
+                                return toast.error(
+                                    "An unknown error occurred while summarizing.",
+                                    {
+                                        description:
+                                            "If this occurs again, it's more likely to be Vercel's Timeout.",
+                                    }
+                                )
+                            }
 
-                                    return toast.error(
-                                        "An unknown error occurred while summarizing.",
-                                        {
-                                            description:
-                                                "If this occurs again, it's more likely to be Vercel's Timeout.",
-                                        }
-                                    )
-                                }
+                            restart()
+                            setStatus("Saving...")
 
-                                restart()
-                                setStatus("Saving the Summary...")
+                            const vid = await updateSummary({
+                                summary,
+                                videoId: value.videoId,
+                            })
 
-                                const vid = await updateSummary({
-                                    summary,
-                                    videoId: value.videoId,
-                                })
+                            if (vid) {
+                                stop()
+                                setStatus(null)
 
-                                if (vid) {
-                                    stop()
-                                    setStatus(null)
+                                return toast.success(
+                                    "Successfully Re Generated the Summary"
+                                )
+                            } else {
+                                stop()
+                                setStatus(null)
 
-                                    return toast.success(
-                                        "Successfully Re Generated the Summary"
-                                    )
-                                } else {
-                                    stop()
-                                    setStatus(null)
-
-                                    return toast.error(
-                                        "An unknown error occurred while saving the summary."
-                                    )
-                                }
+                                return toast.error(
+                                    "An unknown error occurred while saving the summary."
+                                )
                             }
                         }
                     })
