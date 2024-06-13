@@ -14,7 +14,7 @@ export const Embed = ({
     className,
 }: {
     thumbnail: string
-    link: string
+    link?: string
     className?: string
 }) => {
     return (
@@ -27,20 +27,24 @@ export const Embed = ({
                     fill
                 />
 
-                <div className="absolute flex size-full items-center justify-center rounded-md">
-                    <Button
-                        size={null}
-                        className="rounded-full bg-white/30 p-3 backdrop-blur-md"
-                    >
-                        <Link
-                            href={link}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                {link ? (
+                    <div className="absolute flex size-full items-center justify-center rounded-md">
+                        <Button
+                            size={null}
+                            className="rounded-full bg-white/30 p-3 backdrop-blur-md"
                         >
-                            <YoutubeIcon className="size-6" />
-                        </Link>
-                    </Button>
-                </div>
+                            <Link
+                                href={link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <YoutubeIcon className="size-6" />
+                            </Link>
+                        </Button>
+                    </div>
+                ) : (
+                    <></>
+                )}
             </AspectRatio>
         </div>
     )
