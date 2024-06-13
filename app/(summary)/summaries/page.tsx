@@ -74,6 +74,7 @@ export default async function SummariesIndexPage({
                         >
                             <div className="flex max-w-3xl flex-col items-center justify-between gap-5 md:flex-row md:items-center">
                                 <Embed
+                                    link={videoInfo.videoDetails.video_url}
                                     className="outline-none transition-all duration-300 group-hover:outline-2 group-hover:outline-primary"
                                     thumbnail={
                                         videoInfo.videoDetails.thumbnails.reverse()[0]

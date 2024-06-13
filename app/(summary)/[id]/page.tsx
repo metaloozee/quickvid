@@ -85,6 +85,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                 <div className="flex flex-col items-start gap-5 rounded-xl bg-secondary p-5">
                     <div className="flex w-full flex-col items-center justify-between gap-5 md:flex-row md:items-center">
                         <Embed
+                            link={videoInfo.videoDetails.video_url}
                             thumbnail={
                                 videoInfo.videoDetails.thumbnails.reverse()[0]
                                     .url
