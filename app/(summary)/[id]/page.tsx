@@ -1,11 +1,21 @@
 import type { Metadata, ResolvingMetadata } from "next"
 import { eq } from "drizzle-orm"
-import { Eye, Tv } from "lucide-react"
+import {
+    Bot,
+    BotMessageSquare,
+    CornerDownLeft,
+    Ellipsis,
+    Eye,
+    Tv,
+    UserRound,
+} from "lucide-react"
 import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
@@ -124,6 +134,58 @@ export default async function SummaryIndexPage({ params }: Props) {
 
             <div className="flex w-full flex-col gap-10">
                 <VerifyFacts summary={data.summary!} />
+
+                <div className="col-span-1 flex w-full flex-col gap-10">
+                    <div className="flex w-full flex-col items-start gap-5 rounded-xl py-2 text-justify outline-dashed outline-2 outline-blue-400 md:text-left">
+                        <div className="w-full border-b-2 border-dashed border-blue-400 pb-2">
+                            <h1 className="flex items-center justify-center text-center text-blue-400">
+                                <Bot />
+                            </h1>
+                        </div>
+
+                        <div className="flex w-full flex-col gap-5 px-5">
+                            <div className="flex flex-row items-center gap-4 py-2">
+                                <div className="">
+                                    <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
+                                </div>
+                                <p className="text-xs">
+                                    Ahoy matey! Got questions &apos;bout the
+                                    video or anythin&apos; else? Use this chat
+                                    to ask away, or walk the plank! Arrr! 🏴‍☠️🪝
+                                </p>
+                            </div>
+
+                            <div className="flex flex-row-reverse items-center gap-4 py-2">
+                                <div className="">
+                                    <UserRound className="size-7 min-w-fit rounded-full rounded-br-none bg-primary p-1.5" />
+                                </div>
+                                <p className="text-right text-xs text-muted-foreground">
+                                    What are fermions and bosons?
+                                </p>
+                            </div>
+
+                            <div className="flex flex-row items-center gap-4 py-2">
+                                <div className="">
+                                    <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
+                                </div>
+
+                                <p className="animate-pulse text-xs">
+                                    <Ellipsis className="size-4" />
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex w-full items-center justify-center gap-2 px-5 py-4">
+                            <Textarea
+                                placeholder="ask me anything..."
+                                className="min-h-12 resize-none text-xs focus-visible:ring-blue-400"
+                            />
+                            <Button className="h-full bg-blue-400 hover:bg-blue-500">
+                                <CornerDownLeft className="size-4" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     )
