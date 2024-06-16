@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { readStreamableValue } from "ai/rsc"
 import {
     Bot,
@@ -10,12 +10,10 @@ import {
     UserRound,
 } from "lucide-react"
 
+import { useEnterSubmit } from "@/lib/hooks/use-enter-submit"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { continueConversation } from "@/app/actions"
-
-export const dynamic = "force-dynamic"
-export const maxDuration = 30
 
 export interface Message {
     role: "user" | "assistant"
@@ -23,6 +21,8 @@ export interface Message {
 }
 
 export const Chat = () => {
+    const { formRef, onKeyDown } = useEnterSubmit()
+
     const [conversation, setConversation] = useState<Message[]>([])
     const [input, setInput] = useState<string>("")
 
@@ -36,7 +36,7 @@ export const Chat = () => {
                 </div>
 
                 <div className="flex w-full flex-col gap-5 px-5">
-                    <div className="flex flex-row items-center gap-4 py-2">
+                    <div className="flex flex-row items-start gap-4 py-2">
                         <div className="">
                             <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
                         </div>
@@ -50,7 +50,7 @@ export const Chat = () => {
                     {conversation.map((message, index) => {
                         if (message.role == "assistant")
                             return (
-                                <div className="flex flex-row items-center gap-4 py-2">
+                                <div className="flex flex-row items-start gap-4 py-2">
                                     <div className="">
                                         <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
                                     </div>
@@ -59,7 +59,7 @@ export const Chat = () => {
                             )
                         else
                             return (
-                                <div className="flex flex-row-reverse items-center gap-4 py-2">
+                                <div className="flex flex-row-reverse items-start gap-4 py-2">
                                     <div className="">
                                         <UserRound className="size-7 min-w-fit rounded-full rounded-br-none bg-primary p-1.5" />
                                     </div>
@@ -83,6 +83,7 @@ export const Chat = () => {
 
                 <form className="flex w-full items-center justify-center gap-2 px-5 py-4">
                     <Textarea
+                        onKeyDown={onKeyDown}
                         placeholder="ask me anything..."
                         className="min-h-12 resize-none text-xs focus-visible:ring-blue-400"
                         value={input}

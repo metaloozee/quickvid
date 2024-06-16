@@ -15,6 +15,9 @@ type Props = {
     params: { id: string }
 }
 
+export const dynamic = "force-dynamic"
+export const maxDuration = 30
+
 export async function generateMetadata(
     { params }: Props,
     parent: ResolvingMetadata
