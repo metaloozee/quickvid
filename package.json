@@ -24,6 +24,9 @@
     "*.js": "eslint --cache --fix"
   },
   "dependencies": {
+    "@ai-sdk/google": "^0.0.21",
+    "@ai-sdk/google-vertex": "^0.0.9",
+    "@ai-sdk/react": "^0.0.2",
     "@google/generative-ai": "^0.12.0",
     "@hookform/resolvers": "^3.3.4",
     "@langchain/community": "^0.0.53",

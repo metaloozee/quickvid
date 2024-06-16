@@ -1,7 +1,11 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { env } from "@/env.mjs"
+import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { type MessageContent } from "@langchain/core/messages"
+import { streamText } from "ai"
+import { createStreamableValue } from "ai/rsc"
 import { eq } from "drizzle-orm"
 import ytdl from "ytdl-core"
 import { z } from "zod"
@@ -16,6 +20,7 @@ import {
 import { transcribeVideo } from "@/lib/core/transcribe"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
+import { Message } from "@/components/chat"
 import { formSchema } from "@/components/form"
 import { RegenerateFormSchema } from "@/components/regenerate-btn"
 import { VerifyFactsFormSchema } from "@/components/verify-facts"
@@ -25,6 +30,35 @@ export type FactCheckerResponse = {
     isAccurate: "true" | "false"
     source: string
     text: string
+}
+
+const google = createGoogleGenerativeAI({
+    apiKey: env.GOOGLE_API_KEY,
+})
+
+export const continueConversation = async (history: Message[]) => {
+    "use server"
+
+    const stream = createStreamableValue()
+
+    ;(async () => {
+        const { textStream } = await streamText({
+            model: google("models/gemini-1.5-pro-latest"),
+            system: "You are a dude that doesn't drop character until the DVD commentary.",
+            messages: history,
+        })
+
+        for await (const text of textStream) {
+            stream.update(text)
+        }
+
+        stream.done()
+    })()
+
+    return {
+        messages: history,
+        newMessage: stream.value,
+    }
 }
 
 export const summarizeTranscript = async ({

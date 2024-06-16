@@ -8,6 +8,15 @@ overrides:
     "@langchain/core": 0.1.60
 
 dependencies:
+    "@ai-sdk/google":
+        specifier: ^0.0.21
+        version: 0.0.21(zod@3.23.4)
+    "@ai-sdk/google-vertex":
+        specifier: ^0.0.9
+        version: 0.0.9(zod@3.23.4)
+    "@ai-sdk/react":
+        specifier: ^0.0.2
+        version: 0.0.2(react@18.3.1)(zod@3.23.4)
     "@google/generative-ai":
         specifier: ^0.12.0
         version: 0.12.0
@@ -225,6 +234,56 @@ devDependencies:
         version: 9.4.0
 
 packages:
+    /@ai-sdk/google-vertex@0.0.9(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-a2nR9d+rWWyjJDocuAG/cXUoAGSLd7VOKvvSqd5+Bxlqsg7E825ZPPx5W8NoSX3BH/bsIse23ab/F5P+jaKofg==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            "@ai-sdk/provider": 0.0.10
+            "@ai-sdk/provider-utils": 0.0.14(zod@3.23.4)
+            "@google-cloud/vertexai": 1.2.0
+            json-schema: 0.4.0
+        transitivePeerDependencies:
+            - encoding
+            - supports-color
+            - zod
+        dev: false
+
+    /@ai-sdk/google@0.0.21(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-LsbQ2B91ke36Qcn4yp0g1i5s10BCebh+eBDW0Q+OVh1vk4YqK6JWHrsuoFIXB+THWKRSSouhkgXDdUheOSvWKQ==,
+            }
+        engines: { node: ">=18" }
+        peerDependencies:
+            zod: ^3.0.0
+        dependencies:
+            "@ai-sdk/provider": 0.0.10
+            "@ai-sdk/provider-utils": 0.0.14(zod@3.23.4)
+            zod: 3.23.4
+        dev: false
+
+    /@ai-sdk/provider-utils@0.0.14(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-PCQFN3MlC6DShS/81IFU9NVvt9OekQGiZTEowRc2AwAwWrDsv7er3UkcMswFAL/Z7xZKjgu0dZTNH1z9oUlo7A==,
+            }
+        engines: { node: ">=18" }
+        peerDependencies:
+            zod: ^3.0.0
+        peerDependenciesMeta:
+            zod:
+                optional: true
+        dependencies:
+            "@ai-sdk/provider": 0.0.10
+            eventsource-parser: 1.1.2
+            nanoid: 3.3.6
+            secure-json-parse: 2.7.0
+            zod: 3.23.4
+        dev: false
+
     /@ai-sdk/provider-utils@0.0.5(zod@3.23.4):
         resolution:
             {
@@ -244,6 +303,16 @@ packages:
             zod: 3.23.4
         dev: false
 
+    /@ai-sdk/provider@0.0.10:
+        resolution:
+            {
+                integrity: sha512-NzkrtREQpHID1cTqY/C4CI30PVOaXWKYytDR2EcytmFgnP7Z6+CrGIA/YCnNhYAuUm6Nx+nGpRL/Hmyrv7NYzg==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            json-schema: 0.4.0
+        dev: false
+
     /@ai-sdk/provider@0.0.3:
         resolution:
             {
@@ -252,6 +321,38 @@ packages:
         engines: { node: ">=18" }
         dependencies:
             json-schema: 0.4.0
+        dev: false
+
+    /@ai-sdk/react@0.0.2(react@18.3.1)(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-segG03b5Gdt5h2Q41Ylfn88Rv5OiyXBZOi1ycQ/4MSkQX0D6WLJ8QhNIPkI5ie2qLeQA7sVqFLVuDTnpZQtDSg==,
+            }
+        engines: { node: ">=18" }
+        peerDependencies:
+            react: ^18 || ^19
+        peerDependenciesMeta:
+            react:
+                optional: true
+        dependencies:
+            "@ai-sdk/provider-utils": 0.0.14(zod@3.23.4)
+            "@ai-sdk/ui-utils": 0.0.2(zod@3.23.4)
+            react: 18.3.1
+            swr: 2.2.0(react@18.3.1)
+        transitivePeerDependencies:
+            - zod
+        dev: false
+
+    /@ai-sdk/ui-utils@0.0.2(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-CpWKvYO99UC72oHUts5MrJGPHEoOWrxhN4R8KjeHanZn7cosJ3bal++seSGJrwDz2ImqrpfAdRHmQtdbsCCOyQ==,
+            }
+        engines: { node: ">=18" }
+        dependencies:
+            "@ai-sdk/provider-utils": 0.0.14(zod@3.23.4)
+        transitivePeerDependencies:
+            - zod
         dev: false
 
     /@alloc/quick-lru@5.2.0:
@@ -1198,6 +1299,19 @@ packages:
             {
                 integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==,
             }
+        dev: false
+
+    /@google-cloud/vertexai@1.2.0:
+        resolution:
+            {
+                integrity: sha512-EH0dnoMRIBQzJEEOUWN03eWPSdLBFdsZA/am3eU+qYrnNyY9okUueOajZd79U48KwgFbqoFrCA9yHQ30DgfD8Q==,
+            }
+        engines: { node: ">=18.0.0" }
+        dependencies:
+            google-auth-library: 9.11.0
+        transitivePeerDependencies:
+            - encoding
+            - supports-color
         dev: false
 
     /@google/generative-ai@0.12.0:
@@ -3687,6 +3801,18 @@ packages:
             - supports-color
         dev: false
 
+    /agent-base@7.1.1:
+        resolution:
+            {
+                integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==,
+            }
+        engines: { node: ">= 14" }
+        dependencies:
+            debug: 4.3.4
+        transitivePeerDependencies:
+            - supports-color
+        dev: false
+
     /agentkeepalive@4.5.0:
         resolution:
             {
@@ -5922,6 +6048,23 @@ packages:
             - supports-color
         dev: false
 
+    /gaxios@6.6.0:
+        resolution:
+            {
+                integrity: sha512-bpOZVQV5gthH/jVCSuYuokRo2bTKOcuBiVWpjmTn6C5Agl5zclGfTljuGsQZxwwDBkli+YhZhP4TdlqTnhOezQ==,
+            }
+        engines: { node: ">=14" }
+        dependencies:
+            extend: 3.0.2
+            https-proxy-agent: 7.0.4
+            is-stream: 2.0.1
+            node-fetch: 2.7.0
+            uuid: 9.0.1
+        transitivePeerDependencies:
+            - encoding
+            - supports-color
+        dev: false
+
     /gcp-metadata@5.3.0:
         resolution:
             {
@@ -5930,6 +6073,20 @@ packages:
         engines: { node: ">=12" }
         dependencies:
             gaxios: 5.1.3
+            json-bigint: 1.0.0
+        transitivePeerDependencies:
+            - encoding
+            - supports-color
+        dev: false
+
+    /gcp-metadata@6.1.0:
+        resolution:
+            {
+                integrity: sha512-Jh/AIwwgaxan+7ZUUmRLCjtchyDiqh4KjBJ5tW3plBZb5iL/BPcso8A5DlzeD9qlw0duCamnNdpFjxwaT0KyKg==,
+            }
+        engines: { node: ">=14" }
+        dependencies:
+            gaxios: 6.6.0
             json-bigint: 1.0.0
         transitivePeerDependencies:
             - encoding
@@ -6158,6 +6315,24 @@ packages:
             - supports-color
         dev: false
 
+    /google-auth-library@9.11.0:
+        resolution:
+            {
+                integrity: sha512-epX3ww/mNnhl6tL45EQ/oixsY8JLEgUFoT4A5E/5iAR4esld9Kqv6IJGk7EmGuOgDvaarwF95hU2+v7Irql9lw==,
+            }
+        engines: { node: ">=14" }
+        dependencies:
+            base64-js: 1.5.1
+            ecdsa-sig-formatter: 1.0.11
+            gaxios: 6.6.0
+            gcp-metadata: 6.1.0
+            gtoken: 7.1.0
+            jws: 4.0.0
+        transitivePeerDependencies:
+            - encoding
+            - supports-color
+        dev: false
+
     /google-p12-pem@4.0.1:
         resolution:
             {
@@ -6220,6 +6395,20 @@ packages:
         dependencies:
             gaxios: 5.1.3
             google-p12-pem: 4.0.1
+            jws: 4.0.0
+        transitivePeerDependencies:
+            - encoding
+            - supports-color
+        dev: false
+
+    /gtoken@7.1.0:
+        resolution:
+            {
+                integrity: sha512-pCcEwRi+TKpMlxAQObHDQ56KawURgyAf6jtIY046fJ5tIv3zDe/LEIubckAO8fj6JnAxLdmWkUfNyulQ2iKdEw==,
+            }
+        engines: { node: ">=14.0.0" }
+        dependencies:
+            gaxios: 6.6.0
             jws: 4.0.0
         transitivePeerDependencies:
             - encoding
@@ -6325,6 +6514,19 @@ packages:
         engines: { node: ">= 6" }
         dependencies:
             agent-base: 6.0.2
+            debug: 4.3.4
+        transitivePeerDependencies:
+            - supports-color
+        dev: false
+
+    /https-proxy-agent@7.0.4:
+        resolution:
+            {
+                integrity: sha512-wlwpilI7YdjSkWaQ/7omYBMTliDcmCN8OLihO6I9B86g06lMyAoqgoDpV0XqoaPOKj+0DIdAvnsWfyAAhmimcg==,
+            }
+        engines: { node: ">= 14" }
+        dependencies:
+            agent-base: 7.1.1
             debug: 4.3.4
         transitivePeerDependencies:
             - supports-color
