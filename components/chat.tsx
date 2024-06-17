@@ -1,17 +1,22 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { readStreamableValue } from "ai/rsc"
 import {
     Bot,
     BotMessageSquare,
     CornerDownLeft,
-    Ellipsis,
+    Loader,
     UserRound,
 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit"
 import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { continueConversation } from "@/app/actions"
 
@@ -20,11 +25,19 @@ export interface Message {
     content: string
 }
 
+export const chatFormSchema = z.object({
+    query: z.string().describe("The query you want to send it to the LLM"),
+})
+
 export const Chat = () => {
     const { formRef, onKeyDown } = useEnterSubmit()
 
     const [conversation, setConversation] = useState<Message[]>([])
     const [input, setInput] = useState<string>("")
+
+    const form = useForm<z.infer<typeof chatFormSchema>>({
+        resolver: zodResolver(chatFormSchema),
+    })
 
     return (
         <div className="col-span-1 flex w-full flex-col gap-10">
@@ -81,47 +94,72 @@ export const Chat = () => {
                     </div> */}
                 </div>
 
-                <form className="flex w-full items-center justify-center gap-2 px-5 py-4">
-                    <Textarea
-                        onKeyDown={onKeyDown}
-                        placeholder="ask me anything..."
-                        className="min-h-12 resize-none text-xs focus-visible:ring-blue-400"
-                        value={input}
-                        onChange={(event) => {
-                            setInput(event.target.value)
-                        }}
-                    />
-                    <Button
-                        type="submit"
-                        className="h-full bg-blue-400 hover:bg-blue-500"
-                        onClick={async (e: React.FormEvent) => {
-                            e.preventDefault()
+                <Form {...form}>
+                    <form
+                        className="flex w-full items-center justify-center gap-2 px-5 py-4"
+                        onSubmit={form.handleSubmit(async (data) => {
+                            try {
+                                const { messages, newMessage } =
+                                    await continueConversation([
+                                        ...conversation,
+                                        { role: "user", content: data.query },
+                                    ])
 
-                            setInput("")
+                                let textContent = ""
 
-                            const { messages, newMessage } =
-                                await continueConversation([
-                                    ...conversation,
-                                    { role: "user", content: input },
-                                ])
+                                for await (const delta of readStreamableValue(
+                                    newMessage
+                                )) {
+                                    textContent = `${textContent}${delta}`
 
-                            let textContent = ""
-
-                            for await (const delta of readStreamableValue(
-                                newMessage
-                            )) {
-                                textContent = `${textContent}${delta}`
-
-                                setConversation([
-                                    ...messages,
-                                    { role: "assistant", content: textContent },
-                                ])
+                                    setConversation([
+                                        ...messages,
+                                        {
+                                            role: "assistant",
+                                            content: textContent,
+                                        },
+                                    ])
+                                }
+                            } catch (e: any) {
+                                console.error(e)
+                                return toast.error(e.message)
                             }
-                        }}
+                        })}
                     >
-                        <CornerDownLeft className="size-4" />
-                    </Button>
-                </form>
+                        <FormField
+                            disabled={form.formState.isSubmitting}
+                            control={form.control}
+                            name="query"
+                            render={({ field }) => (
+                                <FormItem className="w-full">
+                                    <FormControl>
+                                        <Textarea
+                                            onKeyDown={onKeyDown}
+                                            placeholder="ask me anything..."
+                                            className="min-h-12 resize-none text-xs focus-visible:ring-blue-400"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <Button
+                            disabled={form.formState.isSubmitting}
+                            type="submit"
+                            className="h-full bg-blue-400 hover:bg-blue-500"
+                        >
+                            {form.formState.isSubmitting ? (
+                                <>
+                                    <Loader className="size-4 animate-spin duration-1000" />
+                                </>
+                            ) : (
+                                <>
+                                    <CornerDownLeft className="size-4" />
+                                </>
+                            )}
+                        </Button>
+                    </form>
+                </Form>
             </div>
         </div>
     )
