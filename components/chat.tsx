@@ -99,6 +99,12 @@ export const Chat = () => {
                         className="flex w-full items-center justify-center gap-2 px-5 py-4"
                         onSubmit={form.handleSubmit(async (data) => {
                             try {
+                                // Optimistic Update
+                                setConversation((currentConversation) => [
+                                    ...currentConversation,
+                                    { role: "user", content: data.query },
+                                ])
+
                                 const { messages, newMessage } =
                                     await continueConversation([
                                         ...conversation,
