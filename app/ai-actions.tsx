@@ -8,6 +8,7 @@ import {
     getMutableAIState,
     streamUI,
 } from "ai/rsc"
+import { Loader } from "lucide-react"
 import { z } from "zod"
 
 import { VideoWidget } from "@/components/video-widget"
@@ -52,16 +53,14 @@ export const continueConversation = async (
             showRelatedVideos: {
                 description: "Get the videos related to the user's query.",
                 parameters: z.object({
-                    videos: z.array(
-                        z.object({
-                            videoTitle: z.string().describe("Video's title"),
-                            videoId: z
-                                .string()
-                                .describe("The unique ID of the video"),
-                        })
-                    ),
+                    videoId: z.string(),
+                    videoTitle: z.string(),
                 }),
-                generate: async ({ videos }) => {
+                generate: async function* ({ videoId, videoTitle }) {
+                    yield (
+                        <Loader className="size-4 animate-spin transition-all duration-1000" />
+                    )
+
                     history.done((messages: ServerMessage[]) => [
                         ...messages,
                         {
@@ -70,16 +69,16 @@ export const continueConversation = async (
                         },
                     ])
 
-                    return videos.map((video) => {
-                        return (
-                            <VideoWidget
-                                title={video.videoTitle}
-                                thumbnail={
-                                    "https://wallpaperaccess.com/full/481675.jpg"
-                                }
-                            />
-                        )
-                    })
+                    console.log("tool called")
+
+                    return (
+                        <VideoWidget
+                            title={videoTitle}
+                            thumbnail={
+                                "https://wallpaperaccess.com/full/481675.jpg"
+                            }
+                        />
+                    )
                 },
             },
         },

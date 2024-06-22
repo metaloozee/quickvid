@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache"
 import { type MessageContent } from "@langchain/core/messages"
 import { eq } from "drizzle-orm"
-import { Loader } from "lucide-react"
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
