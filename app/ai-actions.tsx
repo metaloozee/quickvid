@@ -29,72 +29,183 @@ export interface ClientMessage {
 }
 
 export const continueConversation = async (
-    input: string
-): Promise<ClientMessage> => {
+    input: string,
+    videoId: string,
+    videoTitle: string
+) => {
     "use server"
 
-    const history = getMutableAIState()
+    const aiState = getMutableAIState()
 
-    const result = await streamUI({
-        model: google("models/gemini-1.5-flash-latest") as LanguageModel,
-        system: "You are a dude that doesn't drop character until the DVD commentary.",
-        messages: [...history.get(), { role: "user", content: input }],
-        text: ({ content, done }) => {
-            if (done) {
-                history.done((messages: ServerMessage[]) => [
-                    ...messages,
-                    { role: "assistant", content },
-                ])
+    const textStream = createStreamableValue("")
+    const spinnerStream = createStreamableUI(
+        <Loader className="size-4 animate-spin" />
+    )
+    const messageStream = createStreamableUI(null)
+    const uiStream = createStreamableUI()
+
+    aiState.update({
+        ...aiState.get(),
+        messages: [
+            ...aiState.get().messages,
+            {
+                id: generateId(),
+                role: "user",
+                content: `${aiState
+                    .get()
+                    .interactions.join("\n\n")}\n\n${input}`,
+            },
+        ],
+    })
+
+    uiStream.update(<Loader className="size-4 animate-spin" />)
+
+    const messageHistory = aiState.get().messages.map((message: any) => ({
+        role: message.role,
+        content: message.content,
+    }))
+
+    ;(async () => {
+        try {
+            const result = await streamText({
+                model: google(
+                    "models/gemini-1.5-flash-latest"
+                ) as LanguageModel,
+                messages: [...messageHistory],
+                tools: {
+                    showRelatedVideos: {
+                        description:
+                            "Get the videos related to the user's query.",
+                        parameters: z.object({
+                            videoId: z.string(),
+                            videoTitle: z.string(),
+                        }),
+                    },
+                },
+                system: `\
+                    You are a friendly pirate assistant that helps the user with their problems. You can give video recommendations based on the query.
+                    
+                    The user's current videoId is ${videoId} and the title is ${videoTitle}
+                `,
+            })
+
+            let textContent = ""
+            spinnerStream.done(null)
+
+            for await (const delta of result.fullStream) {
+                const { type } = delta
+
+                if (type === "text-delta") {
+                    const { textDelta } = delta
+
+                    textContent += textDelta
+                    messageStream.update(<div>{textContent}</div>)
+
+                    aiState.update({
+                        ...aiState.get(),
+                        messages: [
+                            ...aiState.get().messages,
+                            {
+                                id: generateId(),
+                                role: "assistant",
+                                content: textContent,
+                            },
+                        ],
+                    })
+                } else if (type === "tool-call") {
+                    const { toolName, args } = delta
+
+                    if (toolName === "showRelatedVideos") {
+                        const { videoId, videoTitle } = args
+
+                        uiStream.update(
+                            <VideoWidget
+                                title={videoTitle}
+                                thumbnail="https://th.bing.com/th/id/OIP.iibAGrWeMov3xB5rVBi68gHaEK?rs=1&pid=ImgDetMain"
+                            />
+                        )
+
+                        aiState.done({
+                            ...aiState.get(),
+                            interactions: [],
+                            messages: [
+                                ...aiState.get().messages,
+                                {
+                                    id: generateId(),
+                                    role: "assistant",
+                                    content: `Here is the video you requested`,
+                                    display: {
+                                        name: "showRelatedVideos",
+                                        props: {
+                                            videoId,
+                                        },
+                                    },
+                                },
+                            ],
+                        })
+                    }
+                }
             }
 
-            return <div>{content}</div>
-        },
-        tools: {
-            showRelatedVideos: {
-                description: "Get the videos related to the user's query.",
-                parameters: z.object({
-                    videoId: z.string(),
-                    videoTitle: z.string(),
-                }),
-                generate: async function* ({ videoId, videoTitle }) {
-                    yield (
-                        <Loader className="size-4 animate-spin transition-all duration-1000" />
-                    )
+            uiStream.done()
+            textStream.done()
+            messageStream.done()
+        } catch (e) {
+            console.error(e)
 
-                    history.done((messages: ServerMessage[]) => [
-                        ...messages,
-                        {
-                            role: "assistant",
-                            content: "Showing related videos",
-                        },
-                    ])
-
-                    console.log("tool called")
-
-                    return (
-                        <VideoWidget
-                            title={videoTitle}
-                            thumbnail={
-                                "https://wallpaperaccess.com/full/481675.jpg"
-                            }
-                        />
-                    )
-                },
-            },
-        },
-    })
+            const error = new Error(
+                "The AI got rate limited, please try again later."
+            )
+            uiStream.error(error)
+            spinnerStream.error(error)
+            messageStream.error(error)
+            aiState.done(aiState.get())
+        }
+    })()
 
     return {
         id: generateId(),
-        role: "assistant",
-        display: result.value,
+        attachments: uiStream.value,
+        spinner: spinnerStream.value,
+        display: messageStream.value,
     }
 }
 
-export const AI = createAI<ServerMessage[], ClientMessage[]>({
+export type Message = {
+    role: "user" | "assistant" | "system" | "function" | "data" | "tool"
+    content: string
+    id?: string
+    name?: string
+    display?: {
+        name: string
+        props: Record<string, any>
+    }
+}
+
+export type AIState = {
+    chatId: string
+    interactions?: string[]
+    messages: Message[]
+}
+
+export type UIState = {
+    id: string
+    display: React.ReactNode
+    spinner?: React.ReactNode
+    attachments?: React.ReactNode
+}[]
+
+export const AI = createAI<AIState, UIState>({
     actions: {
         continueConversation,
     },
-    initialAIState: [],
     initialUIState: [],
+    initialAIState: { chatId: generateId(), interactions: [], messages: [] },
 })
+// export const AI = createAI<ServerMessage[], ClientMessage[]>({
+//     actions: {
+//         continueConversation,
+//     },
+//     initialAIState: [],
+//     initialUIState: [],
+// })

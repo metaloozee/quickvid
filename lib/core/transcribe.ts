@@ -1,4 +1,4 @@
-import { YoutubeLoader } from "langchain/document_loaders/web/youtube"
+import { YoutubeLoader } from "@langchain/community/document_loaders/web/youtube"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
 

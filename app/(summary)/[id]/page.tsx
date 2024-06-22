@@ -131,7 +131,10 @@ export default async function SummaryIndexPage({ params }: Props) {
                 <VerifyFacts summary={data.summary!} />
 
                 <AI>
-                    <Chat />
+                    <Chat
+                        videoId={data.videoid}
+                        videoTitle={videoInfo.videoDetails.title}
+                    />
                 </AI>
             </div>
         </section>
