@@ -10,6 +10,7 @@ import { Chat } from "@/components/chat"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
+import { AI } from "@/app/ai-actions"
 
 type Props = {
     params: { id: string }
@@ -129,7 +130,9 @@ export default async function SummaryIndexPage({ params }: Props) {
             <div className="flex w-full flex-col gap-10">
                 <VerifyFacts summary={data.summary!} />
 
-                <Chat />
+                <AI>
+                    <Chat />
+                </AI>
             </div>
         </section>
     )

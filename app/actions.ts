@@ -1,11 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { env } from "@/env.mjs"
-import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { type MessageContent } from "@langchain/core/messages"
-import { LanguageModel, streamText } from "ai"
-import { createStreamableUI, createStreamableValue } from "ai/rsc"
 import { eq } from "drizzle-orm"
 import { Loader } from "lucide-react"
 import ytdl from "ytdl-core"
@@ -22,7 +18,6 @@ import {
 import { transcribeVideo } from "@/lib/core/transcribe"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
-import { Message } from "@/components/chat"
 import { formSchema } from "@/components/form"
 import { RegenerateFormSchema } from "@/components/regenerate-btn"
 import { VerifyFactsFormSchema } from "@/components/verify-facts"
@@ -33,10 +28,6 @@ export type FactCheckerResponse = {
     source: string
     text: string
 }
-
-const google = createGoogleGenerativeAI({
-    apiKey: env.GOOGLE_API_KEY,
-})
 
 export const embedTranscript = async ({
     videoId,
@@ -62,42 +53,6 @@ export const embedTranscript = async ({
     } catch (e) {
         console.error(e)
         return false
-    }
-}
-
-export const continueConversation = async (history: Message[]) => {
-    const stream = createStreamableValue()
-    const spinnerStream = createStreamableUI(
-        <Loader className="animate-spin" />
-    )
-
-    ;(async () => {
-        try {
-            const { textStream } = await streamText({
-                model: google(
-                    "models/gemini-1.5-flash-latest"
-                ) as LanguageModel,
-                system: "You are a dude that doesn't drop character until the DVD commentary.",
-                messages: history,
-            })
-
-            spinnerStream.done()
-
-            for await (const text of textStream) {
-                stream.update(text)
-            }
-
-            stream.done()
-        } catch (e: any) {
-            console.error(e)
-            const error = new Error(e.message ?? "An unknown error occurred")
-            stream.error(error)
-        }
-    })()
-
-    return {
-        messages: history,
-        newMessage: stream.value,
     }
 }
 

@@ -30,7 +30,7 @@
     "@google/generative-ai": "^0.12.0",
     "@hookform/resolvers": "^3.3.4",
     "@langchain/community": "^0.0.53",
-    "@langchain/core": "0.1.58",
+    "@langchain/core": "0.2.9",
     "@langchain/google-genai": "^0.0.16",
     "@langchain/google-vertexai": "^0.0.17",
     "@langchain/groq": "^0.0.8",
@@ -51,15 +51,15 @@
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.10",
-    "ai": "^3.1.0",
+    "ai": "^3.2.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^1.2.1",
     "drizzle-orm": "^0.31.2",
     "form-data": "^4.0.0",
     "geist": "^1.3.0",
-    "langchain": "^0.1.37",
+    "langchain": "^0.2.6",
     "lucide-react": "0.364.0",
-    "next": "14.1.4",
+    "next": "14.2.4",
     "next-themes": "^0.2.1",
     "next-view-transitions": "^0.1.1",
     "node-fetch": "^3.3.2",
@@ -103,7 +103,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@langchain/core": "0.1.60"
+      "@langchain/core": "0.2.9"
     }
   }
 }

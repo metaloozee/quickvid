@@ -1,8 +1,8 @@
 "use client"
 
-import { useRef, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { readStreamableValue } from "ai/rsc"
+import { generateId } from "ai"
+import { useActions, useUIState } from "ai/rsc"
 import {
     Bot,
     BotMessageSquare,
@@ -14,11 +14,13 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import { useEnterSubmit } from "@/lib/hooks/use-enter-submit"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { continueConversation } from "@/app/actions"
+import { type ClientMessage } from "@/app/ai-actions"
+
+export const dynamic = "force-dynamic"
+export const maxDuration = 30
 
 export interface Message {
     role: "user" | "assistant"
@@ -30,10 +32,8 @@ export const chatFormSchema = z.object({
 })
 
 export const Chat = () => {
-    const { formRef, onKeyDown } = useEnterSubmit()
-
-    const [conversation, setConversation] = useState<Message[]>([])
-    const [input, setInput] = useState<string>("")
+    const [conversation, setConversation] = useUIState()
+    const { continueConversation } = useActions()
 
     const form = useForm<z.infer<typeof chatFormSchema>>({
         resolver: zodResolver(chatFormSchema),
@@ -60,24 +60,30 @@ export const Chat = () => {
                         </p>
                     </div>
 
-                    {conversation.map((message, index) => {
+                    {conversation.map((message: ClientMessage) => {
                         if (message.role == "assistant")
                             return (
-                                <div className="flex flex-row items-start gap-4 py-2">
-                                    <div className="">
+                                <div
+                                    key={message.id}
+                                    className="flex flex-row items-start gap-4 py-2"
+                                >
+                                    <div>
                                         <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
                                     </div>
-                                    <p className="text-xs">{message.content}</p>
+                                    <p className="text-xs">{message.display}</p>
                                 </div>
                             )
                         else
                             return (
-                                <div className="flex flex-row-reverse items-start gap-4 py-2">
-                                    <div className="">
+                                <div
+                                    key={message.id}
+                                    className="flex flex-row-reverse items-start gap-4 py-2"
+                                >
+                                    <div>
                                         <UserRound className="size-7 min-w-fit rounded-full rounded-br-none bg-primary p-1.5" />
                                     </div>
                                     <p className="text-right text-xs text-muted-foreground">
-                                        {message.content}
+                                        {message.display}
                                     </p>
                                 </div>
                             )
@@ -93,39 +99,32 @@ export const Chat = () => {
                         </p>
                     </div> */}
                 </div>
-
                 <Form {...form}>
                     <form
                         className="flex w-full items-center justify-center gap-2 px-5 py-4"
                         onSubmit={form.handleSubmit(async (data) => {
                             try {
-                                // Optimistic Update
-                                setConversation((currentConversation) => [
-                                    ...currentConversation,
-                                    { role: "user", content: data.query },
-                                ])
-
-                                const { messages, newMessage } =
-                                    await continueConversation([
-                                        ...conversation,
-                                        { role: "user", content: data.query },
-                                    ])
-
-                                let textContent = ""
-
-                                for await (const delta of readStreamableValue(
-                                    newMessage
-                                )) {
-                                    textContent = `${textContent}${delta}`
-
-                                    setConversation([
-                                        ...messages,
+                                setConversation(
+                                    (currentConversation: ClientMessage[]) => [
+                                        ...currentConversation,
                                         {
-                                            role: "assistant",
-                                            content: textContent,
+                                            id: generateId(),
+                                            role: "user",
+                                            display: data.query,
                                         },
-                                    ])
-                                }
+                                    ]
+                                )
+
+                                const message = await continueConversation(
+                                    data.query
+                                )
+
+                                setConversation(
+                                    (currentConversation: ClientMessage[]) => [
+                                        ...currentConversation,
+                                        message,
+                                    ]
+                                )
                             } catch (e: any) {
                                 console.error(e)
                                 return toast.error(e.message)
@@ -140,7 +139,7 @@ export const Chat = () => {
                                 <FormItem className="w-full">
                                     <FormControl>
                                         <Textarea
-                                            onKeyDown={onKeyDown}
+                                            autoFocus
                                             placeholder="ask me anything..."
                                             className="min-h-12 resize-none text-xs focus-visible:ring-blue-400"
                                             {...field}
