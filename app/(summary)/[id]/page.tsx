@@ -144,15 +144,26 @@ export default async function SummaryIndexPage({ params }: Props) {
                             },
                             strong({ children }) {
                                 return (
-                                    <strong className="text-white">
+                                    <strong className="underline decoration-primary underline-offset-4">
                                         {children}
                                     </strong>
                                 )
                             },
-                            p({ children }) {
+                            li({ children }) {
                                 return (
-                                    <p className="text-gray-300">{children}</p>
+                                    <li className="list-inside list-disc">
+                                        {children}
+                                    </li>
                                 )
+                            },
+                            ul({ children }) {
+                                return <ul className="list-item">{children}</ul>
+                            },
+                            ol({ children }) {
+                                return <ol className="list-item">{children}</ol>
+                            },
+                            p({ children }) {
+                                return <p>{children}</p>
                             },
                         }}
                     >

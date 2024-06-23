@@ -156,7 +156,10 @@ export const Chat = ({
                         })}
                     >
                         <FormField
-                            disabled={form.formState.isSubmitting}
+                            disabled={
+                                process.env.NODE_ENV === "production" ||
+                                form.formState.isSubmitting
+                            }
                             control={form.control}
                             name="query"
                             render={({ field }) => (
@@ -173,7 +176,10 @@ export const Chat = ({
                             )}
                         />
                         <Button
-                            disabled={form.formState.isSubmitting}
+                            disabled={
+                                process.env.NODE_ENV === "production" ||
+                                form.formState.isSubmitting
+                            }
                             type="submit"
                             className="h-full bg-blue-400 hover:bg-blue-500"
                         >

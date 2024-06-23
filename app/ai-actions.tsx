@@ -100,7 +100,7 @@ export const continueConversation = async (
                     const { textDelta } = delta
 
                     textContent += textDelta
-                    messageStream.update(<BotMessage content={textContent} />)
+                    messageStream.update(<div>{textContent}</div>)
 
                     aiState.update({
                         ...aiState.get(),
