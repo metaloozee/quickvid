@@ -1,21 +1,23 @@
 import { TavilySearchAPIRetriever } from "@langchain/community/retrievers/tavily_search_api"
 import {
+    AIMessage,
+    FunctionMessage,
+    type BaseMessage,
+} from "@langchain/core/messages"
+import {
     ChatPromptTemplate,
     MessagesPlaceholder,
 } from "@langchain/core/prompts"
 import { RunnableSequence } from "@langchain/core/runnables"
-import { DynamicTool } from "@langchain/core/tools"
+import { DynamicStructuredTool, DynamicTool } from "@langchain/core/tools"
 import { convertToOpenAIFunction } from "@langchain/core/utils/function_calling"
 import { ChatOpenAI } from "@langchain/openai"
-import { AgentExecutor } from "langchain/agents"
-import type { FunctionsAgentAction } from "langchain/agents/openai/output_parser"
 import {
-    AIMessage,
-    FunctionMessage,
+    AgentExecutor,
     type AgentFinish,
     type AgentStep,
-    type BaseMessage,
-} from "langchain/schema"
+} from "langchain/agents"
+import type { FunctionsAgentAction } from "langchain/agents/openai/output_parser"
 import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 

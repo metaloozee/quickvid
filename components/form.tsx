@@ -22,6 +22,7 @@ import {
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import {
+    embedTranscript,
     handleInitialFormSubmit,
     summarizeTranscript,
     uploadSummary,
@@ -120,6 +121,23 @@ export const InitialForm = () => {
                                     "An unknown error occurred while processing the transcript."
                                 )
                             }
+
+                            restart()
+                            setStatus("Embedding...")
+
+                            const isEmbedUploaded = await embedTranscript({
+                                videoId: value.videoId,
+                                transcript: value.transcript,
+                            })
+
+                            // if (!isEmbedUploaded) {
+                            //     stop()
+                            //     setStatus(null)
+
+                            //     return toast.error(
+                            //         "An unknown error occurred while embedding the transcript"
+                            //     )
+                            // }
 
                             restart()
                             setStatus("Summarizing...")

@@ -1,10 +1,8 @@
 {
-    "id": "420f548b-0dd7-4976-82e6-efb264af6b4a",
-    "prevId": "00000000-0000-0000-0000-000000000000",
-    "version": "5",
-    "dialect": "pg",
+    "version": "7",
+    "dialect": "postgresql",
     "tables": {
-        "summaries": {
+        "public.summaries": {
             "name": "summaries",
             "schema": "",
             "columns": {
@@ -33,17 +31,17 @@
                 "summaries_videoid_videos_videoid_fk": {
                     "name": "summaries_videoid_videos_videoid_fk",
                     "tableFrom": "summaries",
-                    "tableTo": "videos",
                     "columnsFrom": ["videoid"],
+                    "tableTo": "videos",
                     "columnsTo": ["videoid"],
-                    "onDelete": "cascade",
-                    "onUpdate": "cascade"
+                    "onUpdate": "cascade",
+                    "onDelete": "cascade"
                 }
             },
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
-        "videos": {
+        "public.videos": {
             "name": "videos",
             "schema": "",
             "columns": {
@@ -79,8 +77,8 @@
             "uniqueConstraints": {
                 "videos_videoid_unique": {
                     "name": "videos_videoid_unique",
-                    "nullsNotDistinct": false,
-                    "columns": ["videoid"]
+                    "columns": ["videoid"],
+                    "nullsNotDistinct": false
                 }
             }
         }
@@ -88,8 +86,10 @@
     "enums": {},
     "schemas": {},
     "_meta": {
-        "columns": {},
         "schemas": {},
-        "tables": {}
-    }
+        "tables": {},
+        "columns": {}
+    },
+    "id": "420f548b-0dd7-4976-82e6-efb264af6b4a",
+    "prevId": "00000000-0000-0000-0000-000000000000"
 }

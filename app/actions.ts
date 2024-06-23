@@ -7,6 +7,7 @@ import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
+import { generateEmbedding } from "@/lib/core/embed"
 import { searchUsingTavilly } from "@/lib/core/search"
 import {
     summarizeTranscriptWithGemini,
@@ -25,6 +26,33 @@ export type FactCheckerResponse = {
     isAccurate: "true" | "false"
     source: string
     text: string
+}
+
+export const embedTranscript = async ({
+    videoId,
+    transcript,
+}: {
+    videoId: string
+    transcript: string
+}) => {
+    try {
+        const embedding = await generateEmbedding(transcript)
+        if (!embedding) {
+            throw new Error(
+                "An unkown error occurred while generating the embedding."
+            )
+        }
+
+        await db
+            .update(videos)
+            .set({ embedding: embedding })
+            .where(eq(videos.videoid, videoId))
+
+        return true
+    } catch (e) {
+        console.error(e)
+        return false
+    }
 }
 
 export const summarizeTranscript = async ({
