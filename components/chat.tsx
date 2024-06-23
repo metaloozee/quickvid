@@ -11,21 +11,20 @@ import {
     UserRound,
 } from "lucide-react"
 import { useForm } from "react-hook-form"
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 import { toast } from "sonner"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { type ClientMessage } from "@/app/ai-actions"
+import { Message, type ClientMessage } from "@/app/ai-actions"
+
+import { MemoizedReactMarkdown } from "./markdown/markdown"
 
 export const dynamic = "force-dynamic"
 export const maxDuration = 30
-
-export interface Message {
-    role: "user" | "assistant"
-    content: string
-}
 
 export const chatFormSchema = z.object({
     query: z.string().describe("The query you want to send it to the LLM"),
@@ -70,7 +69,7 @@ export const Chat = ({
                         if (message.role == "user")
                             return (
                                 <div
-                                    key={message.id}
+                                    key={message.id!}
                                     className="flex flex-row-reverse items-start gap-4 py-2"
                                 >
                                     <div>
@@ -90,6 +89,21 @@ export const Chat = ({
                                     <div>
                                         <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
                                     </div>
+                                    {/* <MemoizedReactMarkdown
+                                        remarkPlugins={[remarkGfm, remarkMath]}
+                                        components={{
+                                            strong({ children }) {
+                                                return (
+                                                    <strong>{children}</strong>
+                                                )
+                                            },
+                                            p({ children }) {
+                                                return <p>{children}</p>
+                                            },
+                                        }}
+                                    >
+                                        {message.content}
+                                    </MemoizedReactMarkdown> */}
                                     <p className="text-xs">{message.display}</p>
                                 </div>
                             )

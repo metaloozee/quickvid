@@ -1,12 +1,15 @@
 import type { Metadata, ResolvingMetadata } from "next"
 import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Chat } from "@/components/chat"
+import { MemoizedReactMarkdown } from "@/components/markdown/markdown"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
@@ -122,7 +125,39 @@ export default async function SummaryIndexPage({ params }: Props) {
                     </div>
                 </div>
                 <div className="flex w-full flex-col items-start gap-5 rounded-xl p-5 text-justify outline-dashed outline-2 outline-secondary md:text-left">
-                    {data.summary}
+                    <MemoizedReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        components={{
+                            h1({ children }) {
+                                return (
+                                    <h1 className="text-xl font-bold">
+                                        {children}
+                                    </h1>
+                                )
+                            },
+                            h2({ children }) {
+                                return (
+                                    <h2 className="text-xl font-bold">
+                                        {children}
+                                    </h2>
+                                )
+                            },
+                            strong({ children }) {
+                                return (
+                                    <strong className="text-white">
+                                        {children}
+                                    </strong>
+                                )
+                            },
+                            p({ children }) {
+                                return (
+                                    <p className="text-gray-300">{children}</p>
+                                )
+                            },
+                        }}
+                    >
+                        {data.summary}
+                    </MemoizedReactMarkdown>
                     <RegenerateSummaryButton videoid={data.videoid} />
                 </div>
             </div>

@@ -11,6 +11,7 @@ import {
 import { Loader } from "lucide-react"
 import { z } from "zod"
 
+import { BotMessage } from "@/components/markdown/message"
 import { VideoWidget } from "@/components/video-widget"
 
 const google = createGoogleGenerativeAI({
@@ -99,7 +100,7 @@ export const continueConversation = async (
                     const { textDelta } = delta
 
                     textContent += textDelta
-                    messageStream.update(<div>{textContent}</div>)
+                    messageStream.update(<BotMessage content={textContent} />)
 
                     aiState.update({
                         ...aiState.get(),
