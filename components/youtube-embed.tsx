@@ -31,7 +31,7 @@ export const Embed = ({
                     <div className="absolute flex size-full items-center justify-center rounded-md">
                         <Button
                             size={null}
-                            className="rounded-full bg-transparent p-3 backdrop-blur-md"
+                            className="rounded-full bg-muted/50 p-3 backdrop-blur-md"
                         >
                             <Link
                                 href={link}
