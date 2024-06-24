@@ -2,12 +2,13 @@
 
 import { revalidatePath } from "next/cache"
 import { type MessageContent } from "@langchain/core/messages"
+import { OpenAIEmbeddings } from "@langchain/openai"
 import { eq } from "drizzle-orm"
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
-import { generateEmbedding } from "@/lib/core/embed"
 import { searchUsingTavilly } from "@/lib/core/search"
 import {
     summarizeTranscriptWithGemini,
@@ -16,10 +17,14 @@ import {
 } from "@/lib/core/summarize"
 import { transcribeVideo } from "@/lib/core/transcribe"
 import { db } from "@/lib/db"
-import { summaries, videos } from "@/lib/db/schema"
+import { embeddings, summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
 import { RegenerateFormSchema } from "@/components/regenerate-btn"
 import { VerifyFactsFormSchema } from "@/components/verify-facts"
+
+const openaiEmbed = new OpenAIEmbeddings({
+    model: "text-embedding-ada-002",
+})
 
 export type FactCheckerResponse = {
     input: "string"
@@ -35,18 +40,34 @@ export const embedTranscript = async ({
     videoId: string
     transcript: string
 }) => {
+    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 })
+
     try {
-        const embedding = await generateEmbedding(transcript)
-        if (!embedding) {
+        const docs = await textSplitter.createDocuments([transcript])
+        const transcripts = docs.map((d) => d.pageContent)
+
+        const textEmbeddings = await openaiEmbed.embedDocuments([
+            ...transcripts,
+        ])
+        if (!textEmbeddings) {
             throw new Error(
                 "An unkown error occurred while generating the embedding."
             )
         }
 
-        await db
-            .update(videos)
-            .set({ embedding: embedding })
-            .where(eq(videos.videoid, videoId))
+        const rows = textEmbeddings.map((embedding, index) => ({
+            videoid: videoId,
+            embedding: embedding,
+            content: transcripts[index],
+        }))
+
+        const res = await db.insert(embeddings).values(rows)
+
+        if (!res) {
+            throw new Error(
+                "An unknown error occurred while uploading the embeddings."
+            )
+        }
 
         return true
     } catch (e) {
