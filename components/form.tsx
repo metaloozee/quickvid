@@ -130,14 +130,11 @@ export const InitialForm = () => {
                                 transcript: value.transcript,
                             })
 
-                            // if (!isEmbedUploaded) {
-                            //     stop()
-                            //     setStatus(null)
-
-                            //     return toast.error(
-                            //         "An unknown error occurred while embedding the transcript"
-                            //     )
-                            // }
+                            if (!isEmbedUploaded) {
+                                toast.warning(
+                                    "Failed to generate the embeddings"
+                                )
+                            }
 
                             restart()
                             setStatus("Summarizing...")

@@ -107,7 +107,9 @@ If you fail to understand the transcript or its sub-sections then just let the u
 
 export const summarizeTranscriptWithGroq = async (
     transcript: string,
-    model: "llama3-70b-8192" | "mixtral-8x7b-32768"
+    model: "llama3-70b-8192" | "mixtral-8x7b-32768",
+    videoTitle: string,
+    videoAuthor: string
 ) => {
     const groq = new ChatGroq({
         model,
@@ -119,39 +121,51 @@ export const summarizeTranscriptWithGroq = async (
     try {
         const outputs = await splitter.createDocuments([transcript])
 
-        const summaryPromises = outputs.map(
-            async (output: { pageContent: string }) => {
-                const prompt = ChatPromptTemplate.fromMessages([
-                    [
-                        "system",
-                        "You are a highly skilled AI trained in language comprehension. I would like you to read the following sub-section of a transcript from a youtube video retain the most important points, providing a coherent and readable paragraph that could help a person understand the main points of the video without needing to read the entire text or watch the video. Please avoid unnecessary details or tangential points. The output should only be in English language.",
-                    ],
-                    ["human", output.pageContent],
-                ])
+        const chains = outputs.map((output: { pageContent: string }) => {
+            const prompt = ChatPromptTemplate.fromMessages([
+                [
+                    "system",
+                    "You are a highly skilled AI trained in language comprehension. I would like you to read the following sub-section of a transcript from a youtube video retain the most important points, providing a coherent and readable paragraph that could help a person understand the main points of the video without needing to read the entire text or watch the video. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                ],
+                ["human", output.pageContent],
+            ])
+            return prompt.pipe(groq)
+        })
 
-                const chain = prompt.pipe(groq)
-                const res = await chain.invoke({})
-                if (!res) {
-                    throw new Error(
-                        "An Error Occurred while Summarizing the Sub-section of the transcript"
-                    )
-                }
+        const mapChain = RunnableMap.from(chains)
+        const pointers = await mapChain.invoke({})
 
-                return res.content as string
-            }
-        )
+        if (!pointers) {
+            throw new Error(
+                "An Error Occurred while Processing the Sub-Sections of the transcript"
+            )
+        }
 
-        const summaries = await Promise.all(summaryPromises)
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                `\
+You are a highly skilled AI trained in language comprehension and summarization.
+I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video entitled {title} by {author}; summarize it into a concise abstract paragraph.
+Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text.
+Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
+The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
+If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
+                `,
             ],
-            ["human", summaries.join()],
+            [
+                "human",
+                Object.values(pointers)
+                    .map((m) => m.content)
+                    .toString(),
+            ],
         ])
 
         const chain = prompt.pipe(groq)
-        const res = await chain.invoke({})
+        const res = await chain.invoke({
+            title: videoTitle,
+            author: videoAuthor,
+        })
 
         if (!res) {
             throw new Error(
@@ -168,7 +182,9 @@ export const summarizeTranscriptWithGroq = async (
 
 export const summarizeTranscriptWithGpt = async (
     transcript: string,
-    model: "gpt-3.5-turbo" | "gpt-4o"
+    model: "gpt-3.5-turbo" | "gpt-4o",
+    videoTitle: string,
+    videoAuthor: string
 ) => {
     const gpt = new ChatOpenAI({
         model,
@@ -201,7 +217,14 @@ export const summarizeTranscriptWithGpt = async (
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video; summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text. Please avoid unnecessary details or tangential points. The output should only be in English language.",
+                `\
+You are a highly skilled AI trained in language comprehension and summarization.
+I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video entitled {title} by {author}; summarize it into a concise abstract paragraph.
+Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text.
+Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
+The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
+If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
+                `,
             ],
             [
                 "human",
@@ -212,7 +235,10 @@ export const summarizeTranscriptWithGpt = async (
         ])
 
         const chain = prompt.pipe(gpt)
-        const res = await chain.invoke({})
+        const res = await chain.invoke({
+            title: videoTitle,
+            author: videoAuthor,
+        })
 
         if (!res) {
             throw new Error(

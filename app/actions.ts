@@ -95,7 +95,12 @@ export const summarizeTranscript = async ({
     try {
         let summary: MessageContent | null = null
         if (model == "gpt-3.5-turbo" || model == "gpt-4o") {
-            summary = await summarizeTranscriptWithGpt(transcript, model)
+            summary = await summarizeTranscriptWithGpt(
+                transcript,
+                model,
+                videoTitle,
+                videoAuthor
+            )
         } else if (model == "gemini-1.5-flash") {
             summary = await summarizeTranscriptWithGemini(
                 transcript,
@@ -104,7 +109,12 @@ export const summarizeTranscript = async ({
                 videoAuthor
             )
         } else {
-            summary = await summarizeTranscriptWithGroq(transcript, model)
+            summary = await summarizeTranscriptWithGroq(
+                transcript,
+                model,
+                videoTitle,
+                videoAuthor
+            )
         }
 
         return summary as string
