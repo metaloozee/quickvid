@@ -14,6 +14,9 @@ dependencies:
     "@ai-sdk/google-vertex":
         specifier: ^0.0.9
         version: 0.0.9(zod@3.23.4)
+    "@ai-sdk/openai":
+        specifier: ^0.0.33
+        version: 0.0.33(zod@3.23.4)
     "@ai-sdk/react":
         specifier: ^0.0.2
         version: 0.0.2(react@18.3.1)(zod@3.23.4)
@@ -277,6 +280,20 @@ packages:
         dependencies:
             "@ai-sdk/provider": 0.0.10
             "@ai-sdk/provider-utils": 0.0.14(zod@3.23.4)
+            zod: 3.23.4
+        dev: false
+
+    /@ai-sdk/openai@0.0.33(zod@3.23.4):
+        resolution:
+            {
+                integrity: sha512-siVeHnagh08UFgdwflPdUKTdrVvfU/JWqSa8nCsMy6DvSri8T7zTzPZoCxXiMKPXkhQDd/KsaXhweOShGLQ1uQ==,
+            }
+        engines: { node: ">=18" }
+        peerDependencies:
+            zod: ^3.0.0
+        dependencies:
+            "@ai-sdk/provider": 0.0.10
+            "@ai-sdk/provider-utils": 0.0.16(zod@3.23.4)
             zod: 3.23.4
         dev: false
 

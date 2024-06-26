@@ -1,6 +1,7 @@
 import { env } from "@/env.mjs"
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
-import { LanguageModel, generateId, streamText } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { LanguageModel, embed, generateId, streamText } from "ai"
 import {
     createAI,
     createStreamableUI,
@@ -8,9 +9,12 @@ import {
     getMutableAIState,
     streamUI,
 } from "ai/rsc"
+import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm"
 import { Loader } from "lucide-react"
 import { z } from "zod"
 
+import { db } from "@/lib/db"
+import { embeddings } from "@/lib/db/schema"
 import { BotMessage } from "@/components/markdown/message"
 import { VideoWidget } from "@/components/video-widget"
 
@@ -59,7 +63,7 @@ export const continueConversation = async (
         ],
     })
 
-    uiStream.update(<Loader className="size-4 animate-spin" />)
+    messageStream.update(<Loader className="size-4 animate-spin opacity-50" />)
 
     const messageHistory = aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -68,6 +72,27 @@ export const continueConversation = async (
 
     ;(async () => {
         try {
+            const query = input.replaceAll("\n", " ")
+
+            const { embedding } = await embed({
+                model: openai.embedding("text-embedding-ada-002"),
+                value: query,
+            })
+
+            const similarity = sql<number>`1 - (${cosineDistance(
+                embeddings.embedding,
+                embedding
+            )})`
+
+            const contexts = await db
+                .select({ content: embeddings.content, similarity })
+                .from(embeddings)
+                .where(
+                    and(eq(embeddings.videoid, videoId), gt(similarity, 0.5))
+                )
+                .orderBy((t) => desc(t.similarity))
+                .limit(2)
+
             const result = await streamText({
                 model: google(
                     "models/gemini-1.5-flash-latest"
@@ -84,9 +109,15 @@ export const continueConversation = async (
                     },
                 },
                 system: `\
-                    You are a friendly pirate assistant that helps the user with their problems. You can give video recommendations based on the query.
+
+                You are a friendly pirate AI agent specialized in answering users' questions based on a particular video. 
+                Your job is to respond to users' queries using relevant contexts from the provided video.
+                If you are unable to understand the contexts then just let the user know about it.
                     
-                    The user's current videoId is ${videoId} and the title is ${videoTitle}
+                The user's current videoId is ${videoId} and the title is ${videoTitle}.
+
+                Query: ${input}
+                Contexts: ${contexts.map((c) => c.content)}
                 `,
             })
 
@@ -203,10 +234,3 @@ export const AI = createAI<AIState, UIState>({
     initialUIState: [],
     initialAIState: { chatId: generateId(), interactions: [], messages: [] },
 })
-// export const AI = createAI<ServerMessage[], ClientMessage[]>({
-//     actions: {
-//         continueConversation,
-//     },
-//     initialAIState: [],
-//     initialUIState: [],
-// })
