@@ -23,7 +23,7 @@ import { RegenerateFormSchema } from "@/components/regenerate-btn"
 import { VerifyFactsFormSchema } from "@/components/verify-facts"
 
 const openaiEmbed = new OpenAIEmbeddings({
-    model: "text-embedding-3-small",
+    model: "text-embedding-ada-002",
 })
 
 export type FactCheckerResponse = {
