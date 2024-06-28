@@ -109,7 +109,7 @@ export const Chat = ({
                     >
                         <FormField
                             disabled={
-                                process.env.NODE_ENV === "production" ||
+                                // process.env.NODE_ENV === "production" ||
                                 form.formState.isSubmitting
                             }
                             control={form.control}
