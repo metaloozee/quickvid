@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { generateId } from "ai"
+import { Message, generateId } from "ai"
 import { useActions, useUIState } from "ai/rsc"
 import {
     Bot,
@@ -19,7 +19,7 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { Message, type ClientMessage } from "@/app/ai-actions"
+import { type ClientMessage } from "@/app/ai-actions"
 
 import { MemoizedReactMarkdown } from "./markdown/markdown"
 
@@ -89,37 +89,10 @@ export const Chat = ({
                                     <div>
                                         <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
                                     </div>
-                                    {/* <MemoizedReactMarkdown
-                                        remarkPlugins={[remarkGfm, remarkMath]}
-                                        components={{
-                                            strong({ children }) {
-                                                return (
-                                                    <strong>{children}</strong>
-                                                )
-                                            },
-                                            p({ children }) {
-                                                return <p>{children}</p>
-                                            },
-                                        }}
-                                    >
-                                        {message.content}
-                                    </MemoizedReactMarkdown> */}
                                     <p className="text-xs">{message.display}</p>
                                 </div>
                             )
                     })}
-
-                    {/* {form.formState.isSubmitting && (
-                        <div className="flex flex-row items-center gap-4 py-2">
-                            <div className="">
-                                <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
-                            </div>
-
-                            <p className="text-xs">
-                                <Loader className="size-4 animate-spin duration-1000" />
-                            </p>
-                        </div>
-                    )} */}
                 </div>
                 <Form {...form}>
                     <form

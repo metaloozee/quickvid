@@ -131,7 +131,7 @@ export const continueConversation = async (
                     const { textDelta } = delta
 
                     textContent += textDelta
-                    messageStream.update(<div>{textContent}</div>)
+                    messageStream.update(textContent)
 
                     aiState.update({
                         ...aiState.get(),
@@ -144,38 +144,6 @@ export const continueConversation = async (
                             },
                         ],
                     })
-                } else if (type === "tool-call") {
-                    const { toolName, args } = delta
-
-                    if (toolName === "showRelatedVideos") {
-                        const { videoId, videoTitle } = args
-
-                        uiStream.update(
-                            <VideoWidget
-                                title={videoTitle}
-                                thumbnail="https://th.bing.com/th/id/OIP.iibAGrWeMov3xB5rVBi68gHaEK?rs=1&pid=ImgDetMain"
-                            />
-                        )
-
-                        aiState.done({
-                            ...aiState.get(),
-                            interactions: [],
-                            messages: [
-                                ...aiState.get().messages,
-                                {
-                                    id: generateId(),
-                                    role: "assistant",
-                                    content: `Here is the video you requested`,
-                                    display: {
-                                        name: "showRelatedVideos",
-                                        props: {
-                                            videoId,
-                                        },
-                                    },
-                                },
-                            ],
-                        })
-                    }
                 }
             }
 
