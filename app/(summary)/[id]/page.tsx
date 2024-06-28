@@ -18,9 +18,8 @@ import { AI } from "@/app/ai-actions"
 type Props = {
     params: { id: string }
 }
-
 export const dynamic = "force-dynamic"
-export const maxDuration = 30
+export const maxDuration = 60
 
 export async function generateMetadata(
     { params }: Props,
@@ -180,6 +179,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                     <Chat
                         videoId={data.videoid}
                         videoTitle={videoInfo.videoDetails.title}
+                        videoAuthor={videoInfo.videoDetails.author.name}
                     />
                 </AI>
             </div>

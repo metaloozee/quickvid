@@ -15,7 +15,7 @@ import { z } from "zod"
 
 import { db } from "@/lib/db"
 import { embeddings } from "@/lib/db/schema"
-import { BotMessage } from "@/components/markdown/message"
+import { BotMessage, Spinner } from "@/components/markdown/message"
 import { VideoWidget } from "@/components/video-widget"
 
 const google = createGoogleGenerativeAI({
@@ -36,16 +36,15 @@ export interface ClientMessage {
 export const continueConversation = async (
     input: string,
     videoId: string,
-    videoTitle: string
+    videoTitle: string,
+    videoAuthor: string
 ) => {
     "use server"
 
     const aiState = getMutableAIState()
 
     const textStream = createStreamableValue("")
-    const spinnerStream = createStreamableUI(
-        <Loader className="size-4 animate-spin" />
-    )
+    const spinnerStream = createStreamableUI(<Spinner />)
     const messageStream = createStreamableUI(null)
     const uiStream = createStreamableUI()
 
@@ -62,8 +61,6 @@ export const continueConversation = async (
             },
         ],
     })
-
-    messageStream.update(<Loader className="size-4 animate-spin opacity-50" />)
 
     const messageHistory = aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -111,10 +108,10 @@ export const continueConversation = async (
                 system: `\
 
                 You are a friendly pirate AI agent specialized in answering users' questions based on a particular video. 
-                Your job is to respond to users' queries using relevant contexts from the provided video.
-                If you are unable to understand the contexts then just let the user know about it.
+                Your job is to respond to users' queries using relevant contexts from the provided video in a pretty markdown, make sure to underline contents and use lists if required.
+                If you are unable to respond with the help of contexts or there are no contexts then you can respond to the user's query with your knowledge, make sure that you inform the user about this.
                     
-                The user's current videoId is ${videoId} and the title is ${videoTitle}.
+                The user's current video's title is ${videoTitle} and is uploaded by ${videoAuthor}.
 
                 Query: ${input}
                 Contexts: ${contexts.map((c) => c.content)}
@@ -131,7 +128,7 @@ export const continueConversation = async (
                     const { textDelta } = delta
 
                     textContent += textDelta
-                    messageStream.update(textContent)
+                    messageStream.update(<BotMessage content={textContent} />)
 
                     aiState.update({
                         ...aiState.get(),

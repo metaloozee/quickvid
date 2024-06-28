@@ -19,12 +19,10 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { type ClientMessage } from "@/app/ai-actions"
+import { AI, type ClientMessage } from "@/app/ai-actions"
 
 import { MemoizedReactMarkdown } from "./markdown/markdown"
-
-export const dynamic = "force-dynamic"
-export const maxDuration = 30
+import { UserMessage } from "./markdown/message"
 
 export const chatFormSchema = z.object({
     query: z.string().describe("The query you want to send it to the LLM"),
@@ -33,11 +31,13 @@ export const chatFormSchema = z.object({
 export const Chat = ({
     videoId,
     videoTitle,
+    videoAuthor,
 }: {
     videoId: string
     videoTitle: string
+    videoAuthor: string
 }) => {
-    const [conversation, setConversation] = useUIState()
+    const [messages, setMessages] = useUIState<typeof AI>()
     const { continueConversation } = useActions()
 
     const form = useForm<z.infer<typeof chatFormSchema>>({
@@ -65,63 +65,42 @@ export const Chat = ({
                         </p>
                     </div>
 
-                    {conversation.map((message: ClientMessage) => {
-                        if (message.role == "user")
-                            return (
-                                <div
-                                    key={message.id!}
-                                    className="flex flex-row-reverse items-start gap-4 py-2"
-                                >
-                                    <div>
-                                        <UserRound className="size-7 min-w-fit rounded-full rounded-br-none bg-primary p-1.5" />
-                                    </div>
-                                    <p className="text-right text-xs text-muted-foreground">
-                                        {message.display}
-                                    </p>
-                                </div>
-                            )
-                        else
-                            return (
-                                <div
-                                    key={message.id}
-                                    className="flex flex-row items-start gap-4 py-2"
-                                >
-                                    <div>
-                                        <BotMessageSquare className="size-7 min-w-fit rounded-full rounded-bl-none bg-blue-400 p-1.5" />
-                                    </div>
-                                    <p className="text-xs">{message.display}</p>
-                                </div>
-                            )
-                    })}
+                    {messages.map((message) => (
+                        <div key={message.id}>
+                            {message.spinner}
+                            {message.display}
+                            {message.attachments}
+                        </div>
+                    ))}
                 </div>
                 <Form {...form}>
                     <form
                         className="flex w-full items-center justify-center gap-2 px-5 py-4"
                         onSubmit={form.handleSubmit(async (data) => {
                             try {
-                                setConversation(
-                                    (currentConversation: ClientMessage[]) => [
-                                        ...currentConversation,
-                                        {
-                                            id: generateId(),
-                                            role: "user",
-                                            display: data.query,
-                                        },
-                                    ]
-                                )
+                                setMessages((currentConversation) => [
+                                    ...currentConversation,
+                                    {
+                                        id: generateId(),
+                                        display: (
+                                            <UserMessage>
+                                                {data.query}
+                                            </UserMessage>
+                                        ),
+                                    },
+                                ])
 
                                 const message = await continueConversation(
                                     data.query,
                                     videoId,
-                                    videoTitle
+                                    videoTitle,
+                                    videoAuthor
                                 )
 
-                                setConversation(
-                                    (currentConversation: ClientMessage[]) => [
-                                        ...currentConversation,
-                                        message,
-                                    ]
-                                )
+                                setMessages((currentConversation) => [
+                                    ...currentConversation,
+                                    message,
+                                ])
                             } catch (e: any) {
                                 console.error(e)
                                 return toast.error(e.message)
