@@ -129,7 +129,7 @@ export const Chat = ({
                         />
                         <Button
                             disabled={
-                                process.env.NODE_ENV === "production" ||
+                                // process.env.NODE_ENV === "production" ||
                                 form.formState.isSubmitting
                             }
                             type="submit"
