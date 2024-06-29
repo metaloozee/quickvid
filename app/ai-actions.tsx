@@ -196,6 +196,19 @@ export const AI = createAI<AIState, UIState>({
     actions: {
         continueConversation,
     },
-    initialUIState: [],
+    initialUIState: [
+        {
+            id: generateId(),
+            display: (
+                <BotMessage
+                    content={`\
+Ahoy matey! Got questions &apos;bout the video or
+anythin&apos; else? Use this chat to ask away, or
+walk the plank! Arrr! 🏴‍☠️🪝
+            `}
+                />
+            ),
+        },
+    ],
     initialAIState: { chatId: generateId(), interactions: [], messages: [] },
 })
