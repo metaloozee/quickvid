@@ -71,8 +71,18 @@ export const summarizeTranscriptWithGemini = async (
                 "system",
                 `\
 You are a highly skilled AI trained in language comprehension and summarization.
-I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video entitled {title} by {author}; summarize it into a concise abstract paragraph.
-Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text.
+Create a summary of a YouTube video using the following summarized sub-sections of a transcript from a youtube video entitled {title} by {author}. 
+You will use the following template:
+
+"""
+## Summary
+<Multiple sentences summarising the YouTube video>
+
+## Notes
+<Bullet points that summarize the key points or important moments from the video's transcript with explanations>
+
+"""
+
 Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
 The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
 If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
@@ -146,8 +156,18 @@ export const summarizeTranscriptWithGroq = async (
                 "system",
                 `\
 You are a highly skilled AI trained in language comprehension and summarization.
-I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video entitled {title} by {author}; summarize it into a concise abstract paragraph.
-Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text.
+Create a summary of a YouTube video using the following summarized sub-sections of a transcript from a youtube video entitled {title} by {author}. 
+You will use the following template:
+
+"""
+## Summary
+<Multiple sentences summarising the YouTube video>
+
+## Notes
+<Bullet points that summarize the key points or important moments from the video's transcript with explanations>
+
+"""
+
 Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
 The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
 If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
@@ -219,8 +239,18 @@ export const summarizeTranscriptWithGpt = async (
                 "system",
                 `\
 You are a highly skilled AI trained in language comprehension and summarization.
-I would like you to read the following array of concise description generated from sub-sections of a transcript from a youtube video entitled {title} by {author}; summarize it into a concise abstract paragraph.
-Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the video without needing to read the entire text.
+Create a summary of a YouTube video using the following summarized sub-sections of a transcript from a youtube video entitled {title} by {author}. 
+You will use the following template:
+
+"""
+## Summary
+<Multiple sentences summarising the YouTube video>
+
+## Notes
+<Bullet points that summarize the key points or important moments from the video's transcript with explanations>
+
+"""
+
 Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
 The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
 If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
