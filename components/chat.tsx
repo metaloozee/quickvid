@@ -118,6 +118,7 @@ export const Chat = ({
                         </PopoverTrigger>
                         <PopoverContent asChild>
                             <Button
+                                disabled={process.env.NODE_ENV === "production"}
                                 className="text-xs"
                                 onClick={async () => {
                                     try {
