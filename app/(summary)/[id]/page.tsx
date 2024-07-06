@@ -6,9 +6,10 @@ import remarkMath from "remark-math"
 import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
-import { summaries } from "@/lib/db/schema"
+import { embeddings, summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Chat } from "@/components/chat"
+import { GenerateEmbedding } from "@/components/generate-embedding-dialog"
 import { MemoizedReactMarkdown } from "@/components/markdown/markdown"
 import { RegenerateSummaryButton } from "@/components/regenerate-btn"
 import { VerifyFacts } from "@/components/verify-facts"
@@ -85,6 +86,17 @@ export default async function SummaryIndexPage({ params }: Props) {
             </section>
         )
     }
+
+    const [hasEmbedding] = await db
+        .select({ videoid: embeddings.videoid })
+        .from(embeddings)
+        .where(eq(embeddings.videoid, params.id!))
+        .limit(1)
+    const [transcript] = await db
+        .select({ transcript: videos.transcript })
+        .from(videos)
+        .where(eq(videos.videoid, params.id))
+        .limit(1)
 
     return (
         <section className="container mt-10 grid w-full grid-cols-1 gap-10 md:grid-cols-3">
@@ -183,6 +195,13 @@ export default async function SummaryIndexPage({ params }: Props) {
                     />
                 </AI>
             </div>
+
+            {!hasEmbedding && process.env.NODE_ENV !== "production" && (
+                <GenerateEmbedding
+                    transcript={transcript.transcript!}
+                    videoid={params.id}
+                />
+            )}
         </section>
     )
 }
