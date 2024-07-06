@@ -63,14 +63,20 @@ export async function generateMetadata(
 
 export default async function SummaryIndexPage({ params }: Props) {
     const [data] = await db
-        .select()
+        .select({
+            summary: summaries.summary,
+            embeddingVideoId: embeddings.videoid,
+            transcript: videos.transcript,
+        })
         .from(summaries)
-        .where(eq(summaries.videoid, params.id!))
+        .fullJoin(embeddings, eq(summaries.videoid, embeddings.videoid))
+        .fullJoin(videos, eq(summaries.videoid, videos.videoid))
+        .where(eq(summaries.videoid, params.id))
         .limit(1)
 
     const videoInfo = await ytdl.getInfo(params.id!)
 
-    if (!videoInfo || !data) {
+    if (!videoInfo || !data.summary) {
         return (
             <section className="container mt-40 flex items-center">
                 <div className="flex max-w-5xl flex-col items-start gap-5">
@@ -86,17 +92,6 @@ export default async function SummaryIndexPage({ params }: Props) {
             </section>
         )
     }
-
-    const [hasEmbedding] = await db
-        .select({ videoid: embeddings.videoid })
-        .from(embeddings)
-        .where(eq(embeddings.videoid, params.id!))
-        .limit(1)
-    const [transcript] = await db
-        .select({ transcript: videos.transcript })
-        .from(videos)
-        .where(eq(videos.videoid, params.id))
-        .limit(1)
 
     return (
         <section className="container mt-10 grid w-full grid-cols-1 gap-10 md:grid-cols-3">
@@ -180,7 +175,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                     >
                         {data.summary}
                     </MemoizedReactMarkdown>
-                    <RegenerateSummaryButton videoid={data.videoid} />
+                    <RegenerateSummaryButton videoid={params.id} />
                 </div>
             </div>
 
@@ -189,19 +184,20 @@ export default async function SummaryIndexPage({ params }: Props) {
 
                 <AI>
                     <Chat
-                        videoId={data.videoid}
+                        videoId={params.id}
                         videoTitle={videoInfo.videoDetails.title}
                         videoAuthor={videoInfo.videoDetails.author.name}
                     />
                 </AI>
             </div>
 
-            {!hasEmbedding && process.env.NODE_ENV !== "production" && (
-                <GenerateEmbedding
-                    transcript={transcript.transcript!}
-                    videoid={params.id}
-                />
-            )}
+            {!data.embeddingVideoId &&
+                process.env.NODE_ENV !== "production" && (
+                    <GenerateEmbedding
+                        transcript={data.transcript!}
+                        videoid={params.id}
+                    />
+                )}
         </section>
     )
 }

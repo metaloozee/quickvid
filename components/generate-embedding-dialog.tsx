@@ -113,7 +113,7 @@ export const GenerateEmbedding = ({
                                             Generating
                                         </>
                                     ) : (
-                                        <>Regenerate Summary</>
+                                        <>Generate</>
                                     )}
                                 </Button>
                             </form>
