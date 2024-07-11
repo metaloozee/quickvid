@@ -17,6 +17,7 @@ import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
     Popover,
     PopoverContent,
@@ -91,7 +92,6 @@ export const Chat = ({
                                         left: rect?.left! + window.scrollX,
                                     })
 
-                                    console.log(popoverPosition)
                                     setIsPopoverOpen(true)
                                 } else {
                                     setIsPopoverOpen(false)
@@ -202,10 +202,10 @@ export const Chat = ({
                             render={({ field }) => (
                                 <FormItem className="w-full">
                                     <FormControl>
-                                        <Textarea
+                                        <Input
                                             autoFocus
                                             placeholder="ask me anything..."
-                                            className="min-h-12 resize-none text-xs focus-visible:ring-blue-400"
+                                            className="text-xs focus-visible:ring-blue-400"
                                             {...field}
                                         />
                                     </FormControl>
@@ -218,7 +218,7 @@ export const Chat = ({
                                 form.formState.isSubmitting
                             }
                             type="submit"
-                            className="h-full bg-blue-400 hover:bg-blue-500"
+                            className="bg-blue-400 hover:bg-blue-500"
                         >
                             {form.formState.isSubmitting ? (
                                 <>

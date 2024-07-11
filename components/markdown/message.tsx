@@ -6,11 +6,7 @@ import { BotMessageSquare, Loader, UserRound } from "lucide-react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
-import { useStreamableText } from "@/lib/hooks/use-streamable-text"
-import { cn } from "@/lib/utils"
-
-import { CodeBlock } from "./codeblock"
-import { MemoizedReactMarkdown } from "./markdown"
+import { MemoizedReactMarkdown } from "@/components/markdown/markdown"
 
 export function UserMessage({ children }: { children: React.ReactNode }) {
     return (
@@ -30,8 +26,6 @@ export function BotMessage({
 }: {
     content: string | StreamableValue<string>
 }) {
-    // const text = useStreamableText(content)
-
     return (
         <div className="flex flex-row items-start gap-4 py-2">
             <div>
@@ -39,7 +33,7 @@ export function BotMessage({
             </div>
 
             <MemoizedReactMarkdown
-                className="prose dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 break-words text-xs"
+                className="text-xs"
                 remarkPlugins={[remarkGfm, remarkMath]}
                 components={{
                     strong({ children }) {
