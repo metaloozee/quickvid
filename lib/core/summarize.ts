@@ -83,7 +83,6 @@ You will use the following template:
 
 """
 
-Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
 The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
 If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
                 `,
@@ -168,7 +167,6 @@ You will use the following template:
 
 """
 
-Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
 The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
 If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
                 `,
@@ -251,7 +249,6 @@ You will use the following template:
 
 """
 
-Please avoid unnecessary details or tangential points and make sure to include the video's title and author in the summary.
 The output should be very well clean formatted in Markdown by adding lists, highlighting important keywords and in English language only. 
 If you fail to understand the transcript or its sub-sections then just let the users know that you don't understant.
                 `,
