@@ -9,7 +9,6 @@ import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
-import { searchUsingTavilly } from "@/lib/core/search"
 import {
     summarizeTranscriptWithGemini,
     summarizeTranscriptWithGpt,
@@ -282,17 +281,5 @@ export const handleRegenerateSummary = async (
     } catch (e: any) {
         console.error(e)
         return false
-    }
-}
-
-export const checkFacts = async (
-    formData: z.infer<typeof VerifyFactsFormSchema>
-) => {
-    try {
-        const res = await searchUsingTavilly(formData.summary)
-        return await JSON.parse(res)
-    } catch (e) {
-        console.error(e)
-        return null
     }
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader, ShieldCheck, ShieldX } from "lucide-react"
@@ -8,19 +8,48 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
+import {
+    generateQueries,
+    seachWithTavily,
+    verifyFacts,
+} from "@/lib/core/search"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
-import { checkFacts, type FactCheckerResponse } from "@/app/actions"
 
 export const VerifyFactsFormSchema = z.object({
     summary: z.string(),
 })
 
 export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
-    const [isAccurate, setIsAccurate] = useState<"true" | "false" | null>(null)
+    const [isAccurate, setIsAccurate] = useState<true | false | null>(null)
     const [source, setSource] = useState<string | null>(null)
     const [output, setOutput] = useState<string | null>(null)
+
+    const [status, setStatus] = useState<string | null>("Preparing...")
+    const [time, setTime] = useState(0)
+    const [isRunning, setIsRunning] = useState(false)
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout
+        if (isRunning) {
+            intervalId = setInterval(() => setTime(time + 1), 10)
+        }
+        return () => clearInterval(intervalId)
+    }, [isRunning, time])
+
+    const seconds = Math.floor((time % 6000) / 100)
+    const miliseconds = time % 100
+
+    const stop = () => {
+        setTime(0)
+        setIsRunning(false)
+    }
+
+    const restart = () => {
+        setTime(0)
+        setIsRunning(true)
+    }
 
     const verifyFactsForm = useForm<z.infer<typeof VerifyFactsFormSchema>>({
         resolver: zodResolver(VerifyFactsFormSchema),
@@ -34,17 +63,43 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
             <form
                 className="flex w-full flex-col gap-5 rounded-xl border-primary p-5 outline-dashed outline-2 outline-primary"
                 onSubmit={verifyFactsForm.handleSubmit(async (data) => {
-                    await checkFacts(data).then(
-                        (value: FactCheckerResponse | null) => {
-                            if (!value) {
+                    setStatus("Generating Queries...")
+                    await generateQueries(data.summary).then(
+                        async ({ queries }) => {
+                            if (!queries) {
+                                stop()
                                 return toast.error(
-                                    "An unknown error occrred, Please try again later."
+                                    "Couldn't generate search queries. Try again later."
                                 )
                             }
 
-                            setIsAccurate(value.isAccurate)
-                            setSource(value.source)
-                            return setOutput(value.text)
+                            restart()
+                            setStatus("Searching...")
+
+                            const documents = await seachWithTavily(queries)
+                            if (!documents) {
+                                stop()
+                                return toast.error(
+                                    "Couldn't search the internet. Try again later."
+                                )
+                            }
+
+                            restart()
+                            setStatus("Just a sec...")
+
+                            const output = await verifyFacts({
+                                documents,
+                                summary,
+                            })
+                            if (!output) {
+                                stop()
+                                return toast.error(
+                                    "Couldn't process the search results. Try again later."
+                                )
+                            }
+
+                            setIsAccurate(output.grade)
+                            return setOutput(output.explaination)
                         }
                     )
                 })}
@@ -53,7 +108,7 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                     {output ? (
                         <div className="flex flex-col gap-2">
                             <Badge className="max-w-fit">
-                                {isAccurate == "true" ? (
+                                {isAccurate ? (
                                     <>
                                         <ShieldCheck className="mr-2 size-4" />
                                         Accurate
@@ -65,15 +120,7 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                                     </>
                                 )}
                             </Badge>
-                            <p className="mt-4">{output}</p>
-                            <Link
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href={source!}
-                                className="mt-2 text-xs text-muted-foreground"
-                            >
-                                {source?.slice(0, 40).concat("...")}
-                            </Link>
+                            <p className="mt-2">{output}</p>
                         </div>
                     ) : (
                         `
@@ -90,7 +137,7 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                 {!output && (
                     <Button
                         disabled={
-                            process.env.NODE_ENV === "production" ||
+                            // process.env.NODE_ENV === "production" ||
                             verifyFactsForm.formState.isSubmitting
                         }
                         className="group w-full"
@@ -98,7 +145,8 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                     >
                         {verifyFactsForm.formState.isSubmitting ? (
                             <>
-                                <Loader className="size-4 animate-spin duration-1000" />
+                                <Loader className="mr-2 size-4 animate-spin duration-1000" />{" "}
+                                {status} {seconds}s {miliseconds}ms
                             </>
                         ) : (
                             <>Check For Truth</>

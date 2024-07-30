@@ -1,134 +1,133 @@
+"use server"
+
+import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai"
 import { TavilySearchAPIRetriever } from "@langchain/community/retrievers/tavily_search_api"
-import {
-    AIMessage,
-    FunctionMessage,
-    type BaseMessage,
-} from "@langchain/core/messages"
-import {
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-} from "@langchain/core/prompts"
+import { StructuredOutputParser } from "@langchain/core/output_parsers"
+import { ChatPromptTemplate } from "@langchain/core/prompts"
 import { RunnableSequence } from "@langchain/core/runnables"
-import { DynamicStructuredTool, DynamicTool } from "@langchain/core/tools"
-import { convertToOpenAIFunction } from "@langchain/core/utils/function_calling"
-import { ChatOpenAI } from "@langchain/openai"
-import {
-    AgentExecutor,
-    type AgentFinish,
-    type AgentStep,
-} from "langchain/agents"
-import type { FunctionsAgentAction } from "langchain/agents/openai/output_parser"
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai"
 import { z } from "zod"
-import { zodToJsonSchema } from "zod-to-json-schema"
 
-import { searchResponseSchema } from "@/lib/schemas"
-
-const llm = new ChatOpenAI({
-    model: "gpt-3.5-turbo",
-})
-
-const searchTool = new DynamicTool({
-    name: "web-search-tool",
-    description: "Tool for getting the latest information from the web",
-    func: async (searchQuery: string, runManager) => {
-        const retriever = new TavilySearchAPIRetriever()
-        const docs = await retriever.invoke(searchQuery, runManager?.getChild())
-        return docs.map((doc) => doc.pageContent).join("\n-----\n")
-    },
-})
-
-const responseOpenAIFunction = {
-    name: "response",
-    description: "Return the response to the user",
-    parameters: zodToJsonSchema(searchResponseSchema),
-}
-
-const prompt = ChatPromptTemplate.fromMessages([
-    [
-        "system",
-        `You're a seasoned web researcher, adept at ferreting out information from the vast expanse of the internet. Your expertise is being enlisted to assess the veracity of a summary extracted from a YouTube video.
-
-        The user will furnish you with a concise overview gleaned from the video in question. Your task is to formulate an effective search query to ascertain the accuracy of the summary. Your evaluation should focus on determining whether the summary is founded on genuine internet facts or mere speculation.
-        `,
+const llm = new ChatGoogleGenerativeAI({
+    model: "gemini-1.5-flash",
+    temperature: 0,
+    safetySettings: [
+        {
+            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
     ],
-    ["human", "{input}"],
-    new MessagesPlaceholder("agent_scratchpad"),
-])
-
-const structuredOutputParser = (
-    message: AIMessage
-): FunctionsAgentAction | AgentFinish => {
-    if (message.content && typeof message.content !== "string") {
-        throw new Error("This agent cannot parse non-string model responses.")
-    }
-    if (message.additional_kwargs.function_call) {
-        const { function_call } = message.additional_kwargs
-        try {
-            const toolInput = function_call.arguments
-                ? JSON.parse(function_call.arguments)
-                : {}
-            // If the function call name is `response` then we know it's used our final
-            // response function and can return an instance of `AgentFinish`
-            if (function_call.name === "response") {
-                return { returnValues: { ...toolInput }, log: message.content }
-            }
-            return {
-                tool: function_call.name,
-                toolInput,
-                log: `Invoking "${function_call.name}" with ${
-                    function_call.arguments ?? "{}"
-                }\n${message.content}`,
-                messageLog: [message],
-            }
-        } catch (error) {
-            throw new Error(
-                `Failed to parse function arguments from chat model response. Text: "${function_call.arguments}". ${error}`
-            )
-        }
-    } else {
-        return {
-            returnValues: { output: message.content },
-            log: message.content,
-        }
-    }
-}
-
-const formatAgentSteps = (steps: AgentStep[]): BaseMessage[] =>
-    steps.flatMap(({ action, observation }) => {
-        if ("messageLog" in action && action.messageLog !== undefined) {
-            const log = action.messageLog as BaseMessage[]
-            return log.concat(new FunctionMessage(observation, action.tool))
-        } else {
-            return [new AIMessage(action.log)]
-        }
-    })
-
-const llmWithTools = llm.bind({
-    functions: [convertToOpenAIFunction(searchTool), responseOpenAIFunction],
 })
 
-const runnableAgent = RunnableSequence.from<{
-    input: string
-    steps: Array<AgentStep>
-}>([
-    {
-        input: (i) => i.input,
-        agent_scratchpad: (i) => formatAgentSteps(i.steps),
-    },
-    prompt,
-    llmWithTools,
-    structuredOutputParser,
-])
+const retriever = new TavilySearchAPIRetriever({
+    k: 3,
+})
 
-export const searchUsingTavilly = async (summary: string) => {
-    const executor = AgentExecutor.fromAgentAndTools({
-        agent: runnableAgent,
-        tools: [searchTool],
+export const generateQueries = async (summary: string) => {
+    const prompt = ChatPromptTemplate.fromMessages([
+        [
+            "system",
+            `\
+Generate 5 search queries based on the main topics discussed in a provided YouTube video summary. 
+These queries should cover the key points mentioned in the summary. 
+The purpose of these queries is to gather information from web sources, which will then be used to assess the accuracy and completeness of both the original video and its summary.
+    
+{format_instructions}
+        `,
+        ],
+        ["human", "Summary: {summary}"],
+    ])
+
+    const parser = StructuredOutputParser.fromZodSchema(
+        z.object({
+            queries: z.string().array(),
+        })
+    )
+
+    const chain = RunnableSequence.from([prompt, llm, parser])
+
+    const response = await chain.invoke({
+        summary,
+        format_instructions: parser.getFormatInstructions(),
     })
 
-    const result = await executor.invoke({
-        input: summary,
+    return response
+}
+
+export const seachWithTavily = async (queries: string[]) => {
+    const docs: string[][] = []
+
+    queries.forEach(async (query) => {
+        const retrievedDocs = await retriever.invoke(query)
+
+        return docs.push(retrievedDocs.map((m) => m.pageContent))
     })
 
-    return JSON.stringify(result)
+    return docs
+}
+
+export const verifyFacts = async ({
+    documents,
+    summary,
+}: {
+    documents: string[][]
+    summary: string
+}) => {
+    const prompt = ChatPromptTemplate.fromMessages([
+        [
+            "system",
+            `\
+    Analyze the accuracy of a provided YouTube video summary by comparing it to a set of related documents from the internet. 
+    Evaluate the content of the summary against the information in these documents, and determine whether the summary contains false or misleading information. 
+    Provide a judgment on the overall truthfulness of the summary based on this comparison.
+    
+    {format_instructions}
+        `,
+        ],
+        [
+            "human",
+            `\
+    Summary: {summary}
+    
+    Context: {context}
+        `,
+        ],
+    ])
+
+    const parser = StructuredOutputParser.fromZodSchema(
+        z.object({
+            grade: z
+                .boolean()
+                .describe(
+                    "Accurace of the summary based on the provided context"
+                ),
+            explaination: z
+                .string()
+                .describe(
+                    "Explaination or short description about your grading"
+                ),
+        })
+    )
+
+    const chain = RunnableSequence.from([prompt, llm, parser])
+
+    const response = await chain.invoke({
+        summary,
+        context: documents,
+        format_instructions: parser.getFormatInstructions(),
+    })
+
+    return response
 }
