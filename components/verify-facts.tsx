@@ -93,6 +93,13 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                                 )
                             }
 
+                            let urls: string[] | null = []
+                            documents.forEach((doc, index) => {
+                                console.log(doc.url)
+                                urls.push(doc.url)
+                            })
+                            setSources(urls)
+
                             restart()
                             setStatus("Just a sec...")
 
@@ -108,7 +115,6 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                             }
 
                             setIsAccurate(output.grade)
-                            setSources(output.sources)
                             return setOutput(output.explaination)
                         }
                     )

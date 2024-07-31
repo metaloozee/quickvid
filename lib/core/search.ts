@@ -71,16 +71,18 @@ The purpose of these queries is to gather information from web sources, which wi
 export const seachWithTavily = async (queries: string[]) => {
     const documents: z.infer<typeof documentType> | null = []
 
-    queries.forEach(async (query) => {
-        const retrievedDocs = await retriever.invoke(query)
+    await Promise.all(
+        queries.map(async (query) => {
+            const retrievedDocs = await retriever.invoke(query)
 
-        const formattedDoc = retrievedDocs.map((doc) => ({
-            pageContent: doc.pageContent,
-            url: doc.metadata.source,
-        }))
+            const formattedDoc = retrievedDocs.map((doc) => ({
+                pageContent: doc.pageContent,
+                url: doc.metadata.source,
+            }))
 
-        documents.push(...formattedDoc)
-    })
+            documents.push(...formattedDoc)
+        })
+    )
 
     return documents
 }
@@ -124,13 +126,6 @@ export const verifyFacts = async ({
                 .string()
                 .describe(
                     "Detailed explanation or brief description of your grading process for the YouTube video summary."
-                ),
-            sources: z
-                .string()
-                .array()
-                .max(5)
-                .describe(
-                    "References or sources used to support or oppose your accuracy assessment of the summary."
                 ),
         })
     )
