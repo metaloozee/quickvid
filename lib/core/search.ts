@@ -130,7 +130,7 @@ export const verifyFacts = async ({
                 .array()
                 .max(5)
                 .describe(
-                    "References or sources used to support your accuracy assessment of the summary."
+                    "References or sources used to support or oppose your accuracy assessment of the summary."
                 ),
         })
     )
