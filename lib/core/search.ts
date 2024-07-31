@@ -8,6 +8,8 @@ import { RunnableSequence } from "@langchain/core/runnables"
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai"
 import { z } from "zod"
 
+import { documentType } from "@/components/verify-facts"
+
 const llm = new ChatGoogleGenerativeAI({
     model: "gemini-1.5-flash",
     temperature: 0,
@@ -32,7 +34,7 @@ const llm = new ChatGoogleGenerativeAI({
 })
 
 const retriever = new TavilySearchAPIRetriever({
-    k: 3,
+    k: 2,
 })
 
 export const generateQueries = async (summary: string) => {
@@ -67,22 +69,27 @@ The purpose of these queries is to gather information from web sources, which wi
 }
 
 export const seachWithTavily = async (queries: string[]) => {
-    const docs: string[][] = []
+    const documents: z.infer<typeof documentType> | null = []
 
     queries.forEach(async (query) => {
         const retrievedDocs = await retriever.invoke(query)
 
-        return docs.push(retrievedDocs.map((m) => m.pageContent))
+        const formattedDoc = retrievedDocs.map((doc) => ({
+            pageContent: doc.pageContent,
+            url: doc.metadata.source,
+        }))
+
+        documents.push(...formattedDoc)
     })
 
-    return docs
+    return documents
 }
 
 export const verifyFacts = async ({
     documents,
     summary,
 }: {
-    documents: string[][]
+    documents: z.infer<typeof documentType>
     summary: string
 }) => {
     const prompt = ChatPromptTemplate.fromMessages([
@@ -111,12 +118,19 @@ export const verifyFacts = async ({
             grade: z
                 .boolean()
                 .describe(
-                    "Accurace of the summary based on the provided context"
+                    "Accuracy of the summary based on the provided context."
                 ),
             explaination: z
                 .string()
                 .describe(
-                    "Explaination or short description about your grading"
+                    "Detailed explanation or brief description of your grading process for the YouTube video summary."
+                ),
+            sources: z
+                .string()
+                .array()
+                .max(5)
+                .describe(
+                    "References or sources used to support your accuracy assessment of the summary."
                 ),
         })
     )

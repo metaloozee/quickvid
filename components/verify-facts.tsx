@@ -5,6 +5,7 @@ import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader, ShieldCheck, ShieldX } from "lucide-react"
 import { useForm } from "react-hook-form"
+import remarkGfm from "remark-gfm"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -16,14 +17,22 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
+import { MemoizedReactMarkdown } from "@/components/markdown/markdown"
 
 export const VerifyFactsFormSchema = z.object({
     summary: z.string(),
 })
 
+export const documentType = z.array(
+    z.object({
+        pageContent: z.string(),
+        url: z.string(),
+    })
+)
+
 export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
     const [isAccurate, setIsAccurate] = useState<true | false | null>(null)
-    const [source, setSource] = useState<string | null>(null)
+    const [sources, setSources] = useState<string[] | null>(null)
     const [output, setOutput] = useState<string | null>(null)
 
     const [status, setStatus] = useState<string | null>("Preparing...")
@@ -99,6 +108,7 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                             }
 
                             setIsAccurate(output.grade)
+                            setSources(output.sources)
                             return setOutput(output.explaination)
                         }
                     )
@@ -121,6 +131,18 @@ export const VerifyFacts: React.FC<{ summary: string }> = ({ summary }) => {
                                 )}
                             </Badge>
                             <p className="mt-2">{output}</p>
+                            <div className="mt-4 flex flex-col gap-1">
+                                {sources?.map((source) => (
+                                    <Link
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href={source!}
+                                        className="text-xs text-muted-foreground"
+                                    >
+                                        {source?.slice(0, 40).concat("...")}
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
                     ) : (
                         `
