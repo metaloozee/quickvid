@@ -88,7 +88,7 @@ export const continueConversation = async (
                     and(eq(embeddings.videoid, videoId), gt(similarity, 0.5))
                 )
                 .orderBy((t) => desc(t.similarity))
-                .limit(2)
+                .limit(5)
 
             const result = await streamText({
                 model: google(

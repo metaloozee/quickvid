@@ -4,7 +4,10 @@ import { revalidatePath } from "next/cache"
 import { type MessageContent } from "@langchain/core/messages"
 import { OpenAIEmbeddings } from "@langchain/openai"
 import { eq } from "drizzle-orm"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
+import {
+    RecursiveCharacterTextSplitter,
+    TokenTextSplitter,
+} from "langchain/text_splitter"
 import ytdl from "ytdl-core"
 import { z } from "zod"
 
@@ -39,7 +42,7 @@ export const embedTranscript = async ({
     videoId: string
     transcript: string
 }) => {
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 })
+    const textSplitter = new TokenTextSplitter({ chunkSize: 250 })
 
     try {
         const docs = await textSplitter.createDocuments([transcript])
