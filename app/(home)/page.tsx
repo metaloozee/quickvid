@@ -1,6 +1,7 @@
 import { InitialForm } from "@/components/form"
 
-// export const runtime = "edge"
+export const dynamic = "force-dynamic"
+export const maxDuraton = 60
 
 export default async function IndexPage() {
     return (
