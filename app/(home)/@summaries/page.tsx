@@ -1,7 +1,7 @@
 import Link from "next/link"
+import ytdl from "@distube/ytdl-core"
 import { desc } from "drizzle-orm"
 import { MoveRight } from "lucide-react"
-import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"

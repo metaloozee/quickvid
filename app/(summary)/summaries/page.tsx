@@ -1,15 +1,13 @@
 import Link from "next/link"
+import ytdl from "@distube/ytdl-core"
 import { desc, eq, sql } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
-import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Search } from "@/components/search"
 import { Embed } from "@/components/youtube-embed"
-
-export const dynamic = "force-dynamic"
 
 export default async function SummariesIndexPage({
     searchParams,

@@ -1,9 +1,9 @@
 import type { Metadata, ResolvingMetadata } from "next"
+import ytdl from "@distube/ytdl-core"
 import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { embeddings, summaries, videos } from "@/lib/db/schema"
