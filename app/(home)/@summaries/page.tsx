@@ -33,10 +33,13 @@ export default async function SummariesIndexPage() {
                                 className="w-full rounded-xl bg-secondary p-2 transition-all duration-200 hover:-translate-y-1 md:w-auto"
                             >
                                 <VideoWidget
-                                    title={videoInfo.videoDetails.title}
+                                    title={
+                                        videoInfo.videoDetails.title ??
+                                        "undefined"
+                                    }
                                     thumbnail={
                                         videoInfo.videoDetails.thumbnails.reverse()[0]
-                                            .url
+                                            .url ?? "/placeholder.png"
                                     }
                                 />
                             </Link>

@@ -35,8 +35,12 @@ export async function generateMetadata(
     const id = params.id
 
     const [data] = await db
-        .select()
+        .select({
+            summary: summaries.summary,
+            videoTitle: videos.videotitle,
+        })
         .from(summaries)
+        .fullJoin(videos, eq(summaries.videoid, videos.videoid))
         .where(eq(summaries.videoid, id!))
         .limit(1)
 
@@ -50,19 +54,22 @@ export async function generateMetadata(
 
     return {
         title:
-            videoInfo.videoDetails.title.length > 20
-                ? videoInfo.videoDetails.title.slice(0, 20).concat("...")
-                : videoInfo.videoDetails.title,
+            data.videoTitle!.length > 20
+                ? data.videoTitle!.slice(0, 20).concat("...")
+                : data.videoTitle!,
         description: data.summary?.slice(0, 100).concat("..."),
         keywords: [
             "YouTube Summary",
             "Video Summary",
             "Summary",
-            videoInfo.videoDetails.title,
-            videoInfo.videoDetails.author.name,
+            data.videoTitle!,
+            videoInfo.videoDetails.author.name ?? "undefined",
         ],
         openGraph: {
-            images: [videoInfo.videoDetails.thumbnails.reverse()[0].url],
+            images: [
+                videoInfo.videoDetails.thumbnails.reverse()[0].url ??
+                    "/placeholder.png",
+            ],
         },
     }
 }
@@ -70,6 +77,7 @@ export async function generateMetadata(
 export default async function SummaryIndexPage({ params }: Props) {
     const [data] = await db
         .select({
+            title: videos.videotitle,
             summary: summaries.summary,
             embeddingVideoId: embeddings.videoid,
             transcript: videos.transcript,
@@ -105,32 +113,35 @@ export default async function SummaryIndexPage({ params }: Props) {
                 <div className="flex flex-col items-start gap-5 rounded-xl bg-secondary p-5">
                     <div className="flex w-full flex-col items-center justify-between gap-5 md:flex-row md:items-center">
                         <Embed
-                            link={videoInfo.videoDetails.video_url}
+                            link={`https://www.youtube.com/watch?v=${params.id}`}
                             thumbnail={
                                 videoInfo.videoDetails.thumbnails.reverse()[0]
-                                    .url
+                                    .url ?? "/placeholder.png"
                             }
                         />
                         <div className="flex w-full flex-col gap-2">
                             <h1 className="text-md text-center font-extrabold leading-tight tracking-tighter md:text-left md:text-lg">
-                                {videoInfo.videoDetails.title}
+                                {data.title}
                             </h1>
                             <p className="text-center text-xs text-muted-foreground md:text-left">
-                                {videoInfo.videoDetails.description &&
+                                {(videoInfo.videoDetails.description &&
                                 videoInfo.videoDetails.description?.length > 100
                                     ? videoInfo.videoDetails.description
                                           ?.slice(0, 100)
                                           .concat("...")
-                                    : videoInfo.videoDetails.description}
+                                    : videoInfo.videoDetails.description) ??
+                                    "undefined"}
                             </p>
                             <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                 <Badge>
                                     <Tv className="mr-2 size-3" />{" "}
-                                    {videoInfo.videoDetails.author.name}
+                                    {videoInfo.videoDetails.author.name ??
+                                        "undefined"}
                                 </Badge>
                                 <Badge variant="outline">
                                     <Eye className="mr-2 size-3" />{" "}
-                                    {videoInfo.videoDetails.viewCount}
+                                    {videoInfo.videoDetails.viewCount ??
+                                        "undefined"}
                                 </Badge>
                             </div>
                         </div>
@@ -191,8 +202,10 @@ export default async function SummaryIndexPage({ params }: Props) {
                 <AI>
                     <Chat
                         videoId={params.id as string}
-                        videoTitle={videoInfo.videoDetails.title}
-                        videoAuthor={videoInfo.videoDetails.author.name}
+                        videoTitle={data.title!}
+                        videoAuthor={
+                            videoInfo.videoDetails.author.name ?? "undefined"
+                        }
                     />
                 </AI>
             </div>
