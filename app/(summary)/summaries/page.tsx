@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge"
 import { Search } from "@/components/search"
 import { Embed } from "@/components/youtube-embed"
 
+export const dynamic = "force-dynamic"
+
 export default async function SummariesIndexPage({
     searchParams,
 }: {

@@ -16,6 +16,8 @@ import { VerifyFacts } from "@/components/verify-facts"
 import { Embed } from "@/components/youtube-embed"
 import { AI } from "@/app/ai-actions"
 
+export const dynamic = "force-dynamic"
+
 type Props = {
     params: { id: string }
 }

@@ -8,7 +8,7 @@ export default function HomeLayout({
     return (
         <div>
             {children}
-            {summaries}
+            {/* {summaries} */}
         </div>
     )
 }
