@@ -9,9 +9,6 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { VideoWidget } from "@/components/video-widget"
 
-export const dynamic = "force-dynamic"
-export const maxDuration = 30
-
 export default async function SummariesIndexPage() {
     const data = await db
         .select({ videoid: summaries.videoid })

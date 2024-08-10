@@ -1,8 +1,5 @@
 import { InitialForm } from "@/components/form"
 
-export const dynamic = "force-dynamic"
-export const maxDuraton = 60
-
 export default async function IndexPage() {
     return (
         <section className="container mt-10 flex items-center md:mt-28">
