@@ -16,6 +16,10 @@ export default async function SummariesIndexPage() {
         .orderBy(desc(summaries.updated_at))
         .limit(3)
 
+    if (data.length < 1) {
+        return <></>
+    }
+
     return (
         <section className="container mt-10 flex w-screen flex-col items-start gap-5">
             <div className="flex w-full flex-row flex-wrap items-center justify-center gap-5 md:justify-start md:gap-10">
