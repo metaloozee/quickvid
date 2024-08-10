@@ -19,13 +19,19 @@ import { AI } from "@/app/ai-actions"
 export const dynamic = "force-dynamic"
 
 type Props = {
-    params: { id: string }
+    params: { id: string | null }
 }
 
 export async function generateMetadata(
     { params }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
+    if (!params.id) {
+        return {
+            title: "404 - Not Found",
+        }
+    }
+
     const id = params.id
 
     const [data] = await db
@@ -71,7 +77,7 @@ export default async function SummaryIndexPage({ params }: Props) {
         .from(summaries)
         .fullJoin(embeddings, eq(summaries.videoid, embeddings.videoid))
         .fullJoin(videos, eq(summaries.videoid, videos.videoid))
-        .where(eq(summaries.videoid, params.id))
+        .where(eq(summaries.videoid, params!.id as string))
         .limit(1)
 
     const videoInfo = await ytdl.getInfo(params.id!)
@@ -175,7 +181,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                     >
                         {data.summary}
                     </MemoizedReactMarkdown>
-                    <RegenerateSummaryButton videoid={params.id} />
+                    <RegenerateSummaryButton videoid={params.id as string} />
                 </div>
             </div>
 
@@ -184,7 +190,7 @@ export default async function SummaryIndexPage({ params }: Props) {
 
                 <AI>
                     <Chat
-                        videoId={params.id}
+                        videoId={params.id as string}
                         videoTitle={videoInfo.videoDetails.title}
                         videoAuthor={videoInfo.videoDetails.author.name}
                     />
@@ -195,7 +201,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                 process.env.NODE_ENV !== "production" && (
                     <GenerateEmbedding
                         transcript={data.transcript!}
-                        videoid={params.id}
+                        videoid={params.id as string}
                     />
                 )}
         </section>
