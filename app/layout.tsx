@@ -12,8 +12,6 @@ import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
 
-export const dynamic = "force-dynamic"
-
 export const metadata: Metadata = {
     title: {
         default: siteConfig.name,
