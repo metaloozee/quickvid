@@ -1,15 +1,13 @@
 import Link from "next/link"
+import ytdl from "@distube/ytdl-core"
 import { desc, eq, sql } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
-import ytdl from "ytdl-core"
 
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
 import { Search } from "@/components/search"
 import { Embed } from "@/components/youtube-embed"
-
-export const dynamic = "force-dynamic"
 
 export default async function SummariesIndexPage({
     searchParams,
@@ -20,7 +18,10 @@ export default async function SummariesIndexPage({
 }) {
     const query = searchParams?.query
 
-    let data: any
+    let data: {
+        videoid: string | null
+        videotitle: string | null
+    }[]
 
     query
         ? (data = await db
@@ -35,8 +36,12 @@ export default async function SummariesIndexPage({
                   sql`to_tsvector('simple', ${videos.videotitle}) @@ plainto_tsquery('simple', ${query})`
               ))
         : (data = await db
-              .select({ videoid: summaries.videoid })
+              .select({
+                  videoid: summaries.videoid,
+                  videotitle: videos.videotitle,
+              })
               .from(summaries)
+              .leftJoin(videos, eq(videos.videoid, summaries.videoid))
               .orderBy(desc(summaries.updated_at))
               .limit(5))
 
@@ -62,7 +67,7 @@ export default async function SummariesIndexPage({
             <div className="flex w-full flex-col items-start gap-5">
                 <Search placeholder="How to not get Rick Rolled?" />
                 {data.map(async (d: (typeof data)[0]) => {
-                    const videoInfo = await ytdl.getInfo(d.videoid)
+                    const videoInfo = await ytdl.getInfo(d.videoid!)
 
                     if (!videoInfo) {
                         return <></>
@@ -79,31 +84,33 @@ export default async function SummariesIndexPage({
                                     className="outline-none transition-all duration-300 group-hover:outline-2 group-hover:outline-primary"
                                     thumbnail={
                                         videoInfo.videoDetails.thumbnails.reverse()[0]
-                                            .url
+                                            .url ?? "/placeholder.png"
                                     }
                                 />
                                 <div className="flex w-full flex-col gap-2">
                                     <h1 className="text-md text-center font-extrabold leading-tight tracking-tighter transition-all duration-300 group-hover:text-primary md:text-left md:text-lg">
-                                        {videoInfo.videoDetails.title}
+                                        {d.videotitle}
                                     </h1>
                                     <p className="text-center text-xs text-muted-foreground md:text-left">
-                                        {videoInfo.videoDetails.description &&
+                                        {(videoInfo.videoDetails.description &&
                                         videoInfo.videoDetails.description
                                             ?.length > 100
                                             ? videoInfo.videoDetails.description
                                                   ?.slice(0, 100)
                                                   .concat("...")
                                             : videoInfo.videoDetails
-                                                  .description}
+                                                  .description) ?? "undefined"}
                                     </p>
                                     <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                         <Badge>
                                             <Tv className="mr-2 size-3" />{" "}
-                                            {videoInfo.videoDetails.author.name}
+                                            {videoInfo.videoDetails.author
+                                                .name ?? "undefined"}
                                         </Badge>
                                         <Badge variant="outline">
                                             <Eye className="mr-2 size-3" />{" "}
-                                            {videoInfo.videoDetails.viewCount}
+                                            {videoInfo.videoDetails.viewCount ??
+                                                "undefined"}
                                         </Badge>
                                     </div>
                                 </div>

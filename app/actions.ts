@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import ytdl from "@distube/ytdl-core"
 import { type MessageContent } from "@langchain/core/messages"
 import { OpenAIEmbeddings } from "@langchain/openai"
 import { eq } from "drizzle-orm"
@@ -8,7 +9,6 @@ import {
     RecursiveCharacterTextSplitter,
     TokenTextSplitter,
 } from "langchain/text_splitter"
-import ytdl from "ytdl-core"
 import { z } from "zod"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"

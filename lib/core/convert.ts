@@ -1,9 +1,9 @@
 import path from "path"
 import { Readable } from "stream"
 import { env } from "@/env.mjs"
+import ytdl from "@distube/ytdl-core"
 import FormData from "form-data"
 import fetch from "node-fetch"
-import ytdl from "ytdl-core"
 
 export const uploadAndTranscribe = async (link: string) => {
     try {
