@@ -19,8 +19,8 @@ export default async function SummariesIndexPage({
     const query = searchParams?.query
 
     let data: {
-        videoid: string
-        videotitle?: string | null
+        videoid: string | null
+        videotitle: string | null
     }[]
 
     query
@@ -36,8 +36,12 @@ export default async function SummariesIndexPage({
                   sql`to_tsvector('simple', ${videos.videotitle}) @@ plainto_tsquery('simple', ${query})`
               ))
         : (data = await db
-              .select({ videoid: summaries.videoid })
+              .select({
+                  videoid: summaries.videoid,
+                  videotitle: videos.videotitle,
+              })
               .from(summaries)
+              .leftJoin(videos, eq(videos.videoid, summaries.videoid))
               .orderBy(desc(summaries.updated_at))
               .limit(5))
 
@@ -63,7 +67,7 @@ export default async function SummariesIndexPage({
             <div className="flex w-full flex-col items-start gap-5">
                 <Search placeholder="How to not get Rick Rolled?" />
                 {data.map(async (d: (typeof data)[0]) => {
-                    const videoInfo = await ytdl.getInfo(d.videoid)
+                    const videoInfo = await ytdl.getInfo(d.videoid!)
 
                     if (!videoInfo) {
                         return <></>
