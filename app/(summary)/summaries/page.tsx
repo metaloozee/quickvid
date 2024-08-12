@@ -3,6 +3,7 @@ import ytdl from "@distube/ytdl-core"
 import { desc, eq, sql } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 
+import agentPromise from "@/lib/core/agent"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +17,7 @@ export default async function SummariesIndexPage({
         query?: string
     }
 }) {
+    const agent = await agentPromise
     const query = searchParams?.query
 
     let data: {
@@ -67,7 +69,7 @@ export default async function SummariesIndexPage({
             <div className="flex w-full flex-col items-start gap-5">
                 <Search placeholder="How to not get Rick Rolled?" />
                 {data.map(async (d: (typeof data)[0]) => {
-                    const videoInfo = await ytdl.getInfo(d.videoid!)
+                    const videoInfo = await ytdl.getInfo(d.videoid!, { agent })
 
                     if (!videoInfo) {
                         return <></>

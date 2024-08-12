@@ -5,6 +5,7 @@ import { Eye, Tv } from "lucide-react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
+import agentPromise from "@/lib/core/agent"
 import { db } from "@/lib/db"
 import { embeddings, summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
@@ -26,6 +27,8 @@ export async function generateMetadata(
     { params }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
+    const agent = await agentPromise
+
     if (!params.id) {
         return {
             title: "404 - Not Found",
@@ -44,7 +47,7 @@ export async function generateMetadata(
         .where(eq(summaries.videoid, id!))
         .limit(1)
 
-    const videoInfo = await ytdl.getInfo(id)
+    const videoInfo = await ytdl.getInfo(id, { agent })
 
     if (!data || !videoInfo) {
         return {
@@ -75,6 +78,8 @@ export async function generateMetadata(
 }
 
 export default async function SummaryIndexPage({ params }: Props) {
+    const agent = await agentPromise
+
     const [data] = await db
         .select({
             title: videos.videotitle,
@@ -88,7 +93,7 @@ export default async function SummaryIndexPage({ params }: Props) {
         .where(eq(summaries.videoid, params!.id as string))
         .limit(1)
 
-    const videoInfo = await ytdl.getInfo(params.id!)
+    const videoInfo = await ytdl.getInfo(params.id!, { agent })
 
     if (!videoInfo || !data.summary) {
         return (

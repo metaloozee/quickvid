@@ -11,6 +11,7 @@ import {
 } from "langchain/text_splitter"
 import { z } from "zod"
 
+import agentPromise from "@/lib/core/agent"
 import { uploadAndTranscribe } from "@/lib/core/convert"
 import {
     summarizeTranscriptWithGemini,
@@ -198,8 +199,10 @@ export const uploadTranscript = async ({
 export const handleInitialFormSubmit = async (
     formData: z.infer<typeof formSchema>
 ) => {
+    const agent = await agentPromise
+
     try {
-        const videoInfo = await ytdl.getInfo(formData.link)
+        const videoInfo = await ytdl.getInfo(formData.link, { agent })
         const videoId = videoInfo.videoDetails.videoId
 
         const [existingVideo] = await db
@@ -259,9 +262,14 @@ export const handleInitialFormSubmit = async (
 export const handleRegenerateSummary = async (
     formData: z.infer<typeof RegenerateFormSchema>
 ) => {
+    const agent = await agentPromise
+
     try {
         const videoInfo = await ytdl.getBasicInfo(
-            "https://www.youtube.com/watch?v=" + formData.videoid
+            "https://www.youtube.com/watch?v=" + formData.videoid,
+            {
+                agent,
+            }
         )
 
         const [data] = await db
