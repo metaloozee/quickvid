@@ -5,7 +5,7 @@ import { Eye, Tv } from "lucide-react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
-import agentPromise from "@/lib/core/agent"
+import agent from "@/lib/core/agent"
 import { db } from "@/lib/db"
 import { embeddings, summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
@@ -27,8 +27,6 @@ export async function generateMetadata(
     { params }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
-    const agent = await agentPromise
-
     if (!params.id) {
         return {
             title: "404 - Not Found",
@@ -78,8 +76,6 @@ export async function generateMetadata(
 }
 
 export default async function SummaryIndexPage({ params }: Props) {
-    const agent = await agentPromise
-
     const [data] = await db
         .select({
             title: videos.videotitle,

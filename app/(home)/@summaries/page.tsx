@@ -3,7 +3,7 @@ import ytdl from "@distube/ytdl-core"
 import { desc } from "drizzle-orm"
 import { MoveRight } from "lucide-react"
 
-import agentPromise from "@/lib/core/agent"
+import agent from "@/lib/core/agent"
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
 import { Button } from "@/components/ui/button"
@@ -11,8 +11,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { VideoWidget } from "@/components/video-widget"
 
 export default async function SummariesIndexPage() {
-    const agent = await agentPromise
-
     const data = await db
         .select({ videoid: summaries.videoid })
         .from(summaries)

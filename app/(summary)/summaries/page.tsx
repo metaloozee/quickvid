@@ -3,7 +3,7 @@ import ytdl from "@distube/ytdl-core"
 import { desc, eq, sql } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 
-import agentPromise from "@/lib/core/agent"
+import agent from "@/lib/core/agent"
 import { db } from "@/lib/db"
 import { summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
@@ -17,7 +17,6 @@ export default async function SummariesIndexPage({
         query?: string
     }
 }) {
-    const agent = await agentPromise
     const query = searchParams?.query
 
     let data: {
