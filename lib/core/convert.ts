@@ -5,9 +5,11 @@ import ytdl from "@distube/ytdl-core"
 import FormData from "form-data"
 import fetch from "node-fetch"
 
+import agent from "@/lib/core/agent"
+
 export const uploadAndTranscribe = async (link: string) => {
     try {
-        const videoInfo = await ytdl.getInfo(link)
+        const videoInfo = await ytdl.getInfo(link, { agent })
 
         const format = ytdl.chooseFormat(videoInfo.formats, {
             filter: "audioonly",
