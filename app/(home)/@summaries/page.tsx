@@ -44,7 +44,7 @@ export default async function SummariesIndexPage() {
                                     }
                                     thumbnail={
                                         videoInfo.basic_info.thumbnail?.[0]
-                                            ?.url ?? "undefined"
+                                            ?.url ?? "./placeholder.png"
                                     }
                                 />
                             </Link>
