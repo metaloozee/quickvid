@@ -41,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <SpeedInsights />
 
                     <div className="relative flex min-h-screen flex-col">
-                        <AnnouncementBanner text="Due to high demand, YouTube is limiting our ability to process transcripts. This won't impact users hosting locally." />
+                        {/* <AnnouncementBanner text="Due to high demand, YouTube is limiting our ability to process transcripts. This won't impact users hosting locally." /> */}
                         <Navbar />
                         <div className="flex-1">{children}</div>
                         <Footer />

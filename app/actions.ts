@@ -9,6 +9,7 @@ import {
     RecursiveCharacterTextSplitter,
     TokenTextSplitter,
 } from "langchain/text_splitter"
+import { Innertube } from "youtubei.js/web"
 import { z } from "zod"
 
 import agent from "@/lib/core/agent"
@@ -199,9 +200,15 @@ export const uploadTranscript = async ({
 export const handleInitialFormSubmit = async (
     formData: z.infer<typeof formSchema>
 ) => {
+    const youtube = await Innertube.create({
+        location: "US",
+        lang: "en",
+        retrieve_player: false,
+    })
+
     try {
-        const videoInfo = await ytdl.getInfo(formData.link, { agent })
-        const videoId = videoInfo.videoDetails.videoId
+        const videoInfo = await youtube.getInfo(formData.link)
+        const videoId = videoInfo.basic_info.id
 
         const [existingVideo] = await db
             .select({
@@ -210,7 +217,7 @@ export const handleInitialFormSubmit = async (
             })
             .from(videos)
             .fullJoin(summaries, eq(videos.videoid, summaries.videoid))
-            .where(eq(videos.videoid, videoId))
+            .where(eq(videos.videoid, videoId!))
             .limit(1)
 
         if (
@@ -220,8 +227,8 @@ export const handleInitialFormSubmit = async (
         ) {
             return {
                 videoId: videoId,
-                videoTitle: videoInfo.videoDetails.title,
-                videoAuthor: videoInfo.videoDetails.author.name,
+                videoTitle: videoInfo.basic_info.title,
+                videoAuthor: videoInfo.basic_info.author,
                 summary: existingVideo.summary,
                 transcript: existingVideo.transcript,
             }
@@ -232,8 +239,8 @@ export const handleInitialFormSubmit = async (
         ) {
             return {
                 videoId: videoId,
-                videoTitle: videoInfo.videoDetails.title,
-                videoAuthor: videoInfo.videoDetails.author.name,
+                videoTitle: videoInfo.basic_info.title,
+                videoAuthor: videoInfo.basic_info.author,
                 summary: null,
                 transcript: existingVideo.transcript,
             }
@@ -245,8 +252,8 @@ export const handleInitialFormSubmit = async (
 
             return {
                 videoId: videoId,
-                videoTitle: videoInfo.videoDetails.title,
-                videoAuthor: videoInfo.videoDetails.author.name,
+                videoTitle: videoInfo.basic_info.title,
+                videoAuthor: videoInfo.basic_info.author,
                 summary: null,
                 transcript: transcript,
             }
@@ -260,13 +267,14 @@ export const handleInitialFormSubmit = async (
 export const handleRegenerateSummary = async (
     formData: z.infer<typeof RegenerateFormSchema>
 ) => {
+    const youtube = await Innertube.create({
+        retrieve_player: false,
+        location: "US",
+        lang: "en",
+    })
+
     try {
-        const videoInfo = await ytdl.getBasicInfo(
-            "https://www.youtube.com/watch?v=" + formData.videoid,
-            {
-                agent,
-            }
-        )
+        const videoInfo = await youtube.getInfo(formData.videoid)
 
         const [data] = await db
             .select({
@@ -282,8 +290,8 @@ export const handleRegenerateSummary = async (
         return {
             videoId: formData.videoid,
             transcript: data.transcript,
-            videoTitle: videoInfo.videoDetails.title,
-            videoAuthor: videoInfo.videoDetails.author.name,
+            videoTitle: videoInfo.basic_info.title,
+            videoAuthor: videoInfo.basic_info.author,
         }
     } catch (e: any) {
         console.error(e)

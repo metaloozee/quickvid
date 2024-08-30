@@ -2,6 +2,7 @@ import Link from "next/link"
 import ytdl from "@distube/ytdl-core"
 import { desc, eq, sql } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
+import { Innertube } from "youtubei.js/web"
 
 import agent from "@/lib/core/agent"
 import { db } from "@/lib/db"
@@ -17,6 +18,12 @@ export default async function SummariesIndexPage({
         query?: string
     }
 }) {
+    const youtube = await Innertube.create({
+        location: "US",
+        lang: "en",
+        retrieve_player: false,
+    })
+
     const query = searchParams?.query
 
     let data: {
@@ -68,7 +75,7 @@ export default async function SummariesIndexPage({
             <div className="flex w-full flex-col items-start gap-5">
                 <Search placeholder="How to not get Rick Rolled?" />
                 {data.map(async (d: (typeof data)[0]) => {
-                    const videoInfo = await ytdl.getInfo(d.videoid!, { agent })
+                    const videoInfo = await youtube.getInfo(d.videoid!)
 
                     if (!videoInfo) {
                         return <></>
@@ -84,8 +91,8 @@ export default async function SummariesIndexPage({
                                 <Embed
                                     className="outline-none transition-all duration-300 group-hover:outline-2 group-hover:outline-primary"
                                     thumbnail={
-                                        videoInfo.videoDetails.thumbnails.reverse()[0]
-                                            .url ?? "/placeholder.png"
+                                        videoInfo.basic_info.thumbnail?.[0]
+                                            ?.url ?? "/placeholder.png"
                                     }
                                 />
                                 <div className="flex w-full flex-col gap-2">
@@ -93,24 +100,26 @@ export default async function SummariesIndexPage({
                                         {d.videotitle}
                                     </h1>
                                     <p className="text-center text-xs text-muted-foreground md:text-left">
-                                        {(videoInfo.videoDetails.description &&
-                                        videoInfo.videoDetails.description
+                                        {(videoInfo.basic_info
+                                            .short_description &&
+                                        videoInfo.basic_info.short_description
                                             ?.length > 100
-                                            ? videoInfo.videoDetails.description
+                                            ? videoInfo.basic_info.short_description
                                                   ?.slice(0, 100)
                                                   .concat("...")
-                                            : videoInfo.videoDetails
-                                                  .description) ?? "undefined"}
+                                            : videoInfo.basic_info
+                                                  .short_description) ??
+                                            "undefined"}
                                     </p>
                                     <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                         <Badge>
                                             <Tv className="mr-2 size-3" />{" "}
-                                            {videoInfo.videoDetails.author
-                                                .name ?? "undefined"}
+                                            {videoInfo.basic_info.author ??
+                                                "undefined"}
                                         </Badge>
                                         <Badge variant="outline">
                                             <Eye className="mr-2 size-3" />{" "}
-                                            {videoInfo.videoDetails.viewCount ??
+                                            {videoInfo.basic_info.view_count ??
                                                 "undefined"}
                                         </Badge>
                                     </div>

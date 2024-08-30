@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
+import { Innertube } from "youtubei.js/web"
 
 import agent from "@/lib/core/agent"
 import { db } from "@/lib/db"
@@ -27,6 +28,12 @@ export async function generateMetadata(
     { params }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
+    const youtube = await Innertube.create({
+        location: "US",
+        lang: "en",
+        retrieve_player: false,
+    })
+
     if (!params.id) {
         return {
             title: "404 - Not Found",
@@ -45,7 +52,7 @@ export async function generateMetadata(
         .where(eq(summaries.videoid, id!))
         .limit(1)
 
-    const videoInfo = await ytdl.getInfo(id, { agent })
+    const videoInfo = await youtube.getInfo(id)
 
     if (!data || !videoInfo) {
         return {
@@ -64,18 +71,23 @@ export async function generateMetadata(
             "Video Summary",
             "Summary",
             data.videoTitle!,
-            videoInfo.videoDetails.author.name ?? "undefined",
+            videoInfo.basic_info.author ?? "undefined",
         ],
         openGraph: {
             images: [
-                videoInfo.videoDetails.thumbnails.reverse()[0].url ??
-                    "/placeholder.png",
+                videoInfo.basic_info.thumbnail?.[0]?.url ?? "/placeholder.png",
             ],
         },
     }
 }
 
 export default async function SummaryIndexPage({ params }: Props) {
+    const youtube = await Innertube.create({
+        location: "US",
+        lang: "en",
+        retrieve_player: false,
+    })
+
     const [data] = await db
         .select({
             title: videos.videotitle,
@@ -89,7 +101,7 @@ export default async function SummaryIndexPage({ params }: Props) {
         .where(eq(summaries.videoid, params!.id as string))
         .limit(1)
 
-    const videoInfo = await ytdl.getInfo(params.id!, { agent })
+    const videoInfo = await youtube.getInfo(params.id!)
 
     if (!videoInfo || !data.summary) {
         return (
@@ -116,8 +128,8 @@ export default async function SummaryIndexPage({ params }: Props) {
                         <Embed
                             link={`https://www.youtube.com/watch?v=${params.id}`}
                             thumbnail={
-                                videoInfo.videoDetails.thumbnails.reverse()[0]
-                                    .url ?? "/placeholder.png"
+                                videoInfo.basic_info.thumbnail?.[0]?.url ??
+                                "/placeholder.png"
                             }
                         />
                         <div className="flex w-full flex-col gap-2">
@@ -125,23 +137,23 @@ export default async function SummaryIndexPage({ params }: Props) {
                                 {data.title}
                             </h1>
                             <p className="text-center text-xs text-muted-foreground md:text-left">
-                                {(videoInfo.videoDetails.description &&
-                                videoInfo.videoDetails.description?.length > 100
-                                    ? videoInfo.videoDetails.description
+                                {(videoInfo.basic_info.short_description &&
+                                videoInfo.basic_info.short_description?.length >
+                                    100
+                                    ? videoInfo.basic_info.short_description
                                           ?.slice(0, 100)
                                           .concat("...")
-                                    : videoInfo.videoDetails.description) ??
+                                    : videoInfo.basic_info.short_description) ??
                                     "undefined"}
                             </p>
                             <div className="mt-3 flex flex-row items-center justify-center gap-4 md:items-start md:justify-start">
                                 <Badge>
                                     <Tv className="mr-2 size-3" />{" "}
-                                    {videoInfo.videoDetails.author.name ??
-                                        "undefined"}
+                                    {videoInfo.basic_info.author ?? "undefined"}
                                 </Badge>
                                 <Badge variant="outline">
                                     <Eye className="mr-2 size-3" />{" "}
-                                    {videoInfo.videoDetails.viewCount ??
+                                    {videoInfo.basic_info.view_count ??
                                         "undefined"}
                                 </Badge>
                             </div>
@@ -204,9 +216,7 @@ export default async function SummaryIndexPage({ params }: Props) {
                     <Chat
                         videoId={params.id as string}
                         videoTitle={data.title!}
-                        videoAuthor={
-                            videoInfo.videoDetails.author.name ?? "undefined"
-                        }
+                        videoAuthor={videoInfo.basic_info.author ?? "undefined"}
                     />
                 </AI>
             </div>
