@@ -109,8 +109,8 @@ export const InitialForm = () => {
 
                             const res = await uploadTranscript({
                                 transcript: value.transcript,
-                                videoId: value.videoId,
-                                videoTitle: value.videoTitle,
+                                videoId: value.videoId!,
+                                videoTitle: value.videoTitle!,
                             })
 
                             if (!res) {
@@ -126,7 +126,7 @@ export const InitialForm = () => {
                             setStatus("Embedding...")
 
                             const isEmbedUploaded = await embedTranscript({
-                                videoId: value.videoId,
+                                videoId: value.videoId!,
                                 transcript: value.transcript,
                             })
 
@@ -142,8 +142,8 @@ export const InitialForm = () => {
                             const summary = await summarizeTranscript({
                                 transcript: value.transcript,
                                 model: data.model,
-                                videoTitle: value.videoTitle,
-                                videoAuthor: value.videoAuthor,
+                                videoTitle: value.videoTitle!,
+                                videoAuthor: value.videoAuthor!,
                             })
 
                             if (!summary) {
@@ -164,7 +164,7 @@ export const InitialForm = () => {
 
                             const vid = await uploadSummary({
                                 summary: summary,
-                                videoId: value.videoId,
+                                videoId: value.videoId!,
                             })
 
                             if (vid) {
