@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import { Innertube } from "youtubei.js/web"
 
 import { uploadAndTranscribe } from "@/lib/core/convert"
@@ -11,7 +12,7 @@ export const transcribeVideo = async (link: string) => {
 
     // try {
     const videoId = new URL(link).searchParams.get("v") as string
-    const info = await youtube.getInfo(videoId)
+    const info = await youtube.getInfo(videoId, "IOS")
     const transcriptData = await info.getTranscript()
 
     if (!transcriptData) {

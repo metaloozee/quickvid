@@ -1,7 +1,8 @@
 import Link from "next/link"
+import { env } from "@/env.mjs"
 import { desc } from "drizzle-orm"
 import { MoveRight } from "lucide-react"
-import { Innertube } from "youtubei.js/web"
+import { Innertube, UniversalCache } from "youtubei.js"
 
 import { db } from "@/lib/db"
 import { summaries } from "@/lib/db/schema"
@@ -29,7 +30,7 @@ export default async function SummariesIndexPage() {
         <section className="container mt-10 flex w-screen flex-col items-start gap-5">
             <div className="flex w-full flex-row flex-wrap items-center justify-center gap-5 md:justify-start md:gap-10">
                 {data.map(async (d: (typeof data)[0]) => {
-                    const videoInfo = await youtube.getInfo(d.videoid)
+                    const videoInfo = await youtube.getInfo(d.videoid, "IOS")
                     return (
                         videoInfo && (
                             <Link

@@ -6,7 +6,8 @@ const server = z.object({
     GOOGLE_API_KEY: z.string(),
     DATABASE_URL: z.string().startsWith("postgresql://"),
     TAVILY_API_KEY: z.string().startsWith("tvly-"),
-
+    PO_TOKEN: z.string(),
+    VISITOR_DATA: z.string(),
     NODE_ENV: z.enum(["development", "test", "production"]),
 })
 
@@ -27,6 +28,8 @@ const processEnv = {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     TAVILY_API_KEY: process.env.TAVILY_API_KEY,
+    PO_TOKEN: process.env.PO_TOKEN,
+    VISITOR_DATA: process.env.VISITOR_DATA,
 
     NODE_ENV: process.env.NODE_ENV,
 }

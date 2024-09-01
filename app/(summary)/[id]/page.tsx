@@ -1,12 +1,11 @@
 import type { Metadata, ResolvingMetadata } from "next"
-import ytdl from "@distube/ytdl-core"
+import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 import { Eye, Tv } from "lucide-react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-import { Innertube } from "youtubei.js/web"
+import { Innertube } from "youtubei.js"
 
-import agent from "@/lib/core/agent"
 import { db } from "@/lib/db"
 import { embeddings, summaries, videos } from "@/lib/db/schema"
 import { Badge } from "@/components/ui/badge"
@@ -52,7 +51,7 @@ export async function generateMetadata(
         .where(eq(summaries.videoid, id!))
         .limit(1)
 
-    const videoInfo = await youtube.getInfo(id)
+    const videoInfo = await youtube.getInfo(id, "IOS")
 
     if (!data || !videoInfo) {
         return {
@@ -101,7 +100,7 @@ export default async function SummaryIndexPage({ params }: Props) {
         .where(eq(summaries.videoid, params!.id as string))
         .limit(1)
 
-    const videoInfo = await youtube.getInfo(params.id!)
+    const videoInfo = await youtube.getInfo(params.id!, "IOS")
 
     if (!videoInfo || !data.summary) {
         return (

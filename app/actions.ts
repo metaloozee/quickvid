@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import ytdl from "@distube/ytdl-core"
+import { env } from "@/env.mjs"
 import { type MessageContent } from "@langchain/core/messages"
 import { OpenAIEmbeddings } from "@langchain/openai"
 import { eq } from "drizzle-orm"
@@ -12,8 +12,6 @@ import {
 import { Innertube } from "youtubei.js/web"
 import { z } from "zod"
 
-import agent from "@/lib/core/agent"
-import { uploadAndTranscribe } from "@/lib/core/convert"
 import {
     summarizeTranscriptWithGemini,
     summarizeTranscriptWithGpt,
@@ -24,7 +22,6 @@ import { db } from "@/lib/db"
 import { embeddings, summaries, videos } from "@/lib/db/schema"
 import { formSchema } from "@/components/form"
 import { RegenerateFormSchema } from "@/components/regenerate-btn"
-import { VerifyFactsFormSchema } from "@/components/verify-facts"
 
 const openaiEmbed = new OpenAIEmbeddings({
     model: "text-embedding-ada-002",
@@ -207,8 +204,8 @@ export const handleInitialFormSubmit = async (
     })
 
     try {
-        const videoInfo = await youtube.getInfo(formData.link)
-        const videoId = videoInfo.basic_info.id
+        const videoId = new URL(formData.link).searchParams.get("v") as string
+        const videoInfo = await youtube.getInfo(videoId, "IOS")
 
         const [existingVideo] = await db
             .select({
@@ -274,7 +271,7 @@ export const handleRegenerateSummary = async (
     })
 
     try {
-        const videoInfo = await youtube.getInfo(formData.videoid)
+        const videoInfo = await youtube.getInfo(formData.videoid, "IOS")
 
         const [data] = await db
             .select({
